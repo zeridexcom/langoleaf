@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import {
   LayoutDashboard,
   Users,
@@ -15,6 +14,7 @@ import {
   ChevronRight,
 } from "lucide-react";
 import { cn } from "@/lib/utils/cn";
+import { useState } from "react";
 
 const menuItems = [
   { icon: LayoutDashboard, label: "Dashboard", href: "/" },
@@ -27,14 +27,18 @@ const menuItems = [
   { icon: HelpCircle, label: "Support", href: "/support" },
 ];
 
-export function Sidebar() {
-  const [collapsed, setCollapsed] = useState(false);
+interface SidebarProps {
+  collapsed: boolean;
+  setCollapsed: (collapsed: boolean) => void;
+}
+
+export function Sidebar({ collapsed, setCollapsed }: SidebarProps) {
   const [activeItem, setActiveItem] = useState("Dashboard");
 
   return (
     <aside
       className={cn(
-        "fixed left-0 top-16 h-[calc(100vh-4rem)] bg-white dark:bg-[#1a1a2e] border-r border-gray-200 dark:border-[#2d2d4a] transition-all duration-300 z-40",
+        "fixed left-0 top-16 h-[calc(100vh-4rem)] bg-[#1a1a2e] border-r border-[#2d2d4a] transition-all duration-300 z-40",
         collapsed ? "w-20" : "w-64"
       )}
     >
@@ -62,14 +66,14 @@ export function Sidebar() {
                   className={cn(
                     "flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 group",
                     activeItem === item.label
-                      ? "bg-[#6d28d9]/10 text-[#6d28d9] dark:bg-[#6d28d9]/20"
-                      : "text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-[#252542] dark:hover:text-white"
+                      ? "bg-[#6d28d9]/20 text-[#6d28d9]"
+                      : "text-gray-400 hover:bg-[#252542] hover:text-white"
                   )}
                 >
                   <item.icon
                     className={cn(
                       "w-5 h-5 flex-shrink-0",
-                      activeItem === item.label ? "text-[#6d28d9]" : "text-gray-500 dark:text-gray-400"
+                      activeItem === item.label ? "text-[#6d28d9]" : "text-gray-400"
                     )}
                   />
                   {!collapsed && (
@@ -102,3 +106,4 @@ export function Sidebar() {
     </aside>
   );
 }
+

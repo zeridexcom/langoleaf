@@ -1,4 +1,4 @@
-     "use client";
+"use client";
 
 import { UserPlus, FileCheck, Coins, Award, AlertCircle, CheckCircle } from "lucide-react";
 
@@ -60,9 +60,9 @@ export function ActivityFeed({ applications = [] }: ActivityFeedProps) {
   });
 
   return (
-    <div className="bg-white dark:bg-[#1a1a2e] border border-gray-200 dark:border-[#2d2d4a] rounded-2xl p-6 shadow-sm">
+    <div className="bg-[#1a1a2e] border border-[#2d2d4a] rounded-2xl p-6 shadow-sm">
       <div className="flex items-center justify-between mb-6">
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Recent Applications</h3>
+        <h3 className="text-lg font-semibold text-white">Recent Applications</h3>
         <a
           href="/applications"
           className="text-sm text-[#6d28d9] hover:text-[#a78bfa] transition-colors"
@@ -73,7 +73,7 @@ export function ActivityFeed({ applications = [] }: ActivityFeedProps) {
 
       {activities.length === 0 ? (
         <div className="text-center py-8">
-          <p className="text-gray-500 text-sm">No applications yet</p>
+          <p className="text-gray-400 text-sm">No applications yet</p>
           <a href="/students/add" className="text-[#6d28d9] hover:underline text-sm mt-2 inline-block">
             Add a student to get started
           </a>
@@ -83,14 +83,14 @@ export function ActivityFeed({ applications = [] }: ActivityFeedProps) {
           {activities.map((activity) => (
             <div
               key={activity.id}
-              className="flex items-start gap-3 p-3 rounded-xl hover:bg-gray-50 dark:hover:bg-[#252542] transition-colors"
+              className="flex items-start gap-3 p-3 rounded-xl hover:bg-[#252542] transition-colors"
             >
               <div className={`p-2 rounded-lg ${activity.bgColor} flex-shrink-0`}>
                 <activity.icon className={`w-4 h-4 ${activity.color}`} />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm text-gray-900 dark:text-white">{activity.message}</p>
-                <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">
+                <p className="text-sm text-white">{activity.message}</p>
+                <p className="text-xs text-gray-500 mt-0.5">
                   {activity.time}
                 </p>
               </div>
@@ -101,3 +101,4 @@ export function ActivityFeed({ applications = [] }: ActivityFeedProps) {
     </div>
   );
 }
+

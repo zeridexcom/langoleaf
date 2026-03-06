@@ -1,6 +1,6 @@
 "use client";
 
-import { Users, FileCheck, AlertCircle, Wallet, TrendingUp } from "lucide-react";
+import { Users, FileCheck, TrendingUp, Wallet } from "lucide-react";
 import { cn } from "@/lib/utils/cn";
 
 interface Stats {
@@ -56,14 +56,14 @@ export function StatsCards({ stats }: StatsCardsProps) {
       {displayStats.map((stat) => (
         <div
           key={stat.title}
-          className="bg-white dark:bg-[#1a1a2e] border border-gray-200 dark:border-[#2d2d4a] rounded-2xl p-5 hover:border-[#6d28d9]/30 transition-colors shadow-sm"
+          className="bg-[#1a1a2e] border border-[#2d2d4a] rounded-2xl p-5 hover:border-[#6d28d9]/30 transition-colors shadow-sm"
         >
           <div className="flex items-start justify-between">
             <div>
-              <p className="text-sm text-gray-500 dark:text-gray-400">{stat.title}</p>
-              <h3 className="text-2xl font-bold text-gray-900 dark:text-white mt-1">{stat.value}</h3>
+              <p className="text-sm text-gray-400">{stat.title}</p>
+              <h3 className="text-2xl font-bold text-white mt-1">{stat.value}</h3>
               {stat.change && (
-                <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">{stat.change}</p>
+                <p className="text-xs text-gray-500 mt-1">{stat.change}</p>
               )}
             </div>
             <div className={cn("p-3 rounded-xl", stat.bgColor)}>
@@ -75,3 +75,4 @@ export function StatsCards({ stats }: StatsCardsProps) {
     </div>
   );
 }
+

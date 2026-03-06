@@ -38,9 +38,9 @@ export function RecentStudents({ students = [] }: RecentStudentsProps) {
   const displayStudents = students.slice(0, 5);
 
   return (
-    <div className="bg-white dark:bg-[#1a1a2e] border border-gray-200 dark:border-[#2d2d4a] rounded-2xl p-6 shadow-sm">
+    <div className="bg-[#1a1a2e] border border-[#2d2d4a] rounded-2xl p-6 shadow-sm">
       <div className="flex items-center justify-between mb-6">
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Recent Students</h3>
+        <h3 className="text-lg font-semibold text-white">Recent Students</h3>
         <a
           href="/students"
           className="text-sm text-[#6d28d9] hover:text-[#a78bfa] flex items-center gap-1 transition-colors"
@@ -51,7 +51,7 @@ export function RecentStudents({ students = [] }: RecentStudentsProps) {
       </div>
 
       {displayStudents.length === 0 ? (
-        <div className="text-center py-8 text-gray-500 dark:text-gray-400">
+        <div className="text-center py-8 text-gray-400">
           <p>No students added yet</p>
           <a href="/students/add" className="text-[#6d28d9] hover:underline text-sm mt-2 inline-block">
             Add your first student
@@ -62,16 +62,16 @@ export function RecentStudents({ students = [] }: RecentStudentsProps) {
           {displayStudents.map((student) => (
             <div
               key={student.id}
-              className="flex items-center gap-4 p-4 bg-gray-50 dark:bg-[#252542] rounded-xl hover:bg-gray-100 dark:hover:bg-[#2d2d4a] transition-colors"
+              className="flex items-center gap-4 p-4 bg-[#252542] rounded-xl hover:bg-[#2d2d4a] transition-colors"
             >
               <div className="w-10 h-10 rounded-lg bg-[#6d28d9]/20 flex items-center justify-center flex-shrink-0">
                 <User className="w-5 h-5 text-[#6d28d9]" />
               </div>
               <div className="flex-1 min-w-0">
-                <h4 className="text-sm font-medium text-gray-900 dark:text-white truncate">
+                <h4 className="text-sm font-medium text-white truncate">
                   {student.name}
                 </h4>
-                <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
+                <p className="text-xs text-gray-400 truncate">
                   {student.email}
                 </p>
               </div>
@@ -81,7 +81,7 @@ export function RecentStudents({ students = [] }: RecentStudentsProps) {
                 >
                   {statusLabels[student.status] || "Lead"}
                 </span>
-                <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
+                <p className="text-xs text-gray-500 mt-1">
                   {new Date(student.created_at).toLocaleDateString()}
                 </p>
               </div>
@@ -92,3 +92,4 @@ export function RecentStudents({ students = [] }: RecentStudentsProps) {
     </div>
   );
 }
+

@@ -6,31 +6,7 @@ import { RecentStudents } from "@/components/dashboard/recent-students";
 import { EarningsSummary } from "@/components/dashboard/earnings-summary";
 import { ActivityFeed } from "@/components/dashboard/activity-feed";
 import { QuickActions } from "@/components/dashboard/quick-actions";
-
-// Mock data for immediate display
-const mockData = {
-  stats: {
-    totalStudents: 12,
-    totalApplications: 8,
-    totalEarnings: 45000,
-    pendingApplications: 3,
-    conversionRate: 66.7,
-  },
-  recentStudents: [
-    { id: "1", name: "Rahul Sharma", email: "rahul@example.com", status: "enrolled", created_at: "2024-01-15" },
-    { id: "2", name: "Priya Patel", email: "priya@example.com", status: "application_submitted", created_at: "2024-01-14" },
-    { id: "3", name: "Amit Kumar", email: "amit@example.com", status: "documents_pending", created_at: "2024-01-12" },
-  ],
-  recentApplications: [
-    { id: "1", program: "MBA", university: "IIM Bangalore", status: "enrolled", created_at: "2024-01-15", student: { name: "Rahul Sharma" } },
-    { id: "2", program: "B.Tech", university: "IIT Delhi", status: "application_submitted", created_at: "2024-01-14", student: { name: "Priya Patel" } },
-  ],
-  earnings: [
-    { amount: 15000, created_at: "2024-01-15" },
-    { amount: 20000, created_at: "2024-01-10" },
-    { amount: 10000, created_at: "2023-12-28" },
-  ],
-};
+import { createClient } from "@/lib/supabase/client";
 
 interface DashboardData {
   stats: {
@@ -46,35 +22,93 @@ interface DashboardData {
 }
 
 export default function DashboardPage() {
-  const [data, setData] = useState<DashboardData>(mockData);
-  const [loading, setLoading] = useState(false);
+  const [data, setData] = useState<DashboardData | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Try to fetch real data, but don't block rendering
-    fetchDashboardData();
+    loadDashboardData();
   }, []);
 
-  const fetchDashboardData = async () => {
+  const loadDashboardData = async () => {
     try {
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 3000); // 3 second timeout
+      const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
       
-      const res = await fetch("/api/dashboard", { signal: controller.signal });
-      clearTimeout(timeoutId);
-      
-      if (!res.ok) throw new Error("Failed to fetch");
-      const dashboardData = await res.json();
-      setData(dashboardData);
+      if (!user) {
+        setLoading(false);
+        return;
+      }
+
+      // Load students
+      const { data: students } = await supabase
+        .from("students")
+        .select("*")
+        .eq("freelancer_id", user.id)
+        .order("created_at", { ascending: false });
+
+      // Load applications
+      const { data: applications } = await supabase
+        .from("applications")
+        .select("*, students(name)")
+        .eq("freelancer_id", user.id)
+        .order("created_at", { ascending: false });
+
+      // Load earnings
+      const { data: earnings } = await supabase
+        .from("coins_history")
+        .select("*")
+        .eq("profile_id", user.id)
+        .eq("type", "earned")
+        .order("created_at", { ascending: false })
+        .limit(10);
+
+      // Calculate stats
+      const totalStudents = students?.length || 0;
+      const totalApplications = applications?.length || 0;
+      const pendingApplications = applications?.filter(a => a.status === "application_submitted").length || 0;
+      const enrolledApplications = applications?.filter(a => a.status === "enrolled").length || 0;
+      const conversionRate = totalApplications > 0 ? (enrolledApplications / totalApplications) * 100 : 0;
+      const totalEarnings = earnings?.reduce((sum, e) => sum + (e.amount || 0), 0) || 0;
+
+      setData({
+        stats: {
+          totalStudents,
+          totalApplications,
+          totalEarnings,
+          pendingApplications,
+          conversionRate: Math.round(conversionRate * 10) / 10,
+        },
+        recentStudents: students?.slice(0, 5) || [],
+        recentApplications: applications?.slice(0, 5) || [],
+        earnings: earnings || [],
+      });
     } catch (error) {
-      console.log("Using mock data - API not available:", error);
-      // Keep using mock data
+      console.error("Error loading dashboard data:", error);
+    } finally {
+      setLoading(false);
     }
   };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#6d28d9]"></div>
+      </div>
+    );
+  }
+
+  if (!data) {
+    return (
+      <div className="text-center py-12">
+        <p className="text-gray-400">Failed to load dashboard data</p>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
       {/* Stats Overview */}
-      <StatsCards stats={data?.stats} />
+      <StatsCards stats={data.stats} />
 
       {/* Quick Actions */}
       <QuickActions />
@@ -83,19 +117,20 @@ export default function DashboardPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Recent Students */}
         <div className="lg:col-span-2">
-          <RecentStudents students={data?.recentStudents} />
+          <RecentStudents students={data.recentStudents} />
         </div>
 
         {/* Earnings Summary */}
         <div>
-          <EarningsSummary earnings={data?.earnings} />
+          <EarningsSummary earnings={data.earnings} />
         </div>
       </div>
 
       {/* Activity & Applications */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <ActivityFeed applications={data?.recentApplications} />
+        <ActivityFeed applications={data.recentApplications} />
       </div>
     </div>
   );
 }
+

@@ -40,16 +40,16 @@ export function QuickActions() {
         <a
           key={action.title}
           href={action.href}
-          className="group flex items-center gap-4 p-4 bg-white dark:bg-[#1a1a2e] border border-gray-200 dark:border-[#2d2d4a] rounded-2xl hover:border-[#6d28d9]/50 transition-all duration-300 shadow-sm"
+          className="group flex items-center gap-4 p-4 bg-[#1a1a2e] border border-[#2d2d4a] rounded-2xl hover:border-[#6d28d9]/50 transition-all duration-300 shadow-sm"
         >
           <div className={`${action.color} p-3 rounded-xl text-white`}>
             <action.icon className="w-5 h-5" />
           </div>
           <div>
-            <h4 className="text-sm font-semibold text-gray-900 dark:text-white group-hover:text-[#6d28d9] transition-colors">
+            <h4 className="text-sm font-semibold text-white group-hover:text-[#6d28d9] transition-colors">
               {action.title}
             </h4>
-            <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+            <p className="text-xs text-gray-400 mt-0.5">
               {action.description}
             </p>
           </div>
@@ -58,3 +58,4 @@ export function QuickActions() {
     </div>
   );
 }
+
