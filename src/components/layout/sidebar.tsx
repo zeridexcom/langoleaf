@@ -12,6 +12,7 @@ import {
   LogOut,
   ChevronLeft,
   ChevronRight,
+  Shield,
 } from "lucide-react";
 import { cn } from "@/lib/utils/cn";
 import { useState } from "react";
@@ -25,6 +26,7 @@ const menuItems = [
   { icon: UserCircle, label: "Profile", href: "/profile" },
   { icon: Bell, label: "Notifications", href: "/notifications", badge: 3 },
   { icon: HelpCircle, label: "Support", href: "/support" },
+  { icon: Shield, label: "Admin", href: "/admin" },
 ];
 
 interface SidebarProps {
