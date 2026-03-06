@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { Search, Filter, Plus, MoreVertical, Phone, Mail } from "lucide-react";
 import { cn } from "@/lib/utils/cn";
 import { createClient } from "@/lib/supabase/client";
@@ -24,7 +24,7 @@ const statusLabels: Record<string, string> = {
   rejected: "Rejected",
 };
 
-export default function StudentsPage() {
+function StudentsContent() {
   const searchParams = useSearchParams();
   const [students, setStudents] = useState<any[]>([]);
   const [searchQuery, setSearchQuery] = useState(searchParams.get("search") || "");
@@ -190,3 +190,14 @@ export default function StudentsPage() {
   );
 }
 
+export default function StudentsPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex items-center justify-center h-64">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#6d28d9]"></div>
+      </div>
+    }>
+      <StudentsContent />
+    </Suspense>
+  );
+}
