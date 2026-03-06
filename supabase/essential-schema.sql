@@ -1,8 +1,17 @@
 -- Essential tables for the freelancer portal to work
 -- Run this in Supabase SQL Editor first
 
+-- First, clean up any existing partial tables to avoid conflicts
+DROP TABLE IF EXISTS course_universities CASCADE;
+DROP TABLE IF EXISTS universities CASCADE;
+DROP TABLE IF EXISTS courses CASCADE;
+DROP TABLE IF EXISTS coins_history CASCADE;
+DROP TABLE IF EXISTS applications CASCADE;
+DROP TABLE IF EXISTS students CASCADE;
+DROP TABLE IF EXISTS profiles CASCADE;
+
 -- 1. Profiles table (extends auth.users)
-CREATE TABLE IF NOT EXISTS profiles (
+CREATE TABLE profiles (
   id UUID REFERENCES auth.users PRIMARY KEY,
   email TEXT UNIQUE NOT NULL,
   full_name TEXT,
@@ -16,7 +25,7 @@ CREATE TABLE IF NOT EXISTS profiles (
 );
 
 -- 2. Students table (managed by freelancers)
-CREATE TABLE IF NOT EXISTS students (
+CREATE TABLE students (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   freelancer_id UUID REFERENCES profiles(id) ON DELETE CASCADE,
   name TEXT NOT NULL,
@@ -30,7 +39,7 @@ CREATE TABLE IF NOT EXISTS students (
 );
 
 -- 3. Applications table (student applications to universities)
-CREATE TABLE IF NOT EXISTS applications (
+CREATE TABLE applications (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   student_id UUID REFERENCES students(id) ON DELETE CASCADE,
   freelancer_id UUID REFERENCES profiles(id) ON DELETE CASCADE,
@@ -44,7 +53,7 @@ CREATE TABLE IF NOT EXISTS applications (
 );
 
 -- 4. Coins history (gamification/earnings tracking)
-CREATE TABLE IF NOT EXISTS coins_history (
+CREATE TABLE coins_history (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   profile_id UUID REFERENCES profiles(id) ON DELETE CASCADE,
   amount INTEGER NOT NULL,
@@ -55,7 +64,7 @@ CREATE TABLE IF NOT EXISTS coins_history (
 );
 
 -- 5. Courses reference table (for dropdowns)
-CREATE TABLE IF NOT EXISTS courses (
+CREATE TABLE courses (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   name TEXT NOT NULL,
   duration TEXT,
@@ -67,7 +76,7 @@ CREATE TABLE IF NOT EXISTS courses (
 );
 
 -- 6. Universities reference table (for dropdowns)
-CREATE TABLE IF NOT EXISTS universities (
+CREATE TABLE universities (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   name TEXT NOT NULL,
   location TEXT,
@@ -78,7 +87,7 @@ CREATE TABLE IF NOT EXISTS universities (
 );
 
 -- 7. Course-University mappings (which courses available at which universities)
-CREATE TABLE IF NOT EXISTS course_universities (
+CREATE TABLE course_universities (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   course_id UUID REFERENCES courses(id) ON DELETE CASCADE,
   university_id UUID REFERENCES universities(id) ON DELETE CASCADE,
