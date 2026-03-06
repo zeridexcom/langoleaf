@@ -89,13 +89,30 @@ CREATE TABLE IF NOT EXISTS course_universities (
 );
 
 -- Enable Row Level Security
-ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
-ALTER TABLE students ENABLE ROW LEVEL SECURITY;
-ALTER TABLE applications ENABLE ROW LEVEL SECURITY;
-ALTER TABLE coins_history ENABLE ROW LEVEL SECURITY;
-ALTER TABLE courses ENABLE ROW LEVEL SECURITY;
-ALTER TABLE universities ENABLE ROW LEVEL SECURITY;
-ALTER TABLE course_universities ENABLE ROW LEVEL SECURITY;
+ALTER TABLE IF EXISTS profiles ENABLE ROW LEVEL SECURITY;
+ALTER TABLE IF EXISTS students ENABLE ROW LEVEL SECURITY;
+ALTER TABLE IF EXISTS applications ENABLE ROW LEVEL SECURITY;
+ALTER TABLE IF EXISTS coins_history ENABLE ROW LEVEL SECURITY;
+ALTER TABLE IF EXISTS courses ENABLE ROW LEVEL SECURITY;
+ALTER TABLE IF EXISTS universities ENABLE ROW LEVEL SECURITY;
+ALTER TABLE IF EXISTS course_universities ENABLE ROW LEVEL SECURITY;
+
+-- Drop existing policies if they exist (to avoid conflicts)
+DROP POLICY IF EXISTS "Profiles are viewable by everyone" ON profiles;
+DROP POLICY IF EXISTS "Users can update own profile" ON profiles;
+DROP POLICY IF EXISTS "Students viewable by owner freelancer" ON students;
+DROP POLICY IF EXISTS "Students insertable by owner" ON students;
+DROP POLICY IF EXISTS "Students updatable by owner" ON students;
+DROP POLICY IF EXISTS "Applications viewable by owner freelancer" ON applications;
+DROP POLICY IF EXISTS "Applications insertable by owner" ON applications;
+DROP POLICY IF EXISTS "Applications updatable by owner" ON applications;
+DROP POLICY IF EXISTS "Coins history viewable by owner" ON coins_history;
+DROP POLICY IF EXISTS "Courses readable by all" ON courses;
+DROP POLICY IF EXISTS "Universities readable by all" ON universities;
+DROP POLICY IF EXISTS "Course-universities readable by all" ON course_universities;
+DROP POLICY IF EXISTS "Admin can manage courses" ON courses;
+DROP POLICY IF EXISTS "Admin can manage universities" ON universities;
+DROP POLICY IF EXISTS "Admin can manage mappings" ON course_universities;
 
 -- RLS Policies
 CREATE POLICY "Profiles are viewable by everyone" ON profiles FOR SELECT USING (true);
