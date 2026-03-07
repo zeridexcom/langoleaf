@@ -133,7 +133,7 @@ export default function LoginPage() {
 
       {/* Error Message */}
       {errorMessage && (
-        <div className="mb-4 p-4 bg-red-50 dark:bg-red-900/20 border-2 border-red-200 dark:border-red-800 rounded-none flex items-start gap-3">
+        <div className="mb-4 p-4 bg-red-50 dark:bg-red-900/20 border-2 border-red-200 dark:border-red-800 rounded-2xl flex items-start gap-3">
           <AlertCircle className="w-5 h-5 text-red-500 dark:text-red-400 flex-shrink-0 mt-0.5" />
           <p className="text-sm text-red-700 dark:text-red-300 font-medium">{errorMessage}</p>
         </div>
@@ -143,9 +143,9 @@ export default function LoginPage() {
       <button 
         onClick={handleGoogleSignIn}
         disabled={loading}
-        className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-white dark:bg-dark-surface border-2 border-dark-border text-slate-700 dark:text-slate-200 hover:border-primary/50 transition-all shadow-[2px_2px_0px_0px_rgba(0,0,0,0.1)] hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5 font-bold mb-6 disabled:opacity-50 disabled:cursor-not-allowed"
+        className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-white dark:bg-dark-surface border-2 border-dark-border text-slate-700 dark:text-slate-200 hover:border-primary/50 transition-all shadow-xl hover:shadow-2xl hover:-translate-y-0.5 rounded-2xl font-bold mb-6 disabled:opacity-50 disabled:cursor-not-allowed"
       >
-        <Chrome className="w-5 h-5" />
+        <Chrome className="w-5 h-5 text-primary" />
         <span className="text-sm">{loading ? 'Loading...' : 'Continue with Google'}</span>
       </button>
 
@@ -172,7 +172,7 @@ export default function LoginPage() {
               type="email"
               value={formData.email}
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-              className="w-full pl-11 pr-4 py-3 bg-white dark:bg-dark-surface border-2 border-dark-border text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 font-medium"
+              className="w-full pl-11 pr-4 py-3 bg-white dark:bg-dark-surface border-2 border-dark-border text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 font-medium rounded-xl"
               placeholder="name@company.com"
               required
             />
@@ -197,7 +197,7 @@ export default function LoginPage() {
               type={showPassword ? "text" : "password"}
               value={formData.password}
               onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-              className="w-full pl-11 pr-12 py-3 bg-white dark:bg-dark-surface border-2 border-dark-border text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 font-medium"
+              className="w-full pl-11 pr-12 py-3 bg-white dark:bg-dark-surface border-2 border-dark-border text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 font-medium rounded-xl"
               placeholder="••••••••"
               required
             />
@@ -217,14 +217,14 @@ export default function LoginPage() {
 
         <button
           type="submit"
-          className="w-full py-4 bg-primary text-white font-black text-lg border-2 border-primary shadow-[4px_4px_0px_0px_rgba(0,0,0,0.2)] hover:shadow-none hover:translate-x-1 hover:translate-y-1 transition-all flex items-center justify-center gap-2"
+          className="w-full py-4 bg-primary text-white font-black text-lg border-2 border-primary shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all flex items-center justify-center gap-2 rounded-2xl"
         >
           Sign In <ArrowRight className="w-5 h-5" />
         </button>
       </form>
 
       {/* Ecosystem Mention */}
-      <div className="mt-6 p-4 border-2 border-primary/20 bg-primary/5 text-center">
+      <div className="mt-6 p-4 border-2 border-primary/20 bg-primary/5 text-center rounded-2xl">
         <p className="text-xs text-slate-500 dark:text-slate-400 font-medium leading-relaxed">
           By logging in, you access the full <span className="font-black text-primary">Langoleaf Ecosystem</span>. One account for all your freelance projects, translations, and collaboration tools.
         </p>

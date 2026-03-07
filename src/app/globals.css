@@ -24,7 +24,7 @@
     --border: 20 10% 90%;
     --input: 20 10% 90%;
     --ring: 20 85% 50%;
-    --radius: 0.75rem;
+    --radius: 1.5rem;
     
     /* Custom colors - EduAgent Pro */
     --dark-bg: #221610;
@@ -80,7 +80,7 @@
   }
 
   .glass {
-    @apply bg-[#2a1b14]/80 backdrop-blur-xl border border-[#4a3023];
+    @apply bg-[#2a1b14]/80 backdrop-blur-xl border border-[#4a3023] shadow-2xl;
   }
 
   .glow-primary {
@@ -92,19 +92,19 @@
   }
 
   .card-hover {
-    @apply transition-all duration-300 hover:-translate-y-1 hover:shadow-xl;
-    box-shadow: 0 0 20px rgba(236, 91, 19, 0.1);
+    @apply transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl rounded-2xl;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
   }
 
   .card-hover:hover {
-    box-shadow: 0 10px 40px rgba(236, 91, 19, 0.2);
+    box-shadow: 0 20px 50px rgba(236, 91, 19, 0.15);
   }
 
   /* Funnel gradients for EduAgent Pro */
-  .funnel-gradient-1 { background: linear-gradient(90deg, #ec5b13 0%, #f4a261 100%); opacity: 0.4; }
-  .funnel-gradient-2 { background: linear-gradient(90deg, #ec5b13 0%, #f4a261 100%); opacity: 0.6; }
-  .funnel-gradient-3 { background: linear-gradient(90deg, #ec5b13 0%, #f4a261 100%); opacity: 0.8; }
-  .funnel-gradient-4 { background: linear-gradient(90deg, #ec5b13 0%, #f4a261 100%); opacity: 1; }
+  .funnel-gradient-1 { background: linear-gradient(90deg, #ec5b13 0%, #f4a261 100%); opacity: 0.4; @apply rounded-full; }
+  .funnel-gradient-2 { background: linear-gradient(90deg, #ec5b13 0%, #f4a261 100%); opacity: 0.6; @apply rounded-full; }
+  .funnel-gradient-3 { background: linear-gradient(90deg, #ec5b13 0%, #f4a261 100%); opacity: 0.8; @apply rounded-full; }
+  .funnel-gradient-4 { background: linear-gradient(90deg, #ec5b13 0%, #f4a261 100%); opacity: 1; @apply rounded-full; }
 }
 
 /* Custom scrollbar */

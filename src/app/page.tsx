@@ -1,3 +1,7 @@
+"use client";
+
+import { useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { 
   School, 
@@ -15,10 +19,21 @@ import {
 } from "lucide-react";
 
 export default function LandingPage() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    // If we land here with an auth code, redirect to the callback handler
+    const code = searchParams.get("code");
+    if (code) {
+      router.push(`/auth/callback?code=${code}`);
+    }
+  }, [searchParams, router]);
+
   return (
     <div className="min-h-screen bg-background-light dark:bg-background-dark">
       {/* Navigation */}
-      <header className="sticky top-0 z-50 w-full border-b-2 border-dark-border bg-background-light/90 dark:bg-background-dark/90 backdrop-blur-md">
+      <header className="sticky top-0 z-50 w-full border-b border-dark-border bg-background-light/90 dark:bg-background-dark/90 backdrop-blur-md">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16 sm:h-20">
             <div className="flex items-center gap-2">
@@ -46,13 +61,13 @@ export default function LandingPage() {
             <div className="flex items-center gap-3">
               <Link 
                 href="/login"
-                className="hidden sm:flex px-5 py-2.5 text-sm font-bold border-2 border-dark-border bg-white dark:bg-dark-surface hover:bg-slate-100 dark:hover:bg-dark-elevated transition-all shadow-[2px_2px_0px_0px_rgba(0,0,0,0.1)] hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5"
+                className="hidden sm:flex px-5 py-2.5 text-sm font-bold border-2 border-dark-border bg-white dark:bg-dark-surface hover:bg-slate-100 dark:hover:bg-dark-elevated transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5 rounded-xl"
               >
                 Log In
               </Link>
               <Link 
                 href="/signup"
-                className="bg-primary hover:bg-primary/90 text-white px-5 py-2.5 text-sm font-bold border-2 border-primary shadow-[2px_2px_0px_0px_rgba(0,0,0,0.2)] hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5 transition-all"
+                className="bg-primary hover:bg-primary/90 text-white px-5 py-2.5 text-sm font-bold border-2 border-primary shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all rounded-xl"
               >
                 Join Now
               </Link>
@@ -67,7 +82,7 @@ export default function LandingPage() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="grid lg:grid-cols-2 gap-12 items-center">
               <div className="flex flex-col gap-8">
-                <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-3 py-2 border-2 border-primary/30 w-fit">
+                <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-3 py-2 border-2 border-primary/30 w-fit rounded-full">
                   <CheckCircle className="w-4 h-4" />
                   <span className="text-xs font-black uppercase tracking-wider">A Sub-brand of Langoleaf.com</span>
                 </div>
@@ -80,11 +95,11 @@ export default function LandingPage() {
                 <div className="flex flex-col sm:flex-row gap-4">
                   <Link 
                     href="/signup"
-                    className="bg-primary hover:bg-primary/90 text-white px-8 py-4 text-lg font-bold border-2 border-primary shadow-[4px_4px_0px_0px_rgba(0,0,0,0.2)] hover:shadow-none hover:translate-x-1 hover:translate-y-1 transition-all flex items-center justify-center gap-2"
+                    className="bg-primary hover:bg-primary/90 text-white px-8 py-4 text-lg font-bold border-2 border-primary shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all flex items-center justify-center gap-2 rounded-2xl"
                   >
                     Start Your Journey <ArrowRight className="w-5 h-5" />
                   </Link>
-                  <button className="bg-slate-900 dark:bg-white text-white dark:text-slate-900 px-8 py-4 text-lg font-bold border-2 border-slate-900 dark:border-white shadow-[4px_4px_0px_0px_rgba(0,0,0,0.2)] hover:shadow-none hover:translate-x-1 hover:translate-y-1 transition-all flex items-center justify-center gap-2">
+                  <button className="bg-slate-900 dark:bg-white text-white dark:text-slate-900 px-8 py-4 text-lg font-bold border-2 border-slate-900 dark:border-white shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all flex items-center justify-center gap-2 rounded-2xl">
                     Book a Demo
                   </button>
                 </div>
@@ -101,9 +116,9 @@ export default function LandingPage() {
               <div className="relative">
                 <div className="absolute -top-10 -right-10 w-64 h-64 bg-primary/20 blur-3xl opacity-50"></div>
                 <div className="absolute -bottom-10 -left-10 w-64 h-64 bg-slate-400/20 blur-3xl opacity-50"></div>
-                <div className="relative border-2 border-dark-border shadow-[8px_8px_0px_0px_rgba(0,0,0,0.2)] aspect-[4/3] bg-dark-surface overflow-hidden">
+                <div className="relative border-2 border-dark-border shadow-2xl aspect-[4/3] bg-dark-surface overflow-hidden rounded-3xl">
                   <div className="absolute inset-0 bg-gradient-to-tr from-slate-900/40 to-transparent"></div>
-                  <div className="absolute bottom-6 left-6 right-6 p-6 bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm border-2 border-dark-border">
+                  <div className="absolute bottom-6 left-6 right-6 p-6 bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm border-2 border-dark-border rounded-2xl">
                     <div className="flex items-center gap-4">
                       <Globe className="text-primary w-10 h-10" />
                       <div>
@@ -122,22 +137,22 @@ export default function LandingPage() {
         <section className="py-12 bg-white dark:bg-dark-elevated border-y-2 border-dark-border">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8">
-              <div className="p-6 border-2 border-dark-border flex flex-col gap-2 hover:border-primary/50 transition-colors bg-dark-surface shadow-[4px_4px_0px_0px_rgba(0,0,0,0.1)]">
+              <div className="p-6 border-2 border-dark-border flex flex-col gap-2 hover:border-primary/50 transition-colors bg-dark-surface shadow-xl rounded-2xl">
                 <Building2 className="text-primary w-8 h-8" />
                 <p className="text-slate-500 dark:text-slate-400 text-xs font-black uppercase tracking-wider">University Partners</p>
                 <p className="text-3xl font-black text-slate-900 dark:text-white">800+</p>
               </div>
-              <div className="p-6 border-2 border-dark-border flex flex-col gap-2 hover:border-primary/50 transition-colors bg-dark-surface shadow-[4px_4px_0px_0px_rgba(0,0,0,0.1)]">
+              <div className="p-6 border-2 border-dark-border flex flex-col gap-2 hover:border-primary/50 transition-colors bg-dark-surface shadow-xl rounded-2xl">
                 <Wallet className="text-primary w-8 h-8" />
                 <p className="text-slate-500 dark:text-slate-400 text-xs font-black uppercase tracking-wider">Commission Rate</p>
                 <p className="text-3xl font-black text-slate-900 dark:text-white">Up to 30%</p>
               </div>
-              <div className="p-6 border-2 border-dark-border flex flex-col gap-2 hover:border-primary/50 transition-colors bg-dark-surface shadow-[4px_4px_0px_0px_rgba(0,0,0,0.1)]">
+              <div className="p-6 border-2 border-dark-border flex flex-col gap-2 hover:border-primary/50 transition-colors bg-dark-surface shadow-xl rounded-2xl">
                 <Zap className="text-primary w-8 h-8" />
                 <p className="text-slate-500 dark:text-slate-400 text-xs font-black uppercase tracking-wider">Application Speed</p>
                 <p className="text-3xl font-black text-slate-900 dark:text-white">2.5x Faster</p>
               </div>
-              <div className="p-6 border-2 border-dark-border flex flex-col gap-2 hover:border-primary/50 transition-colors bg-dark-surface shadow-[4px_4px_0px_0px_rgba(0,0,0,0.1)]">
+              <div className="p-6 border-2 border-dark-border flex flex-col gap-2 hover:border-primary/50 transition-colors bg-dark-surface shadow-xl rounded-2xl">
                 <MapPin className="text-primary w-8 h-8" />
                 <p className="text-slate-500 dark:text-slate-400 text-xs font-black uppercase tracking-wider">Countries Covered</p>
                 <p className="text-3xl font-black text-slate-900 dark:text-white">120+</p>
@@ -228,7 +243,7 @@ export default function LandingPage() {
             <div className="flex flex-col sm:flex-row justify-center gap-4">
               <Link 
                 href="/signup"
-                className="bg-primary hover:bg-primary/90 text-white px-12 py-5 text-xl font-bold border-2 border-primary shadow-[4px_4px_0px_0px_rgba(0,0,0,0.2)] hover:shadow-none hover:translate-x-1 hover:translate-y-1 transition-all"
+                className="bg-primary hover:bg-primary/90 text-white px-12 py-5 text-xl font-bold border-2 border-primary shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all rounded-2xl"
               >
                 Join freelancer.langoleaf Now
               </Link>
