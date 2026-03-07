@@ -6,42 +6,53 @@ import { cache } from "@/lib/redis/client";
 export async function GET() {
   try {
     const supabase = createRouteHandlerClient({ cookies });
-    
-    const { data: { session } } = await supabase.auth.getSession();
+
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+
     if (!session) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { data: profile } = await supabase
+    const { data: profile, error: profileError } = await supabase
       .from("profiles")
       .select("id")
       .eq("user_id", session.user.id)
       .single();
 
-    if (!profile) {
+    if (profileError || !profile) {
       return NextResponse.json({ error: "Profile not found" }, { status: 404 });
     }
 
-    // Try cache
     const cacheKey = `dashboard:${profile.id}`;
-    const cached = await cache.get(cacheKey);
-    if (cached) {
-      return NextResponse.json(cached);
+
+    // Try cache (non-blocking)
+    try {
+      const cached = await cache.get(cacheKey);
+      if (cached) {
+        return NextResponse.json(cached);
+      }
+    } catch (cacheReadError) {
+      console.error("Dashboard cache read error:", cacheReadError);
     }
 
-    // Get real metrics
-    const { data: stats } = await supabase.rpc("get_freelancer_stats", {
-      freelancer_id: profile.id,
-    });
+    // Get real metrics (with fallback)
+    const { data: stats, error: statsError } = await supabase.rpc(
+      "get_freelancer_stats",
+      {
+        freelancer_id: profile.id,
+      }
+    );
 
-    const { data: recentStudents } = await supabase
+    const { data: recentStudents, error: studentsError } = await supabase
       .from("students")
       .select("id, name, email, status, created_at")
       .eq("freelancer_id", profile.id)
       .order("created_at", { ascending: false })
       .limit(5);
 
-    const { data: recentApplications } = await supabase
+    const { data: recentApplications, error: applicationsError } = await supabase
       .from("applications")
       .select(`
         id,
@@ -56,7 +67,7 @@ export async function GET() {
       .order("created_at", { ascending: false })
       .limit(5);
 
-    const { data: earnings } = await supabase
+    const { data: earnings, error: earningsError } = await supabase
       .from("commissions")
       .select("amount, created_at")
       .eq("freelancer_id", profile.id)
@@ -64,21 +75,50 @@ export async function GET() {
       .order("created_at", { ascending: false })
       .limit(30);
 
-    const dashboardData = {
-      stats: stats || {
-        totalStudents: 0,
-        totalApplications: 0,
-        totalEarnings: 0,
-        pendingApplications: 0,
-        conversionRate: 0,
-      },
-      recentStudents: recentStudents || [],
-      recentApplications: recentApplications || [],
-      earnings: earnings || [],
+    if (studentsError) console.error("Dashboard students query error:", studentsError);
+    if (applicationsError) console.error("Dashboard applications query error:", applicationsError);
+    if (earningsError) console.error("Dashboard earnings query error:", earningsError);
+    if (statsError) console.error("Dashboard stats RPC error:", statsError);
+
+    const safeRecentStudents = recentStudents || [];
+    const safeRecentApplications = recentApplications || [];
+    const safeEarnings = earnings || [];
+
+    const fallbackStats = {
+      totalStudents: safeRecentStudents.length,
+      totalApplications: safeRecentApplications.length,
+      totalEarnings: safeEarnings.reduce(
+        (sum: number, item: { amount?: number | null }) => sum + (item.amount || 0),
+        0
+      ),
+      pendingApplications: safeRecentApplications.filter(
+        (item: { status?: string }) => item.status === "application_submitted"
+      ).length,
+      conversionRate:
+        safeRecentApplications.length > 0
+          ? Math.round(
+              (safeRecentApplications.filter(
+                (item: { status?: string }) => item.status === "enrolled"
+              ).length /
+                safeRecentApplications.length) *
+                1000
+            ) / 10
+          : 0,
     };
 
-    // Cache for 2 minutes
-    await cache.set(cacheKey, dashboardData, 120);
+    const dashboardData = {
+      stats: stats || fallbackStats,
+      recentStudents: safeRecentStudents,
+      recentApplications: safeRecentApplications,
+      earnings: safeEarnings,
+    };
+
+    // Cache for 2 minutes (non-blocking)
+    try {
+      await cache.set(cacheKey, dashboardData, 120);
+    } catch (cacheWriteError) {
+      console.error("Dashboard cache write error:", cacheWriteError);
+    }
 
     return NextResponse.json(dashboardData);
   } catch (error) {

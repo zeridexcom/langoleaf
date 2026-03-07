@@ -4,58 +4,60 @@
 
 @layer base {
   :root {
-    /* Light theme (default) */
-    --background: 0 0% 100%;
-    --foreground: 240 10% 3.9%;
+    /* Light theme (default) - EduAgent Pro Theme */
+    --background: 0 0% 97%;
+    --foreground: 20 20% 10%;
     --card: 0 0% 100%;
-    --card-foreground: 240 10% 3.9%;
+    --card-foreground: 20 20% 10%;
     --popover: 0 0% 100%;
-    --popover-foreground: 240 10% 3.9%;
-    --primary: 263 70% 50%;
+    --popover-foreground: 20 20% 10%;
+    --primary: 20 85% 50%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 240 4.8% 95.9%;
-    --secondary-foreground: 240 5.9% 10%;
-    --muted: 240 4.8% 95.9%;
-    --muted-foreground: 240 3.8% 46.1%;
-    --accent: 240 4.8% 95.9%;
-    --accent-foreground: 240 5.9% 10%;
+    --secondary: 20 10% 95%;
+    --secondary-foreground: 20 20% 15%;
+    --muted: 20 10% 95%;
+    --muted-foreground: 20 10% 45%;
+    --accent: 25 85% 65%;
+    --accent-foreground: 20 20% 10%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
-    --border: 240 5.9% 90%;
-    --input: 240 5.9% 90%;
-    --ring: 263 70% 50%;
+    --border: 20 10% 90%;
+    --input: 20 10% 90%;
+    --ring: 20 85% 50%;
     --radius: 0.75rem;
     
-    /* Custom colors */
-    --dark-bg: #0f0f1a;
-    --dark-surface: #1a1a2e;
-    --dark-elevated: #252542;
-    --dark-border: #2d2d4a;
-    --primary-purple: #6d28d9;
-    --accent-cyan: #22d3ee;
+    /* Custom colors - EduAgent Pro */
+    --dark-bg: #221610;
+    --dark-surface: #2a1b14;
+    --dark-elevated: #3d271d;
+    --dark-border: #4a3023;
+    --light-bg: #f8f6f6;
+    --light-surface: #ffffff;
+    --primary-orange: #ec5b13;
+    --accent-orange: #f4a261;
     --coins-gold: #fbbf24;
   }
 
   .dark {
-    --background: 240 20% 8%;
+    --background: 20 30% 10%;
     --foreground: 0 0% 98%;
-    --card: 240 20% 12%;
+    --card: 20 25% 12%;
     --card-foreground: 0 0% 98%;
-    --popover: 240 20% 10%;
+    --popover: 20 25% 10%;
     --popover-foreground: 0 0% 98%;
-    --primary: 263 70% 50%;
+    --primary: 20 85% 50%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 240 20% 15%;
+    --secondary: 20 20% 15%;
     --secondary-foreground: 0 0% 98%;
-    --muted: 240 20% 15%;
-    --muted-foreground: 240 5% 65%;
-    --accent: 187 90% 53%;
-    --accent-foreground: 240 20% 8%;
+    --muted: 20 20% 15%;
+    --muted-foreground: 20 10% 65%;
+    --accent: 25 85% 65%;
+    --accent-foreground: 20 30% 10%;
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 98%;
-    --border: 240 20% 18%;
-    --input: 240 20% 18%;
-    --ring: 263 70% 50%;
+    --border: 20 20% 18%;
+    --input: 20 20% 18%;
+    --ring: 20 85% 50%;
   }
 
   * {
@@ -74,29 +76,35 @@
 
 @layer utilities {
   .text-gradient {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-[#6d28d9] to-[#22d3ee];
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-[#ec5b13] to-[#f4a261];
   }
 
   .glass {
-    @apply bg-[#1a1a2e]/80 backdrop-blur-xl border border-[#2d2d4a];
+    @apply bg-[#2a1b14]/80 backdrop-blur-xl border border-[#4a3023];
   }
 
   .glow-primary {
-    box-shadow: 0 0 20px rgba(109, 40, 217, 0.3);
+    box-shadow: 0 0 20px rgba(236, 91, 19, 0.3);
   }
 
   .glow-accent {
-    box-shadow: 0 0 20px rgba(34, 211, 238, 0.3);
+    box-shadow: 0 0 20px rgba(244, 162, 97, 0.3);
   }
 
   .card-hover {
     @apply transition-all duration-300 hover:-translate-y-1 hover:shadow-xl;
-    box-shadow: 0 0 20px rgba(109, 40, 217, 0.1);
+    box-shadow: 0 0 20px rgba(236, 91, 19, 0.1);
   }
 
   .card-hover:hover {
-    box-shadow: 0 10px 40px rgba(109, 40, 217, 0.2);
+    box-shadow: 0 10px 40px rgba(236, 91, 19, 0.2);
   }
+
+  /* Funnel gradients for EduAgent Pro */
+  .funnel-gradient-1 { background: linear-gradient(90deg, #ec5b13 0%, #f4a261 100%); opacity: 0.4; }
+  .funnel-gradient-2 { background: linear-gradient(90deg, #ec5b13 0%, #f4a261 100%); opacity: 0.6; }
+  .funnel-gradient-3 { background: linear-gradient(90deg, #ec5b13 0%, #f4a261 100%); opacity: 0.8; }
+  .funnel-gradient-4 { background: linear-gradient(90deg, #ec5b13 0%, #f4a261 100%); opacity: 1; }
 }
 
 /* Custom scrollbar */
@@ -106,16 +114,16 @@
 }
 
 ::-webkit-scrollbar-track {
-  background: #1a1a2e;
+  background: #2a1b14;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #2d2d4a;
+  background: #4a3023;
   border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(109, 40, 217, 0.5);
+  background: rgba(236, 91, 19, 0.5);
 }
 
 /* Status badge animations */
@@ -137,5 +145,5 @@
 .status-approved { @apply bg-emerald-500/20 text-emerald-400 border-emerald-500/30; }
 .status-rejected { @apply bg-red-500/20 text-red-400 border-red-500/30; }
 .status-pending { @apply bg-amber-500/20 text-amber-400 border-amber-500/30; }
-.status-enrolled { @apply bg-purple-500/20 text-purple-400 border-purple-500/30; }
+.status-enrolled { @apply bg-primary/20 text-primary border-primary/30; }
 .status-review { @apply bg-cyan-500/20 text-cyan-400 border-cyan-500/30; }
