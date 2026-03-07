@@ -22,8 +22,9 @@ export function StatsCards({ stats }: StatsCardsProps) {
       value: stats?.totalStudents?.toString() || "0",
       change: "Active leads",
       icon: Users,
-      color: "text-[#6d28d9]",
-      bgColor: "bg-[#6d28d9]/10",
+      color: "text-primary",
+      bgColor: "bg-primary/10",
+      borderColor: "border-primary/30",
     },
     {
       title: "Applications",
@@ -32,22 +33,25 @@ export function StatsCards({ stats }: StatsCardsProps) {
       icon: FileCheck,
       color: "text-emerald-400",
       bgColor: "bg-emerald-500/10",
+      borderColor: "border-emerald-500/30",
     },
     {
       title: "Conversion Rate",
       value: `${stats?.conversionRate?.toFixed(1) || "0"}%`,
       change: "Lead to enrollment",
       icon: TrendingUp,
-      color: "text-[#22d3ee]",
-      bgColor: "bg-[#22d3ee]/10",
+      color: "text-amber-400",
+      bgColor: "bg-amber-500/10",
+      borderColor: "border-amber-500/30",
     },
     {
       title: "Total Earnings",
       value: `₹${(stats?.totalEarnings || 0).toLocaleString()}`,
       change: "Lifetime commission",
       icon: Wallet,
-      color: "text-[#fbbf24]",
-      bgColor: "bg-[#fbbf24]/10",
+      color: "text-blue-400",
+      bgColor: "bg-blue-500/10",
+      borderColor: "border-blue-500/30",
     },
   ];
 
@@ -56,17 +60,17 @@ export function StatsCards({ stats }: StatsCardsProps) {
       {displayStats.map((stat) => (
         <div
           key={stat.title}
-          className="bg-[#1a1a2e] border border-[#2d2d4a] rounded-2xl p-5 hover:border-[#6d28d9]/30 transition-colors shadow-sm"
+          className="bg-dark-surface border-2 border-dark-border p-5 hover:border-primary/50 transition-all shadow-[4px_4px_0px_0px_rgba(0,0,0,0.2)] hover:shadow-[2px_2px_0px_0px_rgba(236,91,19,0.3)] hover:translate-x-0.5 hover:translate-y-0.5"
         >
           <div className="flex items-start justify-between">
             <div>
-              <p className="text-sm text-gray-400">{stat.title}</p>
-              <h3 className="text-2xl font-bold text-white mt-1">{stat.value}</h3>
+              <p className="text-xs font-black text-slate-500 uppercase tracking-wider">{stat.title}</p>
+              <h3 className="text-2xl font-black text-white mt-2">{stat.value}</h3>
               {stat.change && (
-                <p className="text-xs text-gray-500 mt-1">{stat.change}</p>
+                <p className="text-[10px] text-slate-400 mt-1 font-medium">{stat.change}</p>
               )}
             </div>
-            <div className={cn("p-3 rounded-xl", stat.bgColor)}>
+            <div className={cn("p-2.5 border-2", stat.bgColor, stat.borderColor)}>
               <stat.icon className={cn("w-5 h-5", stat.color)} />
             </div>
           </div>
