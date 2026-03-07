@@ -75,6 +75,7 @@ export async function middleware(request: NextRequest) {
 
   // Define protected routes
   const protectedRoutes = [
+    '/dashboard',
     '/students',
     '/applications', 
     '/documents',
@@ -84,7 +85,7 @@ export async function middleware(request: NextRequest) {
     '/support'
   ]
   
-  const isProtectedRoute = pathname === '/' || protectedRoutes.some(route => pathname.startsWith(route))
+  const isProtectedRoute = protectedRoutes.some(route => pathname.startsWith(route))
 
   // Protect dashboard routes - but don't block if auth fails (graceful degradation)
   if (isProtectedRoute && !user) {
@@ -98,7 +99,12 @@ export async function middleware(request: NextRequest) {
 
   // Redirect logged in users away from auth pages
   if ((pathname === '/login' || pathname === '/signup') && user) {
-    return NextResponse.redirect(new URL('/', request.url))
+    return NextResponse.redirect(new URL('/dashboard', request.url))
+  }
+
+  // Redirect logged in users from Landing Page to Dashboard
+  if (pathname === '/' && user) {
+    return NextResponse.redirect(new URL('/dashboard', request.url))
   }
 
   return response

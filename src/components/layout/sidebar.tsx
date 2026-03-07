@@ -22,7 +22,7 @@ import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 
 const menuItems = [
-  { icon: LayoutDashboard, label: "Growth Center", href: "/" },
+  { icon: LayoutDashboard, label: "Growth Center", href: "/dashboard" },
   { icon: Rocket, label: "Campaigns", href: "/campaigns" },
   { icon: School, label: "Language Hub", href: "/language-hub" },
   { icon: TrendingUp, label: "Earning Plans", href: "/earnings" },
