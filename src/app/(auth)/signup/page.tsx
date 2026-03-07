@@ -57,9 +57,51 @@ export default function SignupPage() {
         
         setLoading(false);
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error('Unexpected error during Google sign up:', err);
-      setErrorMessage('An unexpected error occurred. Please try again.');
+      
+      // Try to parse error from various formats
+      let errorMsg = '';
+      let errorCode = '';
+      
+      if (typeof err === 'string') {
+        errorMsg = err;
+        // Try to parse as JSON
+        try {
+          const parsed = JSON.parse(err);
+          errorMsg = parsed.msg || parsed.message || err;
+          errorCode = parsed.error_code || parsed.code || '';
+        } catch (e) {
+          // Not JSON, use as is
+        }
+      } else if (err?.message) {
+        errorMsg = err.message;
+        // Try to parse if message contains JSON
+        try {
+          const parsed = JSON.parse(err.message);
+          errorMsg = parsed.msg || parsed.message || err.message;
+          errorCode = parsed.error_code || parsed.code || '';
+        } catch (e) {
+          // Not JSON, use as is
+        }
+      } else if (err?.msg) {
+        errorMsg = err.msg;
+        errorCode = err.error_code || err.code || '';
+      } else {
+        errorMsg = JSON.stringify(err);
+      }
+      
+      // Check for the specific error patterns
+      if (errorMsg?.includes('provider is not enabled') || 
+          errorMsg?.includes('Unsupported provider') ||
+          errorCode === 'validation_failed' ||
+          err?.error_code === 'validation_failed' ||
+          err?.code === 'validation_failed') {
+        setErrorMessage('Google signup is not enabled. Please contact the administrator or use email signup.');
+      } else {
+        setErrorMessage('An unexpected error occurred. Please try again.');
+      }
+      
       setLoading(false);
     }
   };
