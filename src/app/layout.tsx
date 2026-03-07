@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Public_Sans } from "next/font/google";
 import "./globals.css";
+import { ThemeProvider } from "@/components/theme/theme-provider";
 
 const publicSans = Public_Sans({ 
   subsets: ["latin"],
@@ -19,9 +20,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark" suppressHydrationWarning>
-      <body className={`${publicSans.variable} font-sans antialiased bg-dark-bg text-white`}>
-        {children}
+    <html lang="en" suppressHydrationWarning>
+      <body className={`${publicSans.variable} font-sans antialiased bg-background-light dark:bg-dark-bg text-slate-900 dark:text-white`}>
+        <ThemeProvider defaultTheme="light">
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   );

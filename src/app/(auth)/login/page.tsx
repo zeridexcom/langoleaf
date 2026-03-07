@@ -10,7 +10,8 @@ import {
   EyeOff, 
   Chrome, 
   School,
-  ArrowRight
+  ArrowRight,
+  AlertCircle
 } from "lucide-react";
 
 export default function LoginPage() {
@@ -20,18 +21,36 @@ export default function LoginPage() {
     password: "",
   });
   const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const supabase = createClient();
 
   const handleGoogleSignIn = async () => {
     setLoading(true);
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: 'google',
-      options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
-      },
-    });
-    if (error) {
-      console.error('Google sign in error:', error);
+    setErrorMessage(null);
+    
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: `${window.location.origin}/auth/callback`,
+        },
+      });
+      
+      if (error) {
+        console.error('Google sign in error:', error);
+        
+        // Handle specific error cases
+        if (error.message?.includes('provider is not enabled') || error.code === 'validation_failed') {
+          setErrorMessage('Google login is not enabled. Please contact the administrator or use email login.');
+        } else {
+          setErrorMessage(error.message || 'Failed to sign in with Google. Please try again.');
+        }
+        
+        setLoading(false);
+      }
+    } catch (err) {
+      console.error('Unexpected error during Google sign in:', err);
+      setErrorMessage('An unexpected error occurred. Please try again.');
       setLoading(false);
     }
   };
@@ -69,6 +88,14 @@ export default function LoginPage() {
           Log in to your freelancer account to continue
         </p>
       </div>
+
+      {/* Error Message */}
+      {errorMessage && (
+        <div className="mb-4 p-4 bg-red-50 dark:bg-red-900/20 border-2 border-red-200 dark:border-red-800 rounded-none flex items-start gap-3">
+          <AlertCircle className="w-5 h-5 text-red-500 dark:text-red-400 flex-shrink-0 mt-0.5" />
+          <p className="text-sm text-red-700 dark:text-red-300 font-medium">{errorMessage}</p>
+        </div>
+      )}
 
       {/* Social Login */}
       <button 

@@ -14,13 +14,15 @@ import {
   School,
   ArrowRight,
   ArrowLeft,
-  CheckCircle
+  CheckCircle,
+  AlertCircle
 } from "lucide-react";
 
 export default function SignupPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -33,14 +35,31 @@ export default function SignupPage() {
 
   const handleGoogleSignUp = async () => {
     setLoading(true);
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: 'google',
-      options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
-      },
-    });
-    if (error) {
-      console.error('Google sign up error:', error);
+    setErrorMessage(null);
+    
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: `${window.location.origin}/auth/callback`,
+        },
+      });
+      
+      if (error) {
+        console.error('Google sign up error:', error);
+        
+        // Handle specific error cases
+        if (error.message?.includes('provider is not enabled') || error.code === 'validation_failed') {
+          setErrorMessage('Google signup is not enabled. Please contact the administrator or use email signup.');
+        } else {
+          setErrorMessage(error.message || 'Failed to sign up with Google. Please try again.');
+        }
+        
+        setLoading(false);
+      }
+    } catch (err) {
+      console.error('Unexpected error during Google sign up:', err);
+      setErrorMessage('An unexpected error occurred. Please try again.');
       setLoading(false);
     }
   };
@@ -95,6 +114,14 @@ export default function SignupPage() {
         <div className={`flex-1 h-2 border-2 ${step >= 1 ? "bg-primary border-primary" : "bg-slate-200 dark:bg-slate-800 border-dark-border"}`} />
         <div className={`flex-1 h-2 border-2 ${step >= 2 ? "bg-primary border-primary" : "bg-slate-200 dark:bg-slate-800 border-dark-border"}`} />
       </div>
+
+      {/* Error Message */}
+      {errorMessage && (
+        <div className="mb-4 p-4 bg-red-50 dark:bg-red-900/20 border-2 border-red-200 dark:border-red-800 rounded-none flex items-start gap-3">
+          <AlertCircle className="w-5 h-5 text-red-500 dark:text-red-400 flex-shrink-0 mt-0.5" />
+          <p className="text-sm text-red-700 dark:text-red-300 font-medium">{errorMessage}</p>
+        </div>
+      )}
 
       {/* Social Signup */}
       <button 
