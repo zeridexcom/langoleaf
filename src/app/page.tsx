@@ -137,15 +137,65 @@ export default function LandingPage() {
                   <p className="text-sm font-bold text-slate-500">Trusted by 2,000+ agents worldwide</p>
                 </div>
               </div>
-              <div className="relative">
+              {/* Scroll Velocity Marquee with Strong CTA */}
+              <div className="relative overflow-hidden">
                 <div className="absolute -top-10 -right-10 w-64 h-64 bg-primary/20 blur-3xl opacity-50"></div>
-                <div className="absolute -bottom-10 -left-10 w-64 h-64 bg-slate-400/20 blur-3xl opacity-50"></div>
-                <div className="relative border-2 border-dark-border shadow-2xl aspect-[4/3] bg-dark-surface overflow-hidden rounded-3xl flex items-center justify-center">
-                  <img 
-                    src="/images/logo.png" 
-                    alt="Langoleaf Platform" 
-                    className="w-3/4 h-3/4 object-contain"
-                  />
+                <div className="absolute -bottom-10 -left-10 w-64 h-64 bg-primary/10 blur-3xl opacity-50"></div>
+                
+                {/* Marquee Container */}
+                <div className="relative border-2 border-dark-border shadow-2xl bg-dark-surface rounded-3xl p-8 overflow-hidden">
+                  {/* Strong CTA Line */}
+                  <div className="text-center mb-8">
+                    <h3 className="text-2xl md:text-3xl font-black text-white uppercase tracking-tight mb-2">
+                      Join <span className="text-primary">2,000+</span> Agents Worldwide
+                    </h3>
+                    <p className="text-slate-400 font-medium">Start earning commissions today</p>
+                  </div>
+                  
+                  {/* Scrolling Text */}
+                  <div className="flex flex-col gap-4">
+                    {/* Row 1 - Left to Right */}
+                    <div className="relative overflow-hidden">
+                      <div className="animate-marquee-left whitespace-nowrap flex gap-8">
+                        <span className="text-3xl font-black text-primary/80">800+ UNIVERSITIES</span>
+                        <span className="text-3xl font-black text-white/60">•</span>
+                        <span className="text-3xl font-black text-primary/80">30% COMMISSION</span>
+                        <span className="text-3xl font-black text-white/60">•</span>
+                        <span className="text-3xl font-black text-primary/80">120+ COUNTRIES</span>
+                        <span className="text-3xl font-black text-white/60">•</span>
+                        <span className="text-3xl font-black text-primary/80">800+ UNIVERSITIES</span>
+                        <span className="text-3xl font-black text-white/60">•</span>
+                        <span className="text-3xl font-black text-primary/80">30% COMMISSION</span>
+                        <span className="text-3xl font-black text-white/60">•</span>
+                      </div>
+                    </div>
+                    
+                    {/* Row 2 - Right to Left */}
+                    <div className="relative overflow-hidden">
+                      <div className="animate-marquee-right whitespace-nowrap flex gap-8">
+                        <span className="text-2xl font-black text-white/40">GLOBAL NETWORK</span>
+                        <span className="text-2xl font-black text-primary/60">•</span>
+                        <span className="text-2xl font-black text-white/40">AI POWERED</span>
+                        <span className="text-2xl font-black text-primary/60">•</span>
+                        <span className="text-2xl font-black text-white/40">SECURE PAYMENTS</span>
+                        <span className="text-2xl font-black text-primary/60">•</span>
+                        <span className="text-2xl font-black text-white/40">GLOBAL NETWORK</span>
+                        <span className="text-2xl font-black text-primary/60">•</span>
+                        <span className="text-2xl font-black text-white/40">AI POWERED</span>
+                        <span className="text-2xl font-black text-primary/60">•</span>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* CTA Button */}
+                  <div className="mt-8 text-center">
+                    <Link 
+                      href="/signup"
+                      className="inline-flex items-center gap-2 bg-primary hover:bg-primary/90 text-white px-8 py-4 text-lg font-bold border-2 border-primary shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all rounded-2xl"
+                    >
+                      Start Your Journey <ArrowRight className="w-5 h-5" />
+                    </Link>
+                  </div>
                 </div>
               </div>
             </div>
