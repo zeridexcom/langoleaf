@@ -147,3 +147,119 @@
 .status-pending { @apply bg-amber-500/20 text-amber-400 border-amber-500/30; }
 .status-enrolled { @apply bg-primary/20 text-primary border-primary/30; }
 .status-review { @apply bg-cyan-500/20 text-cyan-400 border-cyan-500/30; }
+
+/* Responsive styles for 125%+ zoom */
+@media (min-resolution: 120dpi) {
+  /* Increase base font size for better readability at 125% zoom */
+  html {
+    font-size: 14px;
+  }
+  
+  /* Adjust container padding */
+  .max-w-7xl {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  
+  /* Reduce large headings size */
+  h1 {
+    font-size: 2.5rem !important;
+    line-height: 1.2 !important;
+  }
+  
+  h2 {
+    font-size: 2rem !important;
+    line-height: 1.2 !important;
+  }
+  
+  /* Adjust hero section */
+  .text-5xl {
+    font-size: 2.25rem !important;
+  }
+  
+  .text-7xl {
+    font-size: 3rem !important;
+  }
+  
+  /* Reduce spacing */
+  .py-24 {
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+  }
+  
+  .py-12 {
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+  }
+  
+  /* Adjust grid gaps */
+  .gap-12 {
+    gap: 1.5rem;
+  }
+  
+  .gap-8 {
+    gap: 1rem;
+  }
+  
+  /* Make buttons slightly smaller */
+  .px-8 {
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
+  }
+  
+  .py-4 {
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+  }
+  
+  /* Adjust card padding */
+  .p-8 {
+    padding: 1.25rem;
+  }
+  
+  .p-6 {
+    padding: 1rem;
+  }
+  
+  /* Reduce marquee text size */
+  .animate-marquee-left,
+  .animate-marquee-right {
+    font-size: 1.5rem !important;
+  }
+  
+  /* Stack grid columns earlier */
+  .lg\:grid-cols-2 {
+    grid-template-columns: 1fr;
+  }
+  
+  .lg\:grid-cols-4 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .md\:grid-cols-3 {
+    grid-template-columns: 1fr;
+  }
+  
+  /* Adjust navigation */
+  header .max-w-7xl {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+  
+  /* Reduce icon sizes */
+  .w-14 {
+    width: 2.5rem;
+  }
+  
+  .h-14 {
+    height: 2.5rem;
+  }
+  
+  .w-8 {
+    width: 1.5rem;
+  }
+  
+  .h-8 {
+    height: 1.5rem;
+  }
+}
