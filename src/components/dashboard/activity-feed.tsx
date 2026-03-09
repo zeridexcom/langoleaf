@@ -23,23 +23,23 @@ export function ActivityFeed({ applications = [] }: ActivityFeedProps) {
     const statusConfig: Record<string, { icon: any; color: string; bgColor: string; borderColor: string; message: string }> = {
       application_submitted: {
         icon: FileCheck,
-        color: "text-blue-400",
-        bgColor: "bg-blue-500/10",
-        borderColor: "border-blue-500/30",
+        color: "text-blue-600",
+        bgColor: "bg-blue-50",
+        borderColor: "border-blue-200",
         message: `Application submitted for ${app.student?.name || "Student"} - ${app.program}`,
       },
       documents_pending: {
         icon: AlertCircle,
-        color: "text-amber-400",
-        bgColor: "bg-amber-500/10",
-        borderColor: "border-amber-500/30",
+        color: "text-amber-600",
+        bgColor: "bg-amber-50",
+        borderColor: "border-amber-200",
         message: `Documents pending for ${app.student?.name || "Student"}`,
       },
       approved: {
         icon: CheckCircle,
-        color: "text-emerald-400",
-        bgColor: "bg-emerald-500/10",
-        borderColor: "border-emerald-500/30",
+        color: "text-emerald-600",
+        bgColor: "bg-emerald-50",
+        borderColor: "border-emerald-200",
         message: `Application approved for ${app.student?.name || "Student"} - ${app.university}`,
       },
       enrolled: {
@@ -65,9 +65,9 @@ export function ActivityFeed({ applications = [] }: ActivityFeedProps) {
   });
 
   return (
-    <div className="bg-dark-surface border-2 border-dark-border p-6 shadow-[4px_4px_0px_0px_rgba(0,0,0,0.2)]">
+    <div className="bg-white border border-gray-200 p-6 shadow-sm rounded-xl">
       <div className="flex items-center justify-between mb-6">
-        <h3 className="text-base font-black text-white uppercase tracking-wide">Recent Applications</h3>
+        <h3 className="text-base font-black text-gray-900 uppercase tracking-wide">Activity Feed</h3>
         <a
           href="/applications"
           className="text-xs font-black text-primary hover:text-primary/80 transition-colors uppercase tracking-wider"
@@ -77,9 +77,9 @@ export function ActivityFeed({ applications = [] }: ActivityFeedProps) {
       </div>
 
       {activities.length === 0 ? (
-        <div className="text-center py-8 border-2 border-dashed border-dark-border">
-          <p className="text-slate-400 text-sm font-medium">No applications yet</p>
-          <a href="/students/add" className="text-primary hover:text-primary/80 text-xs font-black mt-3 inline-block uppercase tracking-wider border-2 border-primary px-4 py-2 hover:bg-primary/10 transition-colors">
+        <div className="text-center py-8 border border-dashed border-gray-300 rounded-lg">
+          <p className="text-gray-500 text-sm font-medium">No applications yet</p>
+          <a href="/students/add" className="text-primary hover:text-primary/80 text-xs font-black mt-3 inline-block uppercase tracking-wider border border-primary px-4 py-2 hover:bg-primary/10 transition-colors rounded-lg">
             Add a student to get started
           </a>
         </div>
@@ -88,14 +88,14 @@ export function ActivityFeed({ applications = [] }: ActivityFeedProps) {
           {activities.map((activity) => (
             <div
               key={activity.id}
-              className="flex items-start gap-3 p-3 bg-dark-elevated border-2 border-dark-border hover:border-primary/30 transition-all"
+              className="flex items-start gap-3 p-3 bg-gray-50 border border-gray-200 hover:border-primary/30 transition-all rounded-lg"
             >
-              <div className={`p-2 border-2 ${activity.bgColor} ${activity.borderColor} flex-shrink-0`}>
+              <div className={`p-2 border ${activity.bgColor} ${activity.borderColor} flex-shrink-0 rounded-lg`}>
                 <activity.icon className={`w-4 h-4 ${activity.color}`} />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm text-white font-medium">{activity.message}</p>
-                <p className="text-[10px] text-slate-500 mt-0.5 font-medium">
+                <p className="text-sm text-gray-900 font-medium">{activity.message}</p>
+                <p className="text-[10px] text-gray-500 mt-0.5 font-medium">
                   {activity.time}
                 </p>
               </div>

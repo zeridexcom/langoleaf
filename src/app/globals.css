@@ -26,11 +26,11 @@
     --ring: 20 85% 50%;
     --radius: 1.5rem;
     
-    /* Custom colors - EduAgent Pro */
-    --dark-bg: #221610;
-    --dark-surface: #2a1b14;
-    --dark-elevated: #3d271d;
-    --dark-border: #4a3023;
+    /* Custom colors - EduAgent Pro Light Theme */
+    --dark-bg: #ffffff;
+    --dark-surface: #f8f6f6;
+    --dark-elevated: #ffffff;
+    --dark-border: #e5e5e5;
     --light-bg: #f8f6f6;
     --light-surface: #ffffff;
     --primary-orange: #ec5b13;
@@ -39,24 +39,24 @@
   }
 
   .dark {
-    --background: 20 30% 10%;
-    --foreground: 0 0% 98%;
-    --card: 20 25% 12%;
-    --card-foreground: 0 0% 98%;
-    --popover: 20 25% 10%;
-    --popover-foreground: 0 0% 98%;
+    --background: 0 0% 100%;
+    --foreground: 20 20% 10%;
+    --card: 0 0% 100%;
+    --card-foreground: 20 20% 10%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 20 20% 10%;
     --primary: 20 85% 50%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 20 20% 15%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 20 20% 15%;
-    --muted-foreground: 20 10% 65%;
+    --secondary: 20 10% 96%;
+    --secondary-foreground: 20 20% 15%;
+    --muted: 20 10% 96%;
+    --muted-foreground: 20 10% 45%;
     --accent: 25 85% 65%;
     --accent-foreground: 20 30% 10%;
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 98%;
-    --border: 20 20% 18%;
-    --input: 20 20% 18%;
+    --border: 20 10% 90%;
+    --input: 20 10% 90%;
     --ring: 20 85% 50%;
   }
 

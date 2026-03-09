@@ -44,16 +44,16 @@ export function QuickActions() {
         <a
           key={action.title}
           href={action.href}
-          className="group flex items-center gap-4 p-4 bg-dark-surface border-2 border-dark-border hover:border-primary/50 transition-all shadow-[4px_4px_0px_0px_rgba(0,0,0,0.2)] hover:shadow-[2px_2px_0px_0px_rgba(236,91,19,0.3)] hover:translate-x-0.5 hover:translate-y-0.5"
+          className="group flex items-center gap-4 p-4 bg-white border border-gray-200 hover:border-primary/50 transition-all shadow-sm hover:shadow-md rounded-xl hover:translate-x-0.5 hover:translate-y-0.5"
         >
-          <div className={`${action.color} p-2.5 border-2 ${action.borderColor} text-white`}>
+          <div className={`${action.color} p-2.5 border-2 ${action.borderColor} text-white rounded-lg`}>
             <action.icon className="w-5 h-5" />
           </div>
           <div>
-            <h4 className="text-sm font-black text-white group-hover:text-primary transition-colors uppercase tracking-wide">
+            <h4 className="text-sm font-black text-gray-900 group-hover:text-primary transition-colors uppercase tracking-wide">
               {action.title}
             </h4>
-            <p className="text-[10px] text-slate-400 mt-0.5 font-medium">
+            <p className="text-[10px] text-gray-500 mt-0.5 font-medium">
               {action.description}
             </p>
           </div>
