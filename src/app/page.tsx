@@ -26,7 +26,8 @@ function AuthCodeRedirect() {
     // If we land here with an auth code, redirect to the callback handler
     const code = searchParams.get("code");
     if (code) {
-      router.push(`/auth/callback?code=${code}`);
+      // Use window.location for a full page redirect to ensure proper auth flow
+      window.location.href = `/auth/callback?code=${code}`;
     }
   }, [searchParams, router]);
 

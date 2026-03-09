@@ -76,7 +76,7 @@ export default function DocumentsPage() {
           <h1 className="text-2xl font-bold text-white">Documents</h1>
           <p className="text-gray-400 mt-1">Manage student documents and uploads</p>
         </div>
-        <button className="flex items-center gap-2 px-4 py-2 bg-[#6d28d9] text-white rounded-xl hover:bg-[#6d28d9]/90 transition-colors">
+        <button className="flex items-center gap-2 px-4 py-2 bg-[#ec5b13] text-white rounded-xl hover:bg-[#ec5b13]/90 transition-colors">
           <Upload className="w-4 h-4" />
           Upload Document
         </button>
@@ -91,13 +91,13 @@ export default function DocumentsPage() {
             placeholder="Search documents..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 bg-[#1a1a2e] border border-[#2d2d4a] rounded-xl text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[#6d28d9]/50"
+            className="w-full pl-10 pr-4 py-2 bg-dark-surface border border-dark-border rounded-xl text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[#ec5b13]/50"
           />
         </div>
         <select
           value={categoryFilter}
           onChange={(e) => setCategoryFilter(e.target.value)}
-          className="px-4 py-2 bg-[#1a1a2e] border border-[#2d2d4a] rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-[#6d28d9]/50"
+          className="px-4 py-2 bg-dark-surface border border-dark-border rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-[#ec5b13]/50"
         >
           <option value="all">All Categories</option>
           <option value="Academic">Academic</option>
@@ -111,7 +111,7 @@ export default function DocumentsPage() {
         {filteredDocuments.map((doc) => (
           <div
             key={doc.id}
-            className="bg-[#1a1a2e] border border-[#2d2d4a] rounded-xl p-4 hover:border-[#6d28d9]/50 transition-colors"
+            className="bg-dark-surface border border-dark-border rounded-xl p-4 hover:border-[#ec5b13]/50 transition-colors"
           >
             <div className="flex items-start gap-4">
               <div className="p-3 bg-[#252542] rounded-xl">
@@ -127,7 +127,7 @@ export default function DocumentsPage() {
                 </div>
               </div>
             </div>
-            <div className="flex items-center gap-2 mt-4 pt-4 border-t border-[#2d2d4a]">
+            <div className="flex items-center gap-2 mt-4 pt-4 border-t border-dark-border">
               <button className="flex-1 flex items-center justify-center gap-2 py-2 text-sm text-gray-400 hover:text-white hover:bg-[#252542] rounded-lg transition-colors">
                 <Download className="w-4 h-4" />
                 Download
@@ -141,7 +141,7 @@ export default function DocumentsPage() {
       </div>
 
       {filteredDocuments.length === 0 && (
-        <div className="text-center py-12 bg-[#1a1a2e] border border-[#2d2d4a] rounded-xl">
+        <div className="text-center py-12 bg-dark-surface border border-dark-border rounded-xl">
           <FileText className="w-12 h-12 text-gray-500 mx-auto mb-4" />
           <p className="text-gray-400">No documents found</p>
         </div>

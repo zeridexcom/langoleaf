@@ -161,7 +161,7 @@ export default function AdminDashboard() {
       case "login": return <LogIn className="w-4 h-4 text-green-400" />;
       case "logout": return <LogOut className="w-4 h-4 text-red-400" />;
       case "student_added": return <UserPlus className="w-4 h-4 text-blue-400" />;
-      case "application_submitted": return <FileText className="w-4 h-4 text-purple-400" />;
+      case "application_submitted": return <FileText className="w-4 h-4 text-primary" />;
       case "earnings_checked": return <DollarSign className="w-4 h-4 text-yellow-400" />;
       default: return <Activity className="w-4 h-4 text-gray-400" />;
     }
@@ -183,14 +183,14 @@ export default function AdminDashboard() {
           <select
             value={dateFilter}
             onChange={(e) => setDateFilter(e.target.value)}
-            className="px-4 py-2 bg-[#1a1a2e] border border-[#2d2d4a] rounded-xl text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#6d28d9]"
+            className="px-4 py-2 bg-dark-surface border border-dark-border rounded-xl text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#ec5b13]"
           >
             <option value="today">Today</option>
             <option value="week">This Week</option>
             <option value="month">This Month</option>
             <option value="all">All Time</option>
           </select>
-          <button className="flex items-center gap-2 px-4 py-2 bg-[#6d28d9] text-white rounded-xl hover:bg-[#6d28d9]/90 transition-colors text-sm">
+          <button className="flex items-center gap-2 px-4 py-2 bg-[#ec5b13] text-white rounded-xl hover:bg-[#ec5b13]/90 transition-colors text-sm">
             <Download className="w-4 h-4" />
             Export Report
           </button>
@@ -199,10 +199,10 @@ export default function AdminDashboard() {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-[#1a1a2e] border border-[#2d2d4a] rounded-2xl p-5">
+        <div className="bg-dark-surface border border-dark-border rounded-2xl p-5">
           <div className="flex items-center justify-between mb-3">
-            <div className="w-10 h-10 rounded-xl bg-[#6d28d9]/20 flex items-center justify-center">
-              <Users className="w-5 h-5 text-[#6d28d9]" />
+            <div className="w-10 h-10 rounded-xl bg-[#ec5b13]/20 flex items-center justify-center">
+              <Users className="w-5 h-5 text-[#ec5b13]" />
             </div>
             <span className="text-xs text-green-400 bg-green-400/10 px-2 py-1 rounded-full">
               {stats.activeNow} active
@@ -212,7 +212,7 @@ export default function AdminDashboard() {
           <p className="text-sm text-gray-400">Total Freelancers</p>
         </div>
 
-        <div className="bg-[#1a1a2e] border border-[#2d2d4a] rounded-2xl p-5">
+        <div className="bg-dark-surface border border-dark-border rounded-2xl p-5">
           <div className="flex items-center justify-between mb-3">
             <div className="w-10 h-10 rounded-xl bg-[#22d3ee]/20 flex items-center justify-center">
               <Clock className="w-5 h-5 text-[#22d3ee]" />
@@ -222,17 +222,17 @@ export default function AdminDashboard() {
           <p className="text-sm text-gray-400">Avg. Session Time</p>
         </div>
 
-        <div className="bg-[#1a1a2e] border border-[#2d2d4a] rounded-2xl p-5">
+        <div className="bg-dark-surface border border-dark-border rounded-2xl p-5">
           <div className="flex items-center justify-between mb-3">
-            <div className="w-10 h-10 rounded-xl bg-purple-500/20 flex items-center justify-center">
-              <Activity className="w-5 h-5 text-purple-400" />
+            <div className="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center">
+              <Activity className="w-5 h-5 text-primary" />
             </div>
           </div>
           <p className="text-2xl font-bold text-white">{stats.totalActivities}</p>
           <p className="text-sm text-gray-400">Total Activities</p>
         </div>
 
-        <div className="bg-[#1a1a2e] border border-[#2d2d4a] rounded-2xl p-5">
+        <div className="bg-dark-surface border border-dark-border rounded-2xl p-5">
           <div className="flex items-center justify-between mb-3">
             <div className="w-10 h-10 rounded-xl bg-yellow-500/20 flex items-center justify-center">
               <TrendingUp className="w-5 h-5 text-yellow-400" />
@@ -244,7 +244,7 @@ export default function AdminDashboard() {
       </div>
 
       {/* Tabs */}
-      <div className="flex items-center gap-2 border-b border-[#2d2d4a]">
+      <div className="flex items-center gap-2 border-b border-dark-border">
         {[
           { id: "overview", label: "Overview" },
           { id: "activities", label: "Activities" },
@@ -256,7 +256,7 @@ export default function AdminDashboard() {
             onClick={() => setActiveTab(tab.id as any)}
             className={`px-4 py-3 text-sm font-medium transition-colors border-b-2 ${
               activeTab === tab.id
-                ? "text-[#6d28d9] border-[#6d28d9]"
+                ? "text-[#ec5b13] border-[#ec5b13]"
                 : "text-gray-400 border-transparent hover:text-white"
             }`}
           >
@@ -268,14 +268,14 @@ export default function AdminDashboard() {
       {/* Content */}
       {loading ? (
         <div className="flex items-center justify-center h-64">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#6d28d9]"></div>
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#ec5b13]"></div>
         </div>
       ) : (
         <>
           {/* Activities Tab */}
           {activeTab === "activities" && (
-            <div className="bg-[#1a1a2e] border border-[#2d2d4a] rounded-2xl overflow-hidden">
-              <div className="p-4 border-b border-[#2d2d4a] flex items-center gap-4">
+            <div className="bg-dark-surface border border-dark-border rounded-2xl overflow-hidden">
+              <div className="p-4 border-b border-dark-border flex items-center gap-4">
                 <div className="relative flex-1">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                   <input
@@ -283,7 +283,7 @@ export default function AdminDashboard() {
                     placeholder="Search activities..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full pl-10 pr-4 py-2 bg-[#0f0f1a] border border-[#2d2d4a] rounded-xl text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#6d28d9]"
+                    className="w-full pl-10 pr-4 py-2 bg-dark-bg border border-dark-border rounded-xl text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#ec5b13]"
                   />
                 </div>
                 <button className="p-2 hover:bg-[#252542] rounded-lg transition-colors">
@@ -294,7 +294,7 @@ export default function AdminDashboard() {
               <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead>
-                    <tr className="border-b border-[#2d2d4a]">
+                    <tr className="border-b border-dark-border">
                       <th className="text-left px-4 py-3 text-sm font-medium text-gray-400">Freelancer</th>
                       <th className="text-left px-4 py-3 text-sm font-medium text-gray-400">Activity</th>
                       <th className="text-left px-4 py-3 text-sm font-medium text-gray-400">Page</th>
@@ -309,11 +309,11 @@ export default function AdminDashboard() {
                       )
                       .slice(0, 50)
                       .map((activity) => (
-                      <tr key={activity.id} className="border-b border-[#2d2d4a] last:border-0 hover:bg-[#252542]/50">
+                      <tr key={activity.id} className="border-b border-dark-border last:border-0 hover:bg-[#252542]/50">
                         <td className="px-4 py-3">
                           <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-lg bg-[#6d28d9]/20 flex items-center justify-center">
-                              <span className="text-[#6d28d9] text-sm font-medium">
+                            <div className="w-8 h-8 rounded-lg bg-[#ec5b13]/20 flex items-center justify-center">
+                              <span className="text-[#ec5b13] text-sm font-medium">
                                 {activity.freelancer_name?.charAt(0) || "?"}
                               </span>
                             </div>
@@ -341,11 +341,11 @@ export default function AdminDashboard() {
 
           {/* Sessions Tab */}
           {activeTab === "sessions" && (
-            <div className="bg-[#1a1a2e] border border-[#2d2d4a] rounded-2xl overflow-hidden">
+            <div className="bg-dark-surface border border-dark-border rounded-2xl overflow-hidden">
               <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead>
-                    <tr className="border-b border-[#2d2d4a]">
+                    <tr className="border-b border-dark-border">
                       <th className="text-left px-4 py-3 text-sm font-medium text-gray-400">Freelancer</th>
                       <th className="text-left px-4 py-3 text-sm font-medium text-gray-400">Start Time</th>
                       <th className="text-left px-4 py-3 text-sm font-medium text-gray-400">Duration</th>
@@ -356,11 +356,11 @@ export default function AdminDashboard() {
                   </thead>
                   <tbody>
                     {sessions.slice(0, 50).map((session) => (
-                      <tr key={session.id} className="border-b border-[#2d2d4a] last:border-0 hover:bg-[#252542]/50">
+                      <tr key={session.id} className="border-b border-dark-border last:border-0 hover:bg-[#252542]/50">
                         <td className="px-4 py-3">
                           <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-lg bg-[#6d28d9]/20 flex items-center justify-center">
-                              <span className="text-[#6d28d9] text-sm font-medium">
+                            <div className="w-8 h-8 rounded-lg bg-[#ec5b13]/20 flex items-center justify-center">
+                              <span className="text-[#ec5b13] text-sm font-medium">
                                 {session.freelancer_name?.charAt(0) || "?"}
                               </span>
                             </div>
@@ -390,7 +390,7 @@ export default function AdminDashboard() {
 
           {/* Overview & Freelancers tabs - simplified for now */}
           {(activeTab === "overview" || activeTab === "freelancers") && (
-            <div className="bg-[#1a1a2e] border border-[#2d2d4a] rounded-2xl p-8 text-center">
+            <div className="bg-dark-surface border border-dark-border rounded-2xl p-8 text-center">
               <p className="text-gray-400">Detailed {activeTab} analytics coming soon...</p>
               <p className="text-sm text-gray-500 mt-2">Currently showing {activities.length} activities and {sessions.length} sessions</p>
             </div>

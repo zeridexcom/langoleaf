@@ -73,12 +73,12 @@ export default function EarningsPage() {
           <p className="text-gray-400 mt-1">Track your commissions and payments</p>
         </div>
         <div className="flex items-center gap-3">
-          <button className="flex items-center gap-2 px-4 py-2 bg-[#1a1a2e] border border-[#2d2d4a] text-white rounded-xl hover:bg-[#252542] transition-colors">
+          <button className="flex items-center gap-2 px-4 py-2 bg-dark-surface border border-dark-border text-white rounded-xl hover:bg-[#252542] transition-colors">
             <Calendar className="w-4 h-4" />
             This Month
             <ChevronDown className="w-4 h-4" />
           </button>
-          <button className="flex items-center gap-2 px-4 py-2 bg-[#6d28d9] text-white rounded-xl hover:bg-[#6d28d9]/90 transition-colors">
+          <button className="flex items-center gap-2 px-4 py-2 bg-[#ec5b13] text-white rounded-xl hover:bg-[#ec5b13]/90 transition-colors">
             <Download className="w-4 h-4" />
             Export
           </button>
@@ -87,10 +87,10 @@ export default function EarningsPage() {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-[#1a1a2e] border border-[#2d2d4a] rounded-xl p-6">
+        <div className="bg-dark-surface border border-dark-border rounded-xl p-6">
           <div className="flex items-center gap-3 mb-4">
-            <div className="p-3 bg-[#6d28d9]/10 rounded-xl">
-              <Wallet className="w-5 h-5 text-[#6d28d9]" />
+            <div className="p-3 bg-[#ec5b13]/10 rounded-xl">
+              <Wallet className="w-5 h-5 text-[#ec5b13]" />
             </div>
             <span className="text-sm text-gray-400">Total Earnings</span>
           </div>
@@ -98,7 +98,7 @@ export default function EarningsPage() {
           <p className="text-xs text-gray-500 mt-1">Lifetime earnings</p>
         </div>
 
-        <div className="bg-[#1a1a2e] border border-[#2d2d4a] rounded-xl p-6">
+        <div className="bg-dark-surface border border-dark-border rounded-xl p-6">
           <div className="flex items-center gap-3 mb-4">
             <div className="p-3 bg-emerald-500/10 rounded-xl">
               <IndianRupee className="w-5 h-5 text-emerald-400" />
@@ -109,7 +109,7 @@ export default function EarningsPage() {
           <p className="text-xs text-gray-500 mt-1">Successfully paid</p>
         </div>
 
-        <div className="bg-[#1a1a2e] border border-[#2d2d4a] rounded-xl p-6">
+        <div className="bg-dark-surface border border-dark-border rounded-xl p-6">
           <div className="flex items-center gap-3 mb-4">
             <div className="p-3 bg-amber-500/10 rounded-xl">
               <TrendingUp className="w-5 h-5 text-amber-400" />
@@ -122,14 +122,14 @@ export default function EarningsPage() {
       </div>
 
       {/* Earnings Table */}
-      <div className="bg-[#1a1a2e] border border-[#2d2d4a] rounded-2xl overflow-hidden">
-        <div className="p-6 border-b border-[#2d2d4a]">
+      <div className="bg-dark-surface border border-dark-border rounded-2xl overflow-hidden">
+        <div className="p-6 border-b border-dark-border">
           <h3 className="text-lg font-semibold text-white">Recent Earnings</h3>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-[#2d2d4a]">
+              <tr className="border-b border-dark-border">
                 <th className="text-left px-6 py-4 text-sm font-medium text-gray-400">Student</th>
                 <th className="text-left px-6 py-4 text-sm font-medium text-gray-400">Program</th>
                 <th className="text-left px-6 py-4 text-sm font-medium text-gray-400">Type</th>
@@ -142,7 +142,7 @@ export default function EarningsPage() {
               {earnings.map((earning) => {
                 const status = statusConfig[earning.status];
                 return (
-                  <tr key={earning.id} className="border-b border-[#2d2d4a] last:border-0 hover:bg-[#252542]/50">
+                  <tr key={earning.id} className="border-b border-dark-border last:border-0 hover:bg-[#252542]/50">
                     <td className="px-6 py-4 text-sm text-white">{earning.studentName}</td>
                     <td className="px-6 py-4 text-sm text-gray-400">{earning.program}</td>
                     <td className="px-6 py-4 text-sm text-gray-400">{earning.type}</td>

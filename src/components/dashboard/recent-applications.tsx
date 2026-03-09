@@ -36,12 +36,12 @@ const statusStyles: Record<string, string> = {
   draft: "bg-gray-500/20 text-gray-400 border border-gray-500/30",
   submitted: "bg-blue-500/20 text-blue-400 border border-blue-500/30",
   documents_pending: "bg-amber-500/20 text-amber-400 border border-amber-500/30",
-  under_review: "bg-purple-500/20 text-purple-400 border border-purple-500/30",
+  under_review: "bg-primary/20 text-primary border border-primary/30",
   approved: "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30",
   rejected: "bg-red-500/20 text-red-400 border border-red-500/30",
   payment_pending: "bg-orange-500/20 text-orange-400 border border-orange-500/30",
   payment_received: "bg-cyan-500/20 text-cyan-400 border border-cyan-500/30",
-  enrolled: "bg-[#6d28d9]/20 text-[#a78bfa] border border-[#6d28d9]/30",
+  enrolled: "bg-primary/20 text-primary border border-primary/30",
 };
 
 const statusLabels: Record<string, string> = {
@@ -63,7 +63,7 @@ export function RecentApplications() {
         <h3 className="text-lg font-semibold text-white">Recent Applications</h3>
         <a
           href="/applications"
-          className="text-sm text-[#6d28d9] hover:text-[#a78bfa] flex items-center gap-1 transition-colors"
+          className="text-sm text-primary hover:text-primary/80 flex items-center gap-1 transition-colors"
         >
           View All
           <ChevronRight className="w-4 h-4" />

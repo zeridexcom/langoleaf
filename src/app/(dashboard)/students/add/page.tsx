@@ -73,9 +73,9 @@ export default function AddStudentPage() {
       {/* Form */}
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Personal Information */}
-        <div className="bg-[#1a1a2e] border border-[#2d2d4a] rounded-2xl p-6">
+        <div className="bg-dark-surface border border-dark-border rounded-2xl p-6">
           <h2 className="text-lg font-semibold text-white mb-6 flex items-center gap-2">
-            <User className="w-5 h-5 text-[#6d28d9]" />
+            <User className="w-5 h-5 text-[#ec5b13]" />
             Personal Information
           </h2>
           
@@ -88,7 +88,7 @@ export default function AddStudentPage() {
                 type="text"
                 value={formData.firstName}
                 onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
-                className="w-full px-4 py-2 bg-[#252542] border border-[#2d2d4a] rounded-xl text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[#6d28d9]/50"
+                className="w-full px-4 py-2 bg-[#252542] border border-dark-border rounded-xl text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[#ec5b13]/50"
                 placeholder="Enter first name"
                 required
               />
@@ -101,7 +101,7 @@ export default function AddStudentPage() {
                 type="text"
                 value={formData.lastName}
                 onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
-                className="w-full px-4 py-2 bg-[#252542] border border-[#2d2d4a] rounded-xl text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[#6d28d9]/50"
+                className="w-full px-4 py-2 bg-[#252542] border border-dark-border rounded-xl text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[#ec5b13]/50"
                 placeholder="Enter last name"
                 required
               />
@@ -116,7 +116,7 @@ export default function AddStudentPage() {
                   type="email"
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  className="w-full pl-10 pr-4 py-2 bg-[#252542] border border-[#2d2d4a] rounded-xl text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[#6d28d9]/50"
+                  className="w-full pl-10 pr-4 py-2 bg-[#252542] border border-dark-border rounded-xl text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[#ec5b13]/50"
                   placeholder="student@example.com"
                   required
                 />
@@ -132,7 +132,7 @@ export default function AddStudentPage() {
                   type="tel"
                   value={formData.phone}
                   onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                  className="w-full pl-10 pr-4 py-2 bg-[#252542] border border-[#2d2d4a] rounded-xl text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[#6d28d9]/50"
+                  className="w-full pl-10 pr-4 py-2 bg-[#252542] border border-dark-border rounded-xl text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[#ec5b13]/50"
                   placeholder="+91 98765 43210"
                   required
                 />
@@ -142,7 +142,7 @@ export default function AddStudentPage() {
         </div>
 
         {/* Academic Information */}
-        <div className="bg-[#1a1a2e] border border-[#2d2d4a] rounded-2xl p-6">
+        <div className="bg-dark-surface border border-dark-border rounded-2xl p-6">
           <h2 className="text-lg font-semibold text-white mb-6 flex items-center gap-2">
             <GraduationCap className="w-5 h-5 text-[#22d3ee]" />
             Academic Information
@@ -158,7 +158,7 @@ export default function AddStudentPage() {
                 <select
                   value={formData.program}
                   onChange={(e) => setFormData({ ...formData, program: e.target.value })}
-                  className="w-full pl-10 pr-4 py-2 bg-[#252542] border border-[#2d2d4a] rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-[#6d28d9]/50 appearance-none"
+                  className="w-full pl-10 pr-4 py-2 bg-[#252542] border border-dark-border rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-[#ec5b13]/50 appearance-none"
                   required
                 >
                   <option value="">Select Program</option>
@@ -179,7 +179,7 @@ export default function AddStudentPage() {
                 <select
                   value={formData.university}
                   onChange={(e) => setFormData({ ...formData, university: e.target.value })}
-                  className="w-full pl-10 pr-4 py-2 bg-[#252542] border border-[#2d2d4a] rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-[#6d28d9]/50 appearance-none"
+                  className="w-full pl-10 pr-4 py-2 bg-[#252542] border border-dark-border rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-[#ec5b13]/50 appearance-none"
                   required
                 >
                   <option value="">Select University</option>
@@ -195,13 +195,13 @@ export default function AddStudentPage() {
         </div>
 
         {/* Document Upload */}
-        <div className="bg-[#1a1a2e] border border-[#2d2d4a] rounded-2xl p-6">
+        <div className="bg-dark-surface border border-dark-border rounded-2xl p-6">
           <h2 className="text-lg font-semibold text-white mb-6 flex items-center gap-2">
             <Upload className="w-5 h-5 text-emerald-400" />
             Documents
           </h2>
           
-          <div className="border-2 border-dashed border-[#2d2d4a] rounded-xl p-8 text-center hover:border-[#6d28d9]/50 transition-colors cursor-pointer">
+          <div className="border-2 border-dashed border-dark-border rounded-xl p-8 text-center hover:border-[#ec5b13]/50 transition-colors cursor-pointer">
             <Upload className="w-8 h-8 text-gray-400 mx-auto mb-4" />
             <p className="text-sm text-white font-medium mb-1">
               Drop files here or click to upload
@@ -222,7 +222,7 @@ export default function AddStudentPage() {
           </a>
           <button
             type="submit"
-            className="px-6 py-2 bg-[#6d28d9] text-white rounded-xl hover:bg-[#6d28d9]/90 transition-colors"
+            className="px-6 py-2 bg-[#ec5b13] text-white rounded-xl hover:bg-[#ec5b13]/90 transition-colors"
           >
             Add Student
           </button>

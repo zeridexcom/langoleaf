@@ -43,10 +43,10 @@ const applications = [
 ];
 
 const statusConfig: Record<string, { icon: any; color: string; bg: string; label: string }> = {
-  under_review: { icon: Clock, color: "text-purple-400", bg: "bg-purple-500/10", label: "Under Review" },
+  under_review: { icon: Clock, color: "text-primary", bg: "bg-primary/10", label: "Under Review" },
   documents_pending: { icon: FileCheck, color: "text-amber-400", bg: "bg-amber-500/10", label: "Docs Pending" },
   approved: { icon: CheckCircle, color: "text-emerald-400", bg: "bg-emerald-500/10", label: "Approved" },
-  enrolled: { icon: CheckCircle, color: "text-[#6d28d9]", bg: "bg-[#6d28d9]/10", label: "Enrolled" },
+  enrolled: { icon: CheckCircle, color: "text-[#ec5b13]", bg: "bg-[#ec5b13]/10", label: "Enrolled" },
   rejected: { icon: XCircle, color: "text-red-400", bg: "bg-red-500/10", label: "Rejected" },
 };
 
@@ -80,13 +80,13 @@ export default function ApplicationsPage() {
             placeholder="Search applications..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 bg-[#1a1a2e] border border-[#2d2d4a] rounded-xl text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[#6d28d9]/50"
+            className="w-full pl-10 pr-4 py-2 bg-dark-surface border border-dark-border rounded-xl text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[#ec5b13]/50"
           />
         </div>
         <select
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value)}
-          className="px-4 py-2 bg-[#1a1a2e] border border-[#2d2d4a] rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-[#6d28d9]/50"
+          className="px-4 py-2 bg-dark-surface border border-dark-border rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-[#ec5b13]/50"
         >
           <option value="all">All Status</option>
           <option value="under_review">Under Review</option>
@@ -97,11 +97,11 @@ export default function ApplicationsPage() {
       </div>
 
       {/* Applications List */}
-      <div className="bg-[#1a1a2e] border border-[#2d2d4a] rounded-2xl overflow-hidden">
+      <div className="bg-dark-surface border border-dark-border rounded-2xl overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-[#2d2d4a]">
+              <tr className="border-b border-dark-border">
                 <th className="text-left px-6 py-4 text-sm font-medium text-gray-400">Student</th>
                 <th className="text-left px-6 py-4 text-sm font-medium text-gray-400">Program</th>
                 <th className="text-left px-6 py-4 text-sm font-medium text-gray-400">University</th>
@@ -114,7 +114,7 @@ export default function ApplicationsPage() {
               {filteredApplications.map((app) => {
                 const status = statusConfig[app.status];
                 return (
-                  <tr key={app.id} className="border-b border-[#2d2d4a] last:border-0 hover:bg-[#252542]/50">
+                  <tr key={app.id} className="border-b border-dark-border last:border-0 hover:bg-[#252542]/50">
                     <td className="px-6 py-4">
                       <div>
                         <p className="text-sm font-medium text-white">{app.studentName}</p>

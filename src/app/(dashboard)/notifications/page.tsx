@@ -12,8 +12,8 @@ const notifications = [
     time: "2 hours ago",
     read: false,
     icon: UserPlus,
-    color: "text-[#6d28d9]",
-    bgColor: "bg-[#6d28d9]/10",
+    color: "text-[#ec5b13]",
+    bgColor: "bg-[#ec5b13]/10",
   },
   {
     id: 2,
@@ -104,12 +104,12 @@ export default function NotificationsPage() {
       </div>
 
       {/* Filter Tabs */}
-      <div className="flex items-center gap-2 border-b border-[#2d2d4a]">
+      <div className="flex items-center gap-2 border-b border-dark-border">
         <button
           onClick={() => setFilter("all")}
           className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors ${
             filter === "all"
-              ? "text-[#6d28d9] border-[#6d28d9]"
+              ? "text-[#ec5b13] border-[#ec5b13]"
               : "text-gray-400 border-transparent hover:text-white"
           }`}
         >
@@ -119,13 +119,13 @@ export default function NotificationsPage() {
           onClick={() => setFilter("unread")}
           className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors ${
             filter === "unread"
-              ? "text-[#6d28d9] border-[#6d28d9]"
+              ? "text-[#ec5b13] border-[#ec5b13]"
               : "text-gray-400 border-transparent hover:text-white"
           }`}
         >
           Unread
           {unreadCount > 0 && (
-            <span className="ml-2 px-2 py-0.5 bg-[#6d28d9] text-white text-xs rounded-full">
+            <span className="ml-2 px-2 py-0.5 bg-[#ec5b13] text-white text-xs rounded-full">
               {unreadCount}
             </span>
           )}
@@ -137,8 +137,8 @@ export default function NotificationsPage() {
         {filteredNotifications.map((notification) => (
           <div
             key={notification.id}
-            className={`flex items-start gap-4 p-4 bg-[#1a1a2e] border border-[#2d2d4a] rounded-xl hover:bg-[#252542] transition-colors ${
-              !notification.read ? "border-l-4 border-l-[#6d28d9]" : ""
+            className={`flex items-start gap-4 p-4 bg-dark-surface border border-dark-border rounded-xl hover:bg-[#252542] transition-colors ${
+              !notification.read ? "border-l-4 border-l-[#ec5b13]" : ""
             }`}
           >
             <div className={`p-3 rounded-xl ${notification.bgColor} flex-shrink-0`}>
@@ -154,7 +154,7 @@ export default function NotificationsPage() {
                   <p className="text-xs text-gray-500 mt-2">{notification.time}</p>
                 </div>
                 {!notification.read && (
-                  <span className="w-2 h-2 bg-[#6d28d9] rounded-full flex-shrink-0 mt-1" />
+                  <span className="w-2 h-2 bg-[#ec5b13] rounded-full flex-shrink-0 mt-1" />
                 )}
               </div>
             </div>

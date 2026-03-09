@@ -9,9 +9,9 @@ import { useSearchParams } from "next/navigation";
 const statusStyles: Record<string, string> = {
   application_submitted: "bg-blue-500/20 text-blue-400 border border-blue-500/30",
   documents_pending: "bg-amber-500/20 text-amber-400 border border-amber-500/30",
-  under_review: "bg-purple-500/20 text-purple-400 border border-purple-500/30",
+  under_review: "bg-primary/20 text-primary border border-primary/30",
   approved: "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30",
-  enrolled: "bg-[#6d28d9]/20 text-[#a78bfa] border border-[#6d28d9]/30",
+  enrolled: "bg-[#ec5b13]/20 text-[#a78bfa] border border-[#ec5b13]/30",
   rejected: "bg-red-500/20 text-red-400 border border-red-500/30",
 };
 
@@ -71,7 +71,7 @@ function StudentsContent() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#6d28d9]"></div>
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#ec5b13]"></div>
       </div>
     );
   }
@@ -86,7 +86,7 @@ function StudentsContent() {
         </div>
         <a
           href="/students/add"
-          className="inline-flex items-center gap-2 px-4 py-2 bg-[#6d28d9] text-white rounded-xl hover:bg-[#6d28d9]/90 transition-colors"
+          className="inline-flex items-center gap-2 px-4 py-2 bg-[#ec5b13] text-white rounded-xl hover:bg-[#ec5b13]/90 transition-colors"
         >
           <Plus className="w-4 h-4" />
           Add New Student
@@ -102,13 +102,13 @@ function StudentsContent() {
             placeholder="Search students..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 bg-[#1a1a2e] border border-[#2d2d4a] rounded-xl text-sm text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[#6d28d9]/50"
+            className="w-full pl-10 pr-4 py-2 bg-dark-surface border border-dark-border rounded-xl text-sm text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[#ec5b13]/50"
           />
         </div>
         <select
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value)}
-          className="px-4 py-2 bg-[#1a1a2e] border border-[#2d2d4a] rounded-xl text-sm text-white focus:outline-none focus:ring-2 focus:ring-[#6d28d9]/50"
+          className="px-4 py-2 bg-dark-surface border border-dark-border rounded-xl text-sm text-white focus:outline-none focus:ring-2 focus:ring-[#ec5b13]/50"
         >
           <option value="all">All Status</option>
           <option value="application_submitted">Submitted</option>
@@ -120,11 +120,11 @@ function StudentsContent() {
       </div>
 
       {/* Students Table */}
-      <div className="bg-[#1a1a2e] border border-[#2d2d4a] rounded-2xl overflow-hidden shadow-sm">
+      <div className="bg-dark-surface border border-dark-border rounded-2xl overflow-hidden shadow-sm">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-[#2d2d4a]">
+              <tr className="border-b border-dark-border">
                 <th className="text-left px-6 py-4 text-sm font-medium text-gray-400">Student</th>
                 <th className="text-left px-6 py-4 text-sm font-medium text-gray-400">Program</th>
                 <th className="text-left px-6 py-4 text-sm font-medium text-gray-400">University</th>
@@ -144,12 +144,12 @@ function StudentsContent() {
                 filteredStudents.map((student) => (
                   <tr
                     key={student.id}
-                    className="border-b border-[#2d2d4a] last:border-0 hover:bg-[#252542]/50 transition-colors"
+                    className="border-b border-dark-border last:border-0 hover:bg-[#252542]/50 transition-colors"
                   >
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-lg bg-[#6d28d9]/20 flex items-center justify-center">
-                          <span className="text-[#6d28d9] font-medium">
+                        <div className="w-10 h-10 rounded-lg bg-[#ec5b13]/20 flex items-center justify-center">
+                          <span className="text-[#ec5b13] font-medium">
                             {student.name?.charAt(0) || "?"}
                           </span>
                         </div>
@@ -194,7 +194,7 @@ export default function StudentsPage() {
   return (
     <Suspense fallback={
       <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#6d28d9]"></div>
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#ec5b13]"></div>
       </div>
     }>
       <StudentsContent />

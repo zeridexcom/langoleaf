@@ -17,12 +17,12 @@ export default function ProfilePage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Profile Card */}
         <div className="lg:col-span-1">
-          <div className="bg-[#1a1a2e] border border-[#2d2d4a] rounded-2xl p-6 text-center">
+          <div className="bg-dark-surface border border-dark-border rounded-2xl p-6 text-center">
             <div className="relative inline-block">
-              <div className="w-24 h-24 rounded-full bg-gradient-to-br from-[#6d28d9] to-[#22d3ee] flex items-center justify-center mx-auto">
+              <div className="w-24 h-24 rounded-full bg-gradient-to-br from-[#ec5b13] to-[#22d3ee] flex items-center justify-center mx-auto">
                 <span className="text-white font-bold text-3xl">JD</span>
               </div>
-              <button className="absolute bottom-0 right-0 p-2 bg-[#252542] rounded-full border border-[#2d2d4a] hover:bg-[#2d2d4a] transition-colors">
+              <button className="absolute bottom-0 right-0 p-2 bg-[#252542] rounded-full border border-dark-border hover:bg-#4a3023 transition-colors">
                 <Camera className="w-4 h-4 text-gray-400" />
               </button>
             </div>
@@ -35,10 +35,10 @@ export default function ProfilePage() {
               <span className="text-sm text-gray-400">(24 reviews)</span>
             </div>
 
-            <div className="mt-6 pt-6 border-t border-[#2d2d4a]">
+            <div className="mt-6 pt-6 border-t border-dark-border">
               <div className="flex items-center justify-between mb-3">
                 <span className="text-sm text-gray-400">Current Tier</span>
-                <span className="text-sm font-medium text-[#6d28d9]">Silver Agent</span>
+                <span className="text-sm font-medium text-[#ec5b13]">Silver Agent</span>
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-sm text-gray-400">Success Rate</span>
@@ -48,13 +48,13 @@ export default function ProfilePage() {
           </div>
 
           {/* Stats */}
-          <div className="bg-[#1a1a2e] border border-[#2d2d4a] rounded-2xl p-6 mt-6">
+          <div className="bg-dark-surface border border-dark-border rounded-2xl p-6 mt-6">
             <h3 className="text-lg font-semibold text-white mb-4">Performance</h3>
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="p-2 bg-[#6d28d9]/10 rounded-lg">
-                    <User className="w-4 h-4 text-[#6d28d9]" />
+                  <div className="p-2 bg-[#ec5b13]/10 rounded-lg">
+                    <User className="w-4 h-4 text-[#ec5b13]" />
                   </div>
                   <span className="text-sm text-gray-400">Students Added</span>
                 </div>
@@ -84,12 +84,12 @@ export default function ProfilePage() {
 
         {/* Edit Profile Form */}
         <div className="lg:col-span-2">
-          <div className="bg-[#1a1a2e] border border-[#2d2d4a] rounded-2xl p-6">
+          <div className="bg-dark-surface border border-dark-border rounded-2xl p-6">
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-lg font-semibold text-white">Personal Information</h3>
               <button
                 onClick={() => setIsEditing(!isEditing)}
-                className="px-4 py-2 bg-[#6d28d9] text-white text-sm font-medium rounded-lg hover:bg-[#6d28d9]/90 transition-colors"
+                className="px-4 py-2 bg-[#ec5b13] text-white text-sm font-medium rounded-lg hover:bg-[#ec5b13]/90 transition-colors"
               >
                 {isEditing ? "Save Changes" : "Edit Profile"}
               </button>
@@ -104,7 +104,7 @@ export default function ProfilePage() {
                     type="text"
                     defaultValue="John Doe"
                     disabled={!isEditing}
-                    className="w-full pl-10 pr-4 py-3 bg-[#252542] border border-[#2d2d4a] rounded-xl text-white disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-[#6d28d9]/50"
+                    className="w-full pl-10 pr-4 py-3 bg-[#252542] border border-dark-border rounded-xl text-white disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-[#ec5b13]/50"
                   />
                 </div>
               </div>
@@ -117,7 +117,7 @@ export default function ProfilePage() {
                     type="email"
                     defaultValue="john.doe@example.com"
                     disabled={!isEditing}
-                    className="w-full pl-10 pr-4 py-3 bg-[#252542] border border-[#2d2d4a] rounded-xl text-white disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-[#6d28d9]/50"
+                    className="w-full pl-10 pr-4 py-3 bg-[#252542] border border-dark-border rounded-xl text-white disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-[#ec5b13]/50"
                   />
                 </div>
               </div>
@@ -130,7 +130,7 @@ export default function ProfilePage() {
                     type="tel"
                     defaultValue="+91 98765 43210"
                     disabled={!isEditing}
-                    className="w-full pl-10 pr-4 py-3 bg-[#252542] border border-[#2d2d4a] rounded-xl text-white disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-[#6d28d9]/50"
+                    className="w-full pl-10 pr-4 py-3 bg-[#252542] border border-dark-border rounded-xl text-white disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-[#ec5b13]/50"
                   />
                 </div>
               </div>
@@ -143,7 +143,7 @@ export default function ProfilePage() {
                     type="text"
                     defaultValue="Mumbai, India"
                     disabled={!isEditing}
-                    className="w-full pl-10 pr-4 py-3 bg-[#252542] border border-[#2d2d4a] rounded-xl text-white disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-[#6d28d9]/50"
+                    className="w-full pl-10 pr-4 py-3 bg-[#252542] border border-dark-border rounded-xl text-white disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-[#ec5b13]/50"
                   />
                 </div>
               </div>
@@ -155,18 +155,18 @@ export default function ProfilePage() {
                 rows={4}
                 defaultValue="Experienced education consultant helping students find the right programs for their career goals."
                 disabled={!isEditing}
-                className="w-full px-4 py-3 bg-[#252542] border border-[#2d2d4a] rounded-xl text-white disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-[#6d28d9]/50 resize-none"
+                className="w-full px-4 py-3 bg-[#252542] border border-dark-border rounded-xl text-white disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-[#ec5b13]/50 resize-none"
               />
             </div>
           </div>
 
           {/* Badges */}
-          <div className="bg-[#1a1a2e] border border-[#2d2d4a] rounded-2xl p-6 mt-6">
+          <div className="bg-dark-surface border border-dark-border rounded-2xl p-6 mt-6">
             <h3 className="text-lg font-semibold text-white mb-4">Achievements</h3>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {[
                 { name: "Rising Star", icon: "⭐", color: "from-yellow-400 to-orange-500" },
-                { name: "Top Performer", icon: "🏆", color: "from-[#6d28d9] to-[#22d3ee]" },
+                { name: "Top Performer", icon: "🏆", color: "from-[#ec5b13] to-[#22d3ee]" },
                 { name: "100 Students", icon: "👥", color: "from-emerald-400 to-teal-500" },
                 { name: "5-Star Rating", icon: "⭐", color: "from-pink-400 to-rose-500" },
               ].map((badge) => (

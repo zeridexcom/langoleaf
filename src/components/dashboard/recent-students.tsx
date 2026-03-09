@@ -18,7 +18,7 @@ const statusStyles: Record<string, string> = {
   lead: "bg-slate-700/50 text-slate-400 border-2 border-slate-600",
   application_submitted: "bg-blue-500/20 text-blue-400 border-2 border-blue-500/50",
   documents_pending: "bg-amber-500/20 text-amber-400 border-2 border-amber-500/50",
-  under_review: "bg-purple-500/20 text-purple-400 border-2 border-purple-500/50",
+  under_review: "bg-primary/20 text-primary border-2 border-primary/50",
   approved: "bg-emerald-500/20 text-emerald-400 border-2 border-emerald-500/50",
   enrolled: "bg-primary/20 text-primary border-2 border-primary/50",
   rejected: "bg-red-500/20 text-red-400 border-2 border-red-500/50",
