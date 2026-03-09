@@ -12,7 +12,7 @@ export function DashboardLayoutClient({
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
   return (
-    <div className="min-h-screen bg-[#0f0f1a]">
+    <div className="min-h-screen bg-gray-50">
       <Header />
       <div className="flex">
         <Sidebar collapsed={sidebarCollapsed} setCollapsed={setSidebarCollapsed} />

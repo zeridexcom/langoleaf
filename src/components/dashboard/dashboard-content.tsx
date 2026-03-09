@@ -106,13 +106,13 @@ export function DashboardContent() {
           </p>
         </div>
         <div className="flex gap-4">
-          <div className="text-center bg-primary/10 p-4 border border-primary/30 min-w-[120px] rounded-xl">
-            <p className="text-[10px] font-black text-primary uppercase">Points</p>
-            <p className="text-3xl font-black text-primary">8,450</p>
+          <div className="text-center bg-primary/10 p-4 border border-primary/20 min-w-[120px] rounded-xl">
+            <p className="text-[10px] font-black text-primary uppercase">Commission</p>
+            <p className="text-3xl font-black text-primary">₹{(data.stats.totalEarnings || 0).toLocaleString()}</p>
           </div>
           <div className="text-center bg-gray-50 p-4 border border-gray-200 min-w-[120px] rounded-xl">
-            <p className="text-[10px] font-black text-gray-500 uppercase">Status</p>
-            <p className="text-3xl font-black text-gray-900">Elite</p>
+            <p className="text-[10px] font-black text-gray-500 uppercase">Students</p>
+            <p className="text-3xl font-black text-gray-900">{data.stats.totalStudents || 0}</p>
           </div>
         </div>
       </div>
