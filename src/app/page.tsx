@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useEffect } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { 
@@ -21,15 +21,29 @@ import {
 function AuthCodeRedirect() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const [isRedirecting, setIsRedirecting] = useState(false);
 
   useEffect(() => {
     // If we land here with an auth code, redirect to the callback handler
     const code = searchParams.get("code");
-    if (code) {
-      // Use window.location for a full page redirect to ensure proper auth flow
-      window.location.href = `/auth/callback?code=${code}`;
+    if (code && !isRedirecting) {
+      setIsRedirecting(true);
+      // Use window.location.replace for a full page redirect (no history entry)
+      window.location.replace(`/auth/callback?code=${code}`);
     }
-  }, [searchParams, router]);
+  }, [searchParams, router, isRedirecting]);
+
+  // Show loading state while redirecting
+  if (isRedirecting) {
+    return (
+      <div className="fixed inset-0 bg-background-light dark:bg-background-dark flex items-center justify-center z-50">
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-12 h-12 border-4 border-primary/30 border-t-primary rounded-full animate-spin"></div>
+          <p className="text-slate-600 dark:text-slate-400 font-medium">Authenticating...</p>
+        </div>
+      </div>
+    );
+  }
 
   return null;
 }
