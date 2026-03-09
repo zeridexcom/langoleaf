@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { Suspense, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { 
@@ -18,7 +18,7 @@ import {
   MapPin
 } from "lucide-react";
 
-export default function LandingPage() {
+function AuthCodeRedirect() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -30,8 +30,15 @@ export default function LandingPage() {
     }
   }, [searchParams, router]);
 
+  return null;
+}
+
+export default function LandingPage() {
   return (
     <div className="min-h-screen bg-background-light dark:bg-background-dark">
+      <Suspense fallback={null}>
+        <AuthCodeRedirect />
+      </Suspense>
       {/* Navigation */}
       <header className="sticky top-0 z-50 w-full border-b border-dark-border bg-background-light/90 dark:bg-background-dark/90 backdrop-blur-md">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
