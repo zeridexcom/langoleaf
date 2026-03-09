@@ -59,9 +59,11 @@ export default function LandingPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16 sm:h-20">
             <div className="flex items-center gap-2">
-              <div className="text-primary flex items-center justify-center">
-                <School className="w-8 h-8" />
-              </div>
+              <img 
+                src="/images/logo.png" 
+                alt="Langoleaf" 
+                className="w-8 h-8 object-contain rounded-lg"
+              />
               <h2 className="text-xl font-black tracking-tight text-slate-900 dark:text-white">
                 freelancer.<span className="text-primary">langoleaf</span>
               </h2>
@@ -138,17 +140,12 @@ export default function LandingPage() {
               <div className="relative">
                 <div className="absolute -top-10 -right-10 w-64 h-64 bg-primary/20 blur-3xl opacity-50"></div>
                 <div className="absolute -bottom-10 -left-10 w-64 h-64 bg-slate-400/20 blur-3xl opacity-50"></div>
-                <div className="relative border-2 border-dark-border shadow-2xl aspect-[4/3] bg-dark-surface overflow-hidden rounded-3xl">
-                  <div className="absolute inset-0 bg-gradient-to-tr from-slate-900/40 to-transparent"></div>
-                  <div className="absolute bottom-6 left-6 right-6 p-6 bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm border-2 border-dark-border rounded-2xl">
-                    <div className="flex items-center gap-4">
-                      <Globe className="text-primary w-10 h-10" />
-                      <div>
-                        <p className="text-sm font-black uppercase tracking-wide">Global Network</p>
-                        <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">Direct university access across 5 continents</p>
-                      </div>
-                    </div>
-                  </div>
+                <div className="relative border-2 border-dark-border shadow-2xl aspect-[4/3] bg-dark-surface overflow-hidden rounded-3xl flex items-center justify-center">
+                  <img 
+                    src="/images/logo.png" 
+                    alt="Langoleaf Platform" 
+                    className="w-3/4 h-3/4 object-contain"
+                  />
                 </div>
               </div>
             </div>
