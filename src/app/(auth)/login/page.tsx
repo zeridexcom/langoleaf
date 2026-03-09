@@ -103,19 +103,35 @@ export default function LoginPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    setErrorMessage(null);
     
-    const { error } = await supabase.auth.signInWithPassword({
-      email: formData.email,
-      password: formData.password,
-    });
+    try {
+      const { error } = await supabase.auth.signInWithPassword({
+        email: formData.email,
+        password: formData.password,
+      });
 
-    if (error) {
-      console.error('Login error:', error);
+      if (error) {
+        console.error('Login error:', error);
+        // Show user-friendly error message
+        if (error.message?.includes('Invalid login credentials')) {
+          setErrorMessage('Invalid email or password. Please check and try again.');
+        } else if (error.message?.includes('Email not confirmed')) {
+          setErrorMessage('Please confirm your email address before logging in.');
+        } else {
+          setErrorMessage(error.message || 'Login failed. Please try again.');
+        }
+        setLoading(false);
+        return;
+      }
+
+      // Successful login - redirect to dashboard
+      window.location.href = "/dashboard";
+    } catch (err: any) {
+      console.error('Unexpected error during login:', err);
+      setErrorMessage('An unexpected error occurred. Please try again.');
       setLoading(false);
-      return;
     }
-
-    window.location.href = "/";
   };
 
   return (
