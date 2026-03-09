@@ -1,8 +1,9 @@
 "use client";
 
-import { Bell, Search, User, Coins, Zap } from "lucide-react";
+import { Search, User, Coins, Zap } from "lucide-react";
 import { cn } from "@/lib/utils/cn";
 import { ThemeToggle } from "@/components/theme/theme-toggle";
+import { NotificationDropdown } from "@/components/notifications/dropdown";
 import { useState, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
 
@@ -88,11 +89,8 @@ export function Header() {
             </span>
           </div>
 
-          {/* Notifications */}
-          <button className="relative p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 transition-colors rounded-lg border border-transparent hover:border-gray-200">
-            <Bell className="w-5 h-5" />
-            <span className="absolute top-0 right-0 w-2 h-2 bg-primary rounded-full" />
-          </button>
+          {/* Notifications Dropdown */}
+          <NotificationDropdown />
 
           {/* Profile */}
           <button className="flex items-center gap-3 p-1 hover:bg-gray-100 transition-colors rounded-lg border border-transparent hover:border-gray-200">

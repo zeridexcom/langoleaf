@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils/cn";
 import { useState } from "react";
+import { usePathname } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
 const menuItems = [
@@ -41,8 +42,19 @@ interface SidebarProps {
 }
 
 export function Sidebar({ collapsed, setCollapsed }: SidebarProps) {
-  const [activeItem, setActiveItem] = useState("Dashboard");
+  const pathname = usePathname();
   const supabase = createClient();
+  
+  // Determine active item based on current pathname
+  const getActiveItem = () => {
+    const currentPath = pathname || "/dashboard";
+    const activeMenuItem = menuItems.find(item => 
+      currentPath === item.href || currentPath.startsWith(item.href + "/")
+    );
+    return activeMenuItem?.label || "Dashboard";
+  };
+  
+  const activeItem = getActiveItem();
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
@@ -91,7 +103,6 @@ export function Sidebar({ collapsed, setCollapsed }: SidebarProps) {
               <li key={item.label}>
                 <a
                   href={item.href}
-                  onClick={() => setActiveItem(item.label)}
                   className={cn(
                     "flex items-center gap-3 px-4 py-3 border transition-all duration-200 group font-bold rounded-lg",
                     activeItem === item.label
