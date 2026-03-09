@@ -38,10 +38,8 @@ export default function SignupPage() {
     setErrorMessage(null);
     
     try {
-      // Use environment variable for production domain, fallback to current origin
-      const redirectUrl = process.env.NEXT_PUBLIC_SITE_URL 
-        ? `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback`
-        : `${window.location.origin}/auth/callback`;
+      // Hardcoded production URL to fix OAuth redirect
+      const redirectUrl = 'https://freelancer.langoleaf.com/auth/callback';
       
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
