@@ -7,15 +7,21 @@ export async function GET(request: Request) {
   // if "next" is in param, use it as the redirect URL
   const next = searchParams.get("next") ?? "/dashboard";
 
+  console.log("Auth callback received:", { code: code?.substring(0, 10) + "...", origin, next });
+
   if (code) {
     const supabase = createClient();
     const { error } = await supabase.auth.exchangeCodeForSession(code);
-    if (!error) {
-      // Redirect to dashboard after successful auth
-      return NextResponse.redirect(`${origin}/dashboard`);
+    
+    if (error) {
+      console.error("Auth exchange error:", error.message, error.code);
+      return NextResponse.redirect(`${origin}/login?error=auth&message=${encodeURIComponent(error.message)}`);
     }
+    
+    // Redirect to dashboard after successful auth
+    return NextResponse.redirect(`${origin}/dashboard`);
   }
 
   // return the user to an error page with instructions
-  return NextResponse.redirect(`${origin}/login?error=auth`);
+  return NextResponse.redirect(`${origin}/login?error=auth&message=no_code`);
 }
