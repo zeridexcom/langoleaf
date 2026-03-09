@@ -328,7 +328,7 @@ export default function LandingPage() {
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-12">
             <div className="col-span-2 space-y-6">
               <div className="flex items-center gap-2">
-                <School className="w-6 h-6 text-primary" />
+                <img src="/images/logo.png" alt="Langoleaf" className="w-6 h-6 object-contain rounded-lg" />
                 <h2 className="text-lg font-black tracking-tight text-slate-900 dark:text-white">
                   freelancer.<span className="text-primary">langoleaf</span>
                 </h2>

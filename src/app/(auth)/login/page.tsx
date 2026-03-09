@@ -125,7 +125,7 @@ export default function LoginPage() {
       {/* Logo */}
       <div className="text-center mb-8">
         <div className="flex items-center justify-center gap-2 mb-4">
-          <School className="w-8 h-8 text-primary" />
+          <img src="/images/logo.png" alt="Langoleaf" className="w-8 h-8 object-contain rounded-lg" />
           <h2 className="text-2xl font-black tracking-tight text-slate-900 dark:text-white">
             freelancer.<span className="text-primary">langoleaf</span>
           </h2>
