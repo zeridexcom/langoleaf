@@ -65,18 +65,31 @@ export function GlobalSearch({ isOpen, onClose }: GlobalSearchProps) {
       // Load applications
       const { data: appsData } = await supabase
         .from("applications")
-        .select("id, program, university, status, student:students(name)")
+        .select(`
+          id, 
+          program, 
+          university, 
+          status, 
+          students!inner(name)
+        `)
         .limit(50);
       
       if (appsData) {
-        setApplications(appsData.map(a => ({
-          id: a.id,
-          title: a.program,
-          subtitle: `${a.university} • ${a.student?.name || "Unknown"}`,
-          type: "application" as const,
-          href: `/applications?id=${a.id}`,
-          icon: FileText,
-        })));
+        setApplications(appsData.map(a => {
+          // Handle the nested students data
+          const studentName = Array.isArray(a.students) 
+            ? a.students[0]?.name 
+            : (a.students as any)?.name;
+          
+          return {
+            id: a.id,
+            title: a.program,
+            subtitle: `${a.university} • ${studentName || "Unknown"}`,
+            type: "application" as const,
+            href: `/applications?id=${a.id}`,
+            icon: FileText,
+          };
+        }));
       }
     }
     
