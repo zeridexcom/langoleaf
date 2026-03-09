@@ -161,23 +161,23 @@ export default function LandingPage() {
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8">
               <div className="p-6 border-2 border-dark-border flex flex-col gap-2 hover:border-primary/50 transition-colors bg-dark-surface shadow-xl rounded-2xl">
                 <Building2 className="text-primary w-8 h-8" />
-                <p className="text-slate-500 dark:text-slate-400 text-xs font-black uppercase tracking-wider">University Partners</p>
-                <p className="text-3xl font-black text-slate-900 dark:text-white">800+</p>
+                <p className="text-slate-400 text-xs font-black uppercase tracking-wider">University Partners</p>
+                <p className="text-3xl font-black text-white">800+</p>
               </div>
               <div className="p-6 border-2 border-dark-border flex flex-col gap-2 hover:border-primary/50 transition-colors bg-dark-surface shadow-xl rounded-2xl">
                 <Wallet className="text-primary w-8 h-8" />
-                <p className="text-slate-500 dark:text-slate-400 text-xs font-black uppercase tracking-wider">Commission Rate</p>
-                <p className="text-3xl font-black text-slate-900 dark:text-white">Up to 30%</p>
+                <p className="text-slate-400 text-xs font-black uppercase tracking-wider">Commission Rate</p>
+                <p className="text-3xl font-black text-white">Up to 30%</p>
               </div>
               <div className="p-6 border-2 border-dark-border flex flex-col gap-2 hover:border-primary/50 transition-colors bg-dark-surface shadow-xl rounded-2xl">
                 <Zap className="text-primary w-8 h-8" />
-                <p className="text-slate-500 dark:text-slate-400 text-xs font-black uppercase tracking-wider">Application Speed</p>
-                <p className="text-3xl font-black text-slate-900 dark:text-white">2.5x Faster</p>
+                <p className="text-slate-400 text-xs font-black uppercase tracking-wider">Application Speed</p>
+                <p className="text-3xl font-black text-white">2.5x Faster</p>
               </div>
               <div className="p-6 border-2 border-dark-border flex flex-col gap-2 hover:border-primary/50 transition-colors bg-dark-surface shadow-xl rounded-2xl">
                 <MapPin className="text-primary w-8 h-8" />
-                <p className="text-slate-500 dark:text-slate-400 text-xs font-black uppercase tracking-wider">Countries Covered</p>
-                <p className="text-3xl font-black text-slate-900 dark:text-white">120+</p>
+                <p className="text-slate-400 text-xs font-black uppercase tracking-wider">Countries Covered</p>
+                <p className="text-3xl font-black text-white">120+</p>
               </div>
             </div>
           </div>
@@ -194,29 +194,29 @@ export default function LandingPage() {
             </div>
             <div className="grid md:grid-cols-3 gap-8">
               <div className="bg-dark-surface p-8 border-2 border-dark-border shadow-[4px_4px_0px_0px_rgba(0,0,0,0.2)] hover:shadow-[6px_6px_0px_0px_rgba(236,91,19,0.3)] hover:-translate-y-1 transition-all group">
-                <div className="w-14 h-14 bg-primary/10 border-2 border-primary/30 flex items-center justify-center text-primary mb-6 group-hover:bg-primary group-hover:text-white transition-colors">
+                <div className="w-14 h-14 bg-primary/10 border-2 border-primary/30 flex items-center justify-center text-primary mb-6 group-hover:bg-primary group-hover:text-white transition-colors rounded-xl">
                   <Globe className="w-7 h-7" />
                 </div>
-                <h3 className="text-xl font-black mb-4 uppercase tracking-wide">Global Partnerships</h3>
-                <p className="text-slate-600 dark:text-slate-400 leading-relaxed text-sm font-medium">
+                <h3 className="text-xl font-black mb-4 uppercase tracking-wide text-white">Global Partnerships</h3>
+                <p className="text-slate-300 leading-relaxed text-sm font-medium">
                   Gain direct access to prestigious universities across UK, USA, Canada, and Australia. Skip the long contracts and start recruiting immediately.
                 </p>
               </div>
               <div className="bg-dark-surface p-8 border-2 border-dark-border shadow-[4px_4px_0px_0px_rgba(0,0,0,0.2)] hover:shadow-[6px_6px_0px_0px_rgba(236,91,19,0.3)] hover:-translate-y-1 transition-all group">
-                <div className="w-14 h-14 bg-primary/10 border-2 border-primary/30 flex items-center justify-center text-primary mb-6 group-hover:bg-primary group-hover:text-white transition-colors">
+                <div className="w-14 h-14 bg-primary/10 border-2 border-primary/30 flex items-center justify-center text-primary mb-6 group-hover:bg-primary group-hover:text-white transition-colors rounded-xl">
                   <TrendingUp className="w-7 h-7" />
                 </div>
-                <h3 className="text-xl font-black mb-4 uppercase tracking-wide">High Commissions</h3>
-                <p className="text-slate-600 dark:text-slate-400 leading-relaxed text-sm font-medium">
+                <h3 className="text-xl font-black mb-4 uppercase tracking-wide text-white">High Commissions</h3>
+                <p className="text-slate-300 leading-relaxed text-sm font-medium">
                   Earn significantly more with our transparent and competitive commission structures, paid securely and on time, every time.
                 </p>
               </div>
               <div className="bg-dark-surface p-8 border-2 border-dark-border shadow-[4px_4px_0px_0px_rgba(0,0,0,0.2)] hover:shadow-[6px_6px_0px_0px_rgba(236,91,19,0.3)] hover:-translate-y-1 transition-all group">
-                <div className="w-14 h-14 bg-primary/10 border-2 border-primary/30 flex items-center justify-center text-primary mb-6 group-hover:bg-primary group-hover:text-white transition-colors">
+                <div className="w-14 h-14 bg-primary/10 border-2 border-primary/30 flex items-center justify-center text-primary mb-6 group-hover:bg-primary group-hover:text-white transition-colors rounded-xl">
                   <Zap className="w-7 h-7" />
                 </div>
-                <h3 className="text-xl font-black mb-4 uppercase tracking-wide">Advanced AI Tools</h3>
-                <p className="text-slate-600 dark:text-slate-400 leading-relaxed text-sm font-medium">
+                <h3 className="text-xl font-black mb-4 uppercase tracking-wide text-white">Advanced AI Tools</h3>
+                <p className="text-slate-300 leading-relaxed text-sm font-medium">
                   Streamline applications with our proprietary recruitment software and CRM, designed specifically for high-performing education agents.
                 </p>
               </div>
@@ -258,10 +258,10 @@ export default function LandingPage() {
         </section>
 
         {/* CTA Section */}
-        <section className="py-24 text-center">
+        <section className="py-24 text-center bg-background-light dark:bg-background-dark">
           <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
             <h2 className="text-4xl lg:text-6xl font-black text-slate-900 dark:text-white leading-tight uppercase tracking-tight">Ready to transform your recruitment business?</h2>
-            <p className="text-xl text-slate-600 dark:text-slate-400 font-medium">Join the elite network of independent agents today and start earning more with freelancer.langoleaf.</p>
+            <p className="text-xl text-slate-600 dark:text-slate-300 font-medium">Join the elite network of independent agents today and start earning more with freelancer.langoleaf.</p>
             <div className="flex flex-col sm:flex-row justify-center gap-4">
               <Link 
                 href="/signup"
@@ -270,7 +270,7 @@ export default function LandingPage() {
                 Join freelancer.langoleaf Now
               </Link>
             </div>
-            <p className="text-sm text-slate-500 font-bold italic">No setup fees. No hidden costs. Just growth.</p>
+            <p className="text-sm text-slate-500 dark:text-slate-400 font-bold italic">No setup fees. No hidden costs. Just growth.</p>
           </div>
         </section>
       </main>
