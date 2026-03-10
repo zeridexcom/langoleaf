@@ -137,7 +137,15 @@ export default function DocumentsPage() {
         </div>
       ) : (
         <DocumentList
-          documents={filteredDocuments}
+          documents={filteredDocuments.map(doc => ({
+            id: doc.id,
+            url: doc.cloudinary_url,
+            type: doc.category as any,
+            typeLabel: doc.category,
+            format: doc.file_type,
+            size: doc.file_size,
+            createdAt: doc.created_at,
+          }))}
           onRefresh={loadDocuments}
         />
       )}
