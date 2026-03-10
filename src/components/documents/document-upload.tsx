@@ -6,12 +6,14 @@ import { cn } from "@/lib/utils/cn";
 import { DocumentType, documentTypeLabels } from "@/lib/cloudinary/client";
 
 interface DocumentUploadProps {
-  studentId: string;
+  studentId?: string;
   onUploadComplete?: (document: {
     url: string;
     type: DocumentType;
     publicId: string;
   }) => void;
+  onUploadError?: (error: string) => void;
+  category?: string;
 }
 
 const documentTypes: { value: DocumentType; label: string; icon: any }[] = [
@@ -26,7 +28,12 @@ const documentTypes: { value: DocumentType; label: string; icon: any }[] = [
   { value: "other", label: "Other Document", icon: FileText },
 ];
 
-export function DocumentUpload({ studentId, onUploadComplete }: DocumentUploadProps) {
+export function DocumentUpload({ 
+  studentId, 
+  onUploadComplete, 
+  onUploadError,
+  category 
+}: DocumentUploadProps) {
   const [selectedType, setSelectedType] = useState<DocumentType>("photo");
   const [isDragging, setIsDragging] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
@@ -87,6 +94,12 @@ export function DocumentUpload({ studentId, onUploadComplete }: DocumentUploadPr
     }
 
     try {
+      if (!studentId) {
+        setError("Student ID is required");
+        setIsUploading(false);
+        return;
+      }
+
       const formData = new FormData();
       formData.append("file", file);
       formData.append("studentId", studentId);
@@ -116,7 +129,11 @@ export function DocumentUpload({ studentId, onUploadComplete }: DocumentUploadPr
       // Sync to Google Sheets after upload
       await syncToSheets();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Upload failed");
+      const errorMessage = err instanceof Error ? err.message : "Upload failed";
+      setError(errorMessage);
+      if (onUploadError) {
+        onUploadError(errorMessage);
+      }
     } finally {
       setIsUploading(false);
       setUploadProgress(0);
