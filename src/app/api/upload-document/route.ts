@@ -1,10 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-import {
-  uploadStudentDocument,
-  validateFile,
-  DocumentType,
-} from "@/lib/cloudinary/client";
+import { uploadStudentDocument } from "@/lib/cloudinary/server";
+import { validateFile, DocumentType } from "@/lib/cloudinary/client";
 
 export const dynamic = "force-dynamic";
 

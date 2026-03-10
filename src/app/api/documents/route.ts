@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-import { getStudentDocuments, deleteDocument } from "@/lib/cloudinary/client";
+import { getStudentDocuments, deleteDocument } from "@/lib/cloudinary/server";
 
 export const dynamic = "force-dynamic";
 

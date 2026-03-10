@@ -1,14 +1,5 @@
-import { v2 as cloudinary } from "cloudinary";
-
-// Configure Cloudinary
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
-  secure: true,
-});
-
-export { cloudinary };
+// Client-side Cloudinary utilities only
+// No Node.js imports here!
 
 // Document types for students
 export type DocumentType =
@@ -46,150 +37,6 @@ export const allowedFileTypes = [
 // Max file size (10MB)
 export const maxFileSize = 10 * 1024 * 1024;
 
-// Upload document to Cloudinary
-export async function uploadStudentDocument(
-  file: Buffer,
-  studentId: string,
-  documentType: DocumentType,
-  fileName: string
-) {
-  try {
-    const folder = `students/${studentId}/${documentType}`;
-    const publicId = `${Date.now()}_${fileName.replace(/\.[^/.]+$/, "")}`;
-
-    const result = await new Promise((resolve, reject) => {
-      const uploadStream = cloudinary.uploader.upload_stream(
-        {
-          folder,
-          public_id: publicId,
-          resource_type: "auto",
-          allowed_formats: ["jpg", "jpeg", "png", "pdf"],
-          transformation:
-            documentType === "photo"
-              ? [
-                  { width: 400, height: 400, crop: "fill", gravity: "face" },
-                  { quality: "auto" },
-                ]
-              : [{ quality: "auto" }],
-          tags: ["student_document", studentId, documentType],
-        },
-        (error, result) => {
-          if (error) reject(error);
-          else resolve(result);
-        }
-      );
-
-      uploadStream.end(file);
-    });
-
-    return {
-      success: true,
-      url: (result as any).secure_url,
-      publicId: (result as any).public_id,
-      format: (result as any).format,
-      size: (result as any).bytes,
-      createdAt: (result as any).created_at,
-    };
-  } catch (error) {
-    console.error("Error uploading to Cloudinary:", error);
-    return {
-      success: false,
-      error: error instanceof Error ? error.message : "Upload failed",
-    };
-  }
-}
-
-// Get all documents for a student
-export async function getStudentDocuments(studentId: string) {
-  try {
-    const result = await cloudinary.search
-      .expression(`folder:students/${studentId}/*`)
-      .sort_by("created_at", "desc")
-      .max_results(100)
-      .execute();
-
-    const documents = result.resources.map((resource: any) => {
-      const folderParts = resource.folder.split("/");
-      const documentType = folderParts[folderParts.length - 1] as DocumentType;
-
-      return {
-        id: resource.public_id,
-        url: resource.secure_url,
-        type: documentType,
-        typeLabel: documentTypeLabels[documentType] || "Document",
-        format: resource.format,
-        size: resource.bytes,
-        createdAt: resource.created_at,
-        thumbnail: resource.thumbnail_url || resource.secure_url,
-      };
-    });
-
-    return {
-      success: true,
-      documents,
-    };
-  } catch (error) {
-    console.error("Error getting student documents:", error);
-    return {
-      success: false,
-      error: error instanceof Error ? error.message : "Failed to get documents",
-      documents: [],
-    };
-  }
-}
-
-// Delete document from Cloudinary
-export async function deleteDocument(publicId: string) {
-  try {
-    const result = await cloudinary.uploader.destroy(publicId);
-
-    return {
-      success: result.result === "ok",
-      result: result.result,
-    };
-  } catch (error) {
-    console.error("Error deleting document:", error);
-    return {
-      success: false,
-      error: error instanceof Error ? error.message : "Delete failed",
-    };
-  }
-}
-
-// Generate signed URL for private documents
-export async function generateSignedUrl(
-  publicId: string,
-  expiresIn: number = 3600
-) {
-  try {
-    const timestamp = Math.round(new Date().getTime() / 1000) + expiresIn;
-    const signature = cloudinary.utils.api_sign_request(
-      {
-        public_id: publicId,
-        timestamp,
-      },
-      process.env.CLOUDINARY_API_SECRET!
-    );
-
-    return {
-      success: true,
-      url: `https://res.cloudinary.com/${process.env.CLOUDINARY_CLOUD_NAME}/image/upload/${publicId}?_a=AAABBB&_s=${signature}&_t=${timestamp}`,
-      expiresAt: timestamp,
-    };
-  } catch (error) {
-    console.error("Error generating signed URL:", error);
-    return {
-      success: false,
-      error: error instanceof Error ? error.message : "Failed to generate URL",
-    };
-  }
-}
-
-// Get documents folder URL for a student
-export function getStudentDocumentsFolderUrl(studentId: string) {
-  return `https://res.cloudinary.com/${process.env.CLOUDINARY_CLOUD_NAME}/image/upload/v1/students/${studentId}`;
-}
-
 // Validate file before upload
 export function validateFile(file: File): { valid: boolean; error?: string } {
   // Check file type
@@ -209,4 +56,76 @@ export function validateFile(file: File): { valid: boolean; error?: string } {
   }
 
   return { valid: true };
+}
+
+// Get Cloudinary upload signature from server
+export async function getUploadSignature(
+  studentId: string,
+  documentType: DocumentType,
+  fileName: string
+) {
+  try {
+    const response = await fetch("/api/upload-document", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        studentId,
+        documentType,
+        fileName,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to get upload signature");
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error getting upload signature:", error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "Failed to get signature",
+    };
+  }
+}
+
+// Upload file using signed upload
+export async function uploadFile(
+  file: File,
+  signature: string,
+  timestamp: number,
+  folder: string,
+  publicId: string
+) {
+  try {
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("api_key", process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY || "");
+    formData.append("timestamp", timestamp.toString());
+    formData.append("signature", signature);
+    formData.append("folder", folder);
+    formData.append("public_id", publicId);
+
+    const response = await fetch(
+      `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/auto/upload`,
+      {
+        method: "POST",
+        body: formData,
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Upload failed");
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error uploading file:", error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "Upload failed",
+    };
+  }
 }
