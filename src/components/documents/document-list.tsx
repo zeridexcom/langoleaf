@@ -8,7 +8,7 @@ import { DocumentType, documentTypeLabels } from "@/lib/cloudinary/client";
 export interface Document {
   id: string;
   url: string;
-  type: DocumentType;
+  type: DocumentType | string;
   typeLabel: string;
   format: string;
   size: number;
