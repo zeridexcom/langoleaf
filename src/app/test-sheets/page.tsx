@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 
 export default function TestSheetsPage() {
   const [result, setResult] = useState<any>(null);
@@ -24,37 +23,29 @@ export default function TestSheetsPage() {
     <div className="container mx-auto p-8 max-w-4xl">
       <h1 className="text-3xl font-bold mb-6">Google Sheets Connection Test</h1>
       
-      <Card className="mb-6">
-        <CardHeader>
-          <CardTitle>Test Connection</CardTitle>
-          <CardDescription>
-            Click the button below to test if your Google Sheets connection is working
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Button 
-            onClick={testConnection} 
-            disabled={loading}
-            className="w-full"
-          >
-            {loading ? "Testing..." : "Test Google Sheets Connection"}
-          </Button>
-        </CardContent>
-      </Card>
+      <div className="bg-white border rounded-lg p-6 mb-6 shadow-sm">
+        <h2 className="text-xl font-semibold mb-2">Test Connection</h2>
+        <p className="text-gray-600 mb-4">
+          Click the button below to test if your Google Sheets connection is working
+        </p>
+        <Button 
+          onClick={testConnection} 
+          disabled={loading}
+          className="w-full"
+        >
+          {loading ? "Testing..." : "Test Google Sheets Connection"}
+        </Button>
+      </div>
 
       {result && (
-        <Card className={result.success ? "border-green-500" : "border-red-500"}>
-          <CardHeader>
-            <CardTitle className={result.success ? "text-green-600" : "text-red-600"}>
-              {result.success ? "✅ Connection Successful!" : "❌ Connection Failed"}
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <pre className="bg-gray-100 p-4 rounded-lg overflow-auto text-sm">
-              {JSON.stringify(result, null, 2)}
-            </pre>
-          </CardContent>
-        </Card>
+        <div className={`border-2 rounded-lg p-6 mb-6 ${result.success ? "border-green-500 bg-green-50" : "border-red-500 bg-red-50"}`}>
+          <h2 className={`text-xl font-semibold mb-4 ${result.success ? "text-green-600" : "text-red-600"}`}>
+            {result.success ? "✅ Connection Successful!" : "❌ Connection Failed"}
+          </h2>
+          <pre className="bg-gray-100 p-4 rounded-lg overflow-auto text-sm">
+            {JSON.stringify(result, null, 2)}
+          </pre>
+        </div>
       )}
 
       <div className="mt-8 p-4 bg-blue-50 rounded-lg">

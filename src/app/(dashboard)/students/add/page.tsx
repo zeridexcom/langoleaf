@@ -18,12 +18,12 @@ const universities = [
 
 export default function AddStudentPage() {
   const [formData, setFormData] = useState({
-    firstName: "";
-    lastName: "";
-    email: "";
-    phone: "";
-    program: "";
-    university: "";
+    firstName: "",
+    lastName: "",
+    email: "",
+    phone: "",
+    program: "",
+    university: "",
   });
   const [studentId, setStudentId] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
