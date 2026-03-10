@@ -23,7 +23,7 @@ export function Header() {
           const { data: profile } = await supabase
             .from("profiles")
             .select("*, freelancer_profiles(*)")
-            .eq("id", authUser.id)
+            .eq("user_id", authUser.id)
             .single();
           
           if (profile) {
