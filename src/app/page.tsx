@@ -1,6 +1,8 @@
 "use client";
 
-import { useEffect } from "react";
+export const dynamic = 'force-dynamic';
+
+import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { 
@@ -18,28 +20,52 @@ import {
   MapPin
 } from "lucide-react";
 
-export default function LandingPage() {
+function AuthCodeRedirect() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const [isRedirecting, setIsRedirecting] = useState(false);
 
   useEffect(() => {
     // If we land here with an auth code, redirect to the callback handler
     const code = searchParams.get("code");
-    if (code) {
-      router.push(`/auth/callback?code=${code}`);
+    if (code && !isRedirecting) {
+      setIsRedirecting(true);
+      // Use window.location.replace for a full page redirect (no history entry)
+      window.location.replace(`/auth/callback?code=${code}`);
     }
-  }, [searchParams, router]);
+  }, [searchParams, router, isRedirecting]);
 
+  // Show loading state while redirecting
+  if (isRedirecting) {
+    return (
+      <div className="fixed inset-0 bg-background-light dark:bg-background-dark flex items-center justify-center z-50">
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-12 h-12 border-4 border-primary/30 border-t-primary rounded-full animate-spin"></div>
+          <p className="text-slate-600 dark:text-slate-400 font-medium">Authenticating...</p>
+        </div>
+      </div>
+    );
+  }
+
+  return null;
+}
+
+export default function LandingPage() {
   return (
     <div className="min-h-screen bg-background-light dark:bg-background-dark">
+      <Suspense fallback={null}>
+        <AuthCodeRedirect />
+      </Suspense>
       {/* Navigation */}
       <header className="sticky top-0 z-50 w-full border-b border-dark-border bg-background-light/90 dark:bg-background-dark/90 backdrop-blur-md">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16 sm:h-20">
             <div className="flex items-center gap-2">
-              <div className="text-primary flex items-center justify-center">
-                <School className="w-8 h-8" />
-              </div>
+              <img 
+                src="/images/logo.png" 
+                alt="Langoleaf" 
+                className="w-8 h-8 object-contain rounded-lg"
+              />
               <h2 className="text-xl font-black tracking-tight text-slate-900 dark:text-white">
                 freelancer.<span className="text-primary">langoleaf</span>
               </h2>
@@ -113,19 +139,64 @@ export default function LandingPage() {
                   <p className="text-sm font-bold text-slate-500">Trusted by 2,000+ agents worldwide</p>
                 </div>
               </div>
-              <div className="relative">
+              {/* Scroll Velocity Marquee with Strong CTA */}
+              <div className="relative overflow-hidden">
                 <div className="absolute -top-10 -right-10 w-64 h-64 bg-primary/20 blur-3xl opacity-50"></div>
-                <div className="absolute -bottom-10 -left-10 w-64 h-64 bg-slate-400/20 blur-3xl opacity-50"></div>
-                <div className="relative border-2 border-dark-border shadow-2xl aspect-[4/3] bg-dark-surface overflow-hidden rounded-3xl">
-                  <div className="absolute inset-0 bg-gradient-to-tr from-slate-900/40 to-transparent"></div>
-                  <div className="absolute bottom-6 left-6 right-6 p-6 bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm border-2 border-dark-border rounded-2xl">
-                    <div className="flex items-center gap-4">
-                      <Globe className="text-primary w-10 h-10" />
-                      <div>
-                        <p className="text-sm font-black uppercase tracking-wide">Global Network</p>
-                        <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">Direct university access across 5 continents</p>
+                <div className="absolute -bottom-10 -left-10 w-64 h-64 bg-primary/10 blur-3xl opacity-50"></div>
+                
+                {/* Marquee Container */}
+                <div className="relative border-2 border-dark-border shadow-2xl bg-dark-surface rounded-3xl p-8 overflow-hidden">
+                  {/* Strong CTA Line */}
+                  <div className="text-center mb-8">
+                    <h3 className="text-2xl md:text-3xl font-black text-white uppercase tracking-tight mb-2">
+                      Join <span className="text-primary">2,000+</span> Agents Worldwide
+                    </h3>
+                    <p className="text-slate-400 font-medium">Start earning commissions today</p>
+                  </div>
+                  
+                  {/* Scrolling Text */}
+                  <div className="flex flex-col gap-4">
+                    {/* Row 1 - Left to Right */}
+                    <div className="relative overflow-hidden">
+                      <div className="animate-marquee-left whitespace-nowrap flex gap-8">
+                        <span className="text-3xl font-black text-primary/80">800+ UNIVERSITIES</span>
+                        <span className="text-3xl font-black text-white/60">•</span>
+                        <span className="text-3xl font-black text-primary/80">30% COMMISSION</span>
+                        <span className="text-3xl font-black text-white/60">•</span>
+                        <span className="text-3xl font-black text-primary/80">120+ COUNTRIES</span>
+                        <span className="text-3xl font-black text-white/60">•</span>
+                        <span className="text-3xl font-black text-primary/80">800+ UNIVERSITIES</span>
+                        <span className="text-3xl font-black text-white/60">•</span>
+                        <span className="text-3xl font-black text-primary/80">30% COMMISSION</span>
+                        <span className="text-3xl font-black text-white/60">•</span>
                       </div>
                     </div>
+                    
+                    {/* Row 2 - Right to Left */}
+                    <div className="relative overflow-hidden">
+                      <div className="animate-marquee-right whitespace-nowrap flex gap-8">
+                        <span className="text-2xl font-black text-white/40">GLOBAL NETWORK</span>
+                        <span className="text-2xl font-black text-primary/60">•</span>
+                        <span className="text-2xl font-black text-white/40">AI POWERED</span>
+                        <span className="text-2xl font-black text-primary/60">•</span>
+                        <span className="text-2xl font-black text-white/40">SECURE PAYMENTS</span>
+                        <span className="text-2xl font-black text-primary/60">•</span>
+                        <span className="text-2xl font-black text-white/40">GLOBAL NETWORK</span>
+                        <span className="text-2xl font-black text-primary/60">•</span>
+                        <span className="text-2xl font-black text-white/40">AI POWERED</span>
+                        <span className="text-2xl font-black text-primary/60">•</span>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* CTA Button */}
+                  <div className="mt-8 text-center">
+                    <Link 
+                      href="/signup"
+                      className="inline-flex items-center gap-2 bg-primary hover:bg-primary/90 text-white px-8 py-4 text-lg font-bold border-2 border-primary shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all rounded-2xl"
+                    >
+                      Start Your Journey <ArrowRight className="w-5 h-5" />
+                    </Link>
                   </div>
                 </div>
               </div>
@@ -139,23 +210,23 @@ export default function LandingPage() {
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8">
               <div className="p-6 border-2 border-dark-border flex flex-col gap-2 hover:border-primary/50 transition-colors bg-dark-surface shadow-xl rounded-2xl">
                 <Building2 className="text-primary w-8 h-8" />
-                <p className="text-slate-500 dark:text-slate-400 text-xs font-black uppercase tracking-wider">University Partners</p>
-                <p className="text-3xl font-black text-slate-900 dark:text-white">800+</p>
+                <p className="text-slate-400 text-xs font-black uppercase tracking-wider">University Partners</p>
+                <p className="text-3xl font-black text-white">800+</p>
               </div>
               <div className="p-6 border-2 border-dark-border flex flex-col gap-2 hover:border-primary/50 transition-colors bg-dark-surface shadow-xl rounded-2xl">
                 <Wallet className="text-primary w-8 h-8" />
-                <p className="text-slate-500 dark:text-slate-400 text-xs font-black uppercase tracking-wider">Commission Rate</p>
-                <p className="text-3xl font-black text-slate-900 dark:text-white">Up to 30%</p>
+                <p className="text-slate-400 text-xs font-black uppercase tracking-wider">Commission Rate</p>
+                <p className="text-3xl font-black text-white">Up to 30%</p>
               </div>
               <div className="p-6 border-2 border-dark-border flex flex-col gap-2 hover:border-primary/50 transition-colors bg-dark-surface shadow-xl rounded-2xl">
                 <Zap className="text-primary w-8 h-8" />
-                <p className="text-slate-500 dark:text-slate-400 text-xs font-black uppercase tracking-wider">Application Speed</p>
-                <p className="text-3xl font-black text-slate-900 dark:text-white">2.5x Faster</p>
+                <p className="text-slate-400 text-xs font-black uppercase tracking-wider">Application Speed</p>
+                <p className="text-3xl font-black text-white">2.5x Faster</p>
               </div>
               <div className="p-6 border-2 border-dark-border flex flex-col gap-2 hover:border-primary/50 transition-colors bg-dark-surface shadow-xl rounded-2xl">
                 <MapPin className="text-primary w-8 h-8" />
-                <p className="text-slate-500 dark:text-slate-400 text-xs font-black uppercase tracking-wider">Countries Covered</p>
-                <p className="text-3xl font-black text-slate-900 dark:text-white">120+</p>
+                <p className="text-slate-400 text-xs font-black uppercase tracking-wider">Countries Covered</p>
+                <p className="text-3xl font-black text-white">120+</p>
               </div>
             </div>
           </div>
@@ -172,29 +243,29 @@ export default function LandingPage() {
             </div>
             <div className="grid md:grid-cols-3 gap-8">
               <div className="bg-dark-surface p-8 border-2 border-dark-border shadow-[4px_4px_0px_0px_rgba(0,0,0,0.2)] hover:shadow-[6px_6px_0px_0px_rgba(236,91,19,0.3)] hover:-translate-y-1 transition-all group">
-                <div className="w-14 h-14 bg-primary/10 border-2 border-primary/30 flex items-center justify-center text-primary mb-6 group-hover:bg-primary group-hover:text-white transition-colors">
+                <div className="w-14 h-14 bg-primary/10 border-2 border-primary/30 flex items-center justify-center text-primary mb-6 group-hover:bg-primary group-hover:text-white transition-colors rounded-xl">
                   <Globe className="w-7 h-7" />
                 </div>
-                <h3 className="text-xl font-black mb-4 uppercase tracking-wide">Global Partnerships</h3>
-                <p className="text-slate-600 dark:text-slate-400 leading-relaxed text-sm font-medium">
+                <h3 className="text-xl font-black mb-4 uppercase tracking-wide text-white">Global Partnerships</h3>
+                <p className="text-slate-300 leading-relaxed text-sm font-medium">
                   Gain direct access to prestigious universities across UK, USA, Canada, and Australia. Skip the long contracts and start recruiting immediately.
                 </p>
               </div>
               <div className="bg-dark-surface p-8 border-2 border-dark-border shadow-[4px_4px_0px_0px_rgba(0,0,0,0.2)] hover:shadow-[6px_6px_0px_0px_rgba(236,91,19,0.3)] hover:-translate-y-1 transition-all group">
-                <div className="w-14 h-14 bg-primary/10 border-2 border-primary/30 flex items-center justify-center text-primary mb-6 group-hover:bg-primary group-hover:text-white transition-colors">
+                <div className="w-14 h-14 bg-primary/10 border-2 border-primary/30 flex items-center justify-center text-primary mb-6 group-hover:bg-primary group-hover:text-white transition-colors rounded-xl">
                   <TrendingUp className="w-7 h-7" />
                 </div>
-                <h3 className="text-xl font-black mb-4 uppercase tracking-wide">High Commissions</h3>
-                <p className="text-slate-600 dark:text-slate-400 leading-relaxed text-sm font-medium">
+                <h3 className="text-xl font-black mb-4 uppercase tracking-wide text-white">High Commissions</h3>
+                <p className="text-slate-300 leading-relaxed text-sm font-medium">
                   Earn significantly more with our transparent and competitive commission structures, paid securely and on time, every time.
                 </p>
               </div>
               <div className="bg-dark-surface p-8 border-2 border-dark-border shadow-[4px_4px_0px_0px_rgba(0,0,0,0.2)] hover:shadow-[6px_6px_0px_0px_rgba(236,91,19,0.3)] hover:-translate-y-1 transition-all group">
-                <div className="w-14 h-14 bg-primary/10 border-2 border-primary/30 flex items-center justify-center text-primary mb-6 group-hover:bg-primary group-hover:text-white transition-colors">
+                <div className="w-14 h-14 bg-primary/10 border-2 border-primary/30 flex items-center justify-center text-primary mb-6 group-hover:bg-primary group-hover:text-white transition-colors rounded-xl">
                   <Zap className="w-7 h-7" />
                 </div>
-                <h3 className="text-xl font-black mb-4 uppercase tracking-wide">Advanced AI Tools</h3>
-                <p className="text-slate-600 dark:text-slate-400 leading-relaxed text-sm font-medium">
+                <h3 className="text-xl font-black mb-4 uppercase tracking-wide text-white">Advanced AI Tools</h3>
+                <p className="text-slate-300 leading-relaxed text-sm font-medium">
                   Streamline applications with our proprietary recruitment software and CRM, designed specifically for high-performing education agents.
                 </p>
               </div>
@@ -236,10 +307,10 @@ export default function LandingPage() {
         </section>
 
         {/* CTA Section */}
-        <section className="py-24 text-center">
+        <section className="py-24 text-center bg-background-light dark:bg-background-dark">
           <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
             <h2 className="text-4xl lg:text-6xl font-black text-slate-900 dark:text-white leading-tight uppercase tracking-tight">Ready to transform your recruitment business?</h2>
-            <p className="text-xl text-slate-600 dark:text-slate-400 font-medium">Join the elite network of independent agents today and start earning more with freelancer.langoleaf.</p>
+            <p className="text-xl text-slate-600 dark:text-slate-300 font-medium">Join the elite network of independent agents today and start earning more with freelancer.langoleaf.</p>
             <div className="flex flex-col sm:flex-row justify-center gap-4">
               <Link 
                 href="/signup"
@@ -248,7 +319,7 @@ export default function LandingPage() {
                 Join freelancer.langoleaf Now
               </Link>
             </div>
-            <p className="text-sm text-slate-500 font-bold italic">No setup fees. No hidden costs. Just growth.</p>
+            <p className="text-sm text-slate-500 dark:text-slate-400 font-bold italic">No setup fees. No hidden costs. Just growth.</p>
           </div>
         </section>
       </main>
@@ -259,7 +330,7 @@ export default function LandingPage() {
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-12">
             <div className="col-span-2 space-y-6">
               <div className="flex items-center gap-2">
-                <School className="w-6 h-6 text-primary" />
+                <img src="/images/logo.png" alt="Langoleaf" className="w-6 h-6 object-contain rounded-lg" />
                 <h2 className="text-lg font-black tracking-tight text-slate-900 dark:text-white">
                   freelancer.<span className="text-primary">langoleaf</span>
                 </h2>
