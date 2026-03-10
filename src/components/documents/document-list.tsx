@@ -5,7 +5,7 @@ import { FileText, Image, Download, Trash2, ExternalLink, FolderOpen } from "luc
 import { cn } from "@/lib/utils/cn";
 import { DocumentType, documentTypeLabels } from "@/lib/cloudinary/client";
 
-interface Document {
+export interface Document {
   id: string;
   url: string;
   type: DocumentType;

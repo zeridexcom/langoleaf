@@ -4,18 +4,7 @@ import { useState, useEffect } from "react";
 import { FileText, Search, Filter } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { DocumentUpload, DocumentList } from "@/components/documents";
-
-interface Document {
-  id: string;
-  name: string;
-  category: string;
-  file_type: string;
-  file_size: number;
-  cloudinary_url: string;
-  created_at: string;
-  student_id?: string;
-  application_id?: string;
-}
+import type { Document } from "@/components/documents/document-list";
 
 export default function DocumentsPage() {
   const [documents, setDocuments] = useState<Document[]>([]);
