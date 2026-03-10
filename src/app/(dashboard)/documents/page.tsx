@@ -4,10 +4,21 @@ import { useState, useEffect } from "react";
 import { FileText, Search, Filter } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { DocumentUpload, DocumentList } from "@/components/documents";
-import type { Document } from "@/components/documents/document-list";
+
+interface PageDocument {
+  id: string;
+  name: string;
+  category: string;
+  file_type: string;
+  file_size: number;
+  cloudinary_url: string;
+  created_at: string;
+  student_id?: string;
+  application_id?: string;
+}
 
 export default function DocumentsPage() {
-  const [documents, setDocuments] = useState<Document[]>([]);
+  const [documents, setDocuments] = useState<PageDocument[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("all");
   const [loading, setLoading] = useState(true);
