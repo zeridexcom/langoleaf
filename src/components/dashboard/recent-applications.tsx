@@ -2,46 +2,32 @@
 
 import { FileText, ChevronRight } from "lucide-react";
 
-const recentApplications = [
-  {
-    id: "APP-2024-001",
-    studentName: "Rahul Sharma",
-    program: "MBA",
-    university: "IIM Bangalore",
-    status: "under_review",
-    date: "2 hours ago",
-    commission: "₹15,000",
-  },
-  {
-    id: "APP-2024-002",
-    studentName: "Priya Patel",
-    program: "B.Tech",
-    university: "IIT Delhi",
-    status: "documents_pending",
-    date: "5 hours ago",
-    commission: "₹12,000",
-  },
-  {
-    id: "APP-2024-003",
-    studentName: "Amit Kumar",
-    program: "MCA",
-    university: "NIT Trichy",
-    status: "approved",
-    date: "1 day ago",
-    commission: "₹10,000",
-  },
-];
+interface Application {
+  id: string;
+  program: string;
+  university: string;
+  status: string;
+  commission_amount?: number;
+  created_at: string;
+  student?: {
+    name: string;
+  };
+}
+
+interface RecentApplicationsProps {
+  applications?: Application[];
+}
 
 const statusStyles: Record<string, string> = {
-  draft: "bg-gray-500/20 text-gray-400 border border-gray-500/30",
-  submitted: "bg-blue-500/20 text-blue-400 border border-blue-500/30",
-  documents_pending: "bg-amber-500/20 text-amber-400 border border-amber-500/30",
-  under_review: "bg-purple-500/20 text-purple-400 border border-purple-500/30",
-  approved: "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30",
-  rejected: "bg-red-500/20 text-red-400 border border-red-500/30",
-  payment_pending: "bg-orange-500/20 text-orange-400 border border-orange-500/30",
-  payment_received: "bg-cyan-500/20 text-cyan-400 border border-cyan-500/30",
-  enrolled: "bg-[#6d28d9]/20 text-[#a78bfa] border border-[#6d28d9]/30",
+  draft: "bg-gray-100 text-gray-600 border border-gray-300",
+  submitted: "bg-blue-50 text-blue-600 border border-blue-200",
+  documents_pending: "bg-amber-50 text-amber-600 border border-amber-200",
+  under_review: "bg-primary/10 text-primary border border-primary/30",
+  approved: "bg-emerald-50 text-emerald-600 border border-emerald-200",
+  rejected: "bg-red-50 text-red-600 border border-red-200",
+  payment_pending: "bg-orange-50 text-orange-600 border border-orange-200",
+  payment_received: "bg-cyan-50 text-cyan-600 border border-cyan-200",
+  enrolled: "bg-primary/10 text-primary border border-primary/30",
 };
 
 const statusLabels: Record<string, string> = {
@@ -56,52 +42,65 @@ const statusLabels: Record<string, string> = {
   enrolled: "Enrolled",
 };
 
-export function RecentApplications() {
+export function RecentApplications({ applications = [] }: RecentApplicationsProps) {
+  const displayApplications = applications.slice(0, 5);
+
   return (
-    <div className="bg-[#1a1a2e] border border-[#2d2d4a] rounded-2xl p-6">
+    <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
       <div className="flex items-center justify-between mb-6">
-        <h3 className="text-lg font-semibold text-white">Recent Applications</h3>
+        <h3 className="text-lg font-semibold text-gray-900">Recent Applications</h3>
         <a
           href="/applications"
-          className="text-sm text-[#6d28d9] hover:text-[#a78bfa] flex items-center gap-1 transition-colors"
+          className="text-sm text-primary hover:text-primary/80 flex items-center gap-1 transition-colors"
         >
           View All
           <ChevronRight className="w-4 h-4" />
         </a>
       </div>
 
-      <div className="space-y-4">
-        {recentApplications.map((app) => (
-          <div
-            key={app.id}
-            className="flex items-center gap-4 p-4 bg-[#252542] rounded-xl hover:bg-[#2d2d4a] transition-colors"
-          >
-            <div className="w-10 h-10 rounded-lg bg-[#22d3ee]/20 flex items-center justify-center flex-shrink-0">
-              <FileText className="w-5 h-5 text-[#22d3ee]" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2">
-                <h4 className="text-sm font-medium text-white">
-                  {app.studentName}
-                </h4>
-                <span className="text-xs text-gray-500">•</span>
-                <span className="text-xs text-gray-500">{app.id}</span>
+      {displayApplications.length === 0 ? (
+        <div className="text-center py-8 text-gray-500 border border-dashed border-gray-300 rounded-lg">
+          <p className="font-medium">No applications yet</p>
+          <a href="/applications/create" className="text-primary hover:text-primary/80 text-xs font-black mt-3 inline-block uppercase tracking-wider border border-primary px-4 py-2 hover:bg-primary/10 transition-colors rounded-lg">
+            Create your first application
+          </a>
+        </div>
+      ) : (
+        <div className="space-y-4">
+          {displayApplications.map((app) => (
+            <div
+              key={app.id}
+              className="flex items-center gap-4 p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors border border-gray-200"
+            >
+              <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0 border border-primary/20">
+                <FileText className="w-5 h-5 text-primary" />
               </div>
-              <p className="text-xs text-gray-400 truncate">
-                {app.program} • {app.university}
-              </p>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2">
+                  <h4 className="text-sm font-medium text-gray-900">
+                    {app.student?.name || "Student"}
+                  </h4>
+                  <span className="text-xs text-gray-400">•</span>
+                  <span className="text-xs text-gray-500">{app.id.slice(0, 8)}</span>
+                </div>
+                <p className="text-xs text-gray-500 truncate">
+                  {app.program} • {app.university}
+                </p>
+              </div>
+              <div className="text-right">
+                <span
+                  className={`inline-flex px-2.5 py-1 rounded-md text-xs font-medium ${statusStyles[app.status] || statusStyles.draft}`}
+                >
+                  {statusLabels[app.status] || "Draft"}
+                </span>
+                {app.commission_amount && (
+                  <p className="text-xs text-primary mt-1 font-medium">₹{app.commission_amount.toLocaleString()}</p>
+                )}
+              </div>
             </div>
-            <div className="text-right">
-              <span
-                className={`inline-flex px-2.5 py-1 rounded-full text-xs font-medium ${statusStyles[app.status]}`}
-              >
-                {statusLabels[app.status]}
-              </span>
-              <p className="text-xs text-[#fbbf24] mt-1 font-medium">{app.commission}</p>
-            </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

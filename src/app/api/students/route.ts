@@ -1,15 +1,17 @@
-import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
-import { cookies } from "next/headers";
+import { createClient } from "@/lib/supabase/server";
 import { NextResponse } from "next/server";
 import { cache } from "@/lib/redis/client";
 
+export const dynamic = "force-dynamic";
+
+// GET /api/students - List students
 export async function GET(request: Request) {
   try {
-    const supabase = createRouteHandlerClient({ cookies });
+    const supabase = createClient();
     
     // Check auth
-    const { data: { session } } = await supabase.auth.getSession();
-    if (!session) {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
@@ -17,7 +19,7 @@ export async function GET(request: Request) {
     const { data: profile } = await supabase
       .from("profiles")
       .select("id")
-      .eq("user_id", session.user.id)
+      .eq("user_id", user.id)
       .single();
 
     if (!profile) {
@@ -63,12 +65,14 @@ export async function GET(request: Request) {
   }
 }
 
+// POST /api/students - Create new student
 export async function POST(request: Request) {
   try {
-    const supabase = createRouteHandlerClient({ cookies });
+    const supabase = createClient();
     
-    const { data: { session } } = await supabase.auth.getSession();
-    if (!session) {
+    // Check auth
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
@@ -78,7 +82,7 @@ export async function POST(request: Request) {
     const { data: profile } = await supabase
       .from("profiles")
       .select("id")
-      .eq("user_id", session.user.id)
+      .eq("user_id", user.id)
       .single();
 
     if (!profile) {

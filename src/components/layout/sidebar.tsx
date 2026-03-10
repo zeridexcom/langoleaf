@@ -19,15 +19,16 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils/cn";
 import { useState } from "react";
+import { usePathname } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
 const menuItems = [
-  { icon: LayoutDashboard, label: "Growth Center", href: "/dashboard" },
+  { icon: LayoutDashboard, label: "Dashboard", href: "/dashboard" },
   { icon: Rocket, label: "Campaigns", href: "/campaigns" },
   { icon: School, label: "Language Hub", href: "/language-hub" },
-  { icon: TrendingUp, label: "Earning Plans", href: "/earnings" },
   { icon: Users, label: "Students", href: "/students" },
   { icon: FileText, label: "Applications", href: "/applications" },
+  { icon: TrendingUp, label: "Earnings", href: "/earnings" },
   { icon: FolderOpen, label: "Documents", href: "/documents" },
   { icon: UserCircle, label: "Profile", href: "/profile" },
   { icon: Bell, label: "Notifications", href: "/notifications", badge: 3 },
@@ -41,8 +42,19 @@ interface SidebarProps {
 }
 
 export function Sidebar({ collapsed, setCollapsed }: SidebarProps) {
-  const [activeItem, setActiveItem] = useState("Growth Center");
+  const pathname = usePathname();
   const supabase = createClient();
+  
+  // Determine active item based on current pathname
+  const getActiveItem = () => {
+    const currentPath = pathname || "/dashboard";
+    const activeMenuItem = menuItems.find(item => 
+      currentPath === item.href || currentPath.startsWith(item.href + "/")
+    );
+    return activeMenuItem?.label || "Dashboard";
+  };
+  
+  const activeItem = getActiveItem();
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
@@ -52,7 +64,7 @@ export function Sidebar({ collapsed, setCollapsed }: SidebarProps) {
   return (
     <aside
       className={cn(
-        "fixed left-0 top-16 h-[calc(100vh-4rem)] bg-dark-surface border-r-2 border-dark-border transition-all duration-300 z-40",
+        "fixed left-0 top-16 h-[calc(100vh-4rem)] bg-white border-r border-gray-200 transition-all duration-300 z-40 shadow-sm rounded-r-xl",
         collapsed ? "w-20" : "w-64"
       )}
     >
@@ -60,7 +72,7 @@ export function Sidebar({ collapsed, setCollapsed }: SidebarProps) {
         {/* Collapse Button */}
         <button
           onClick={() => setCollapsed(!collapsed)}
-          className="absolute -right-3 top-6 w-6 h-6 bg-primary flex items-center justify-center text-white shadow-lg shadow-primary/30 hover:bg-primary/80 transition-colors border-2 border-white/20"
+          className="absolute -right-3 top-6 w-6 h-6 bg-primary flex items-center justify-center text-white rounded-full shadow-md hover:bg-primary/80 transition-colors"
         >
           {collapsed ? (
             <ChevronRight className="w-4 h-4" />
@@ -71,14 +83,14 @@ export function Sidebar({ collapsed, setCollapsed }: SidebarProps) {
 
         {/* User Profile Card */}
         {!collapsed && (
-          <div className="p-4 border-b-2 border-dark-border">
-            <div className="flex gap-3 items-center p-3 bg-dark-elevated border-2 border-dark-border">
-              <div className="bg-center bg-no-repeat aspect-square bg-cover size-12 border-2 border-primary" 
-                   style={{backgroundImage: 'url("https://ui-avatars.com/api/?name=Sarah+Jenkins&background=ec5b13&color=fff")'}}>
+          <div className="p-4 border-b border-gray-200">
+            <div className="flex gap-3 items-center p-3 bg-gray-50 border border-gray-200 rounded-xl">
+              <div className="bg-center bg-no-repeat aspect-square bg-cover size-12 rounded-xl" 
+                   style={{backgroundImage: 'url("https://ui-avatars.com/api/?name=Agent&background=ec5b13&color=fff")'}}>
               </div>
               <div className="flex flex-col truncate">
-                <h1 className="text-white text-sm font-black leading-tight">Sarah Jenkins</h1>
-                <p className="text-slate-400 text-xs font-bold uppercase tracking-wider">Level 4 Agent</p>
+                <h1 className="text-gray-900 text-sm font-black leading-tight">Agent</h1>
+                <p className="text-gray-500 text-xs font-bold uppercase tracking-wider">Partner</p>
               </div>
             </div>
           </div>
@@ -91,25 +103,24 @@ export function Sidebar({ collapsed, setCollapsed }: SidebarProps) {
               <li key={item.label}>
                 <a
                   href={item.href}
-                  onClick={() => setActiveItem(item.label)}
                   className={cn(
-                    "flex items-center gap-3 px-4 py-3 border-2 border-transparent transition-all duration-200 group font-bold",
+                    "flex items-center gap-3 px-4 py-3 border transition-all duration-200 group font-bold rounded-lg",
                     activeItem === item.label
-                      ? "bg-primary text-white border-primary shadow-[4px_4px_0px_0px_rgba(236,91,19,0.3)]"
-                      : "text-slate-400 hover:bg-dark-elevated hover:text-white hover:border-dark-border"
+                      ? "bg-primary text-white border-primary shadow-sm"
+                      : "text-gray-500 hover:bg-gray-100 hover:text-gray-900 border-transparent"
                   )}
                 >
                   <item.icon
                     className={cn(
                       "w-5 h-5 flex-shrink-0",
-                      activeItem === item.label ? "text-white" : "text-slate-400"
+                      activeItem === item.label ? "text-white" : "text-gray-500"
                     )}
                   />
                   {!collapsed && (
                     <span className="text-sm">{item.label}</span>
                   )}
                   {!collapsed && item.badge && (
-                    <span className="ml-auto bg-primary text-white text-xs font-black px-2 py-0.5">
+                    <span className="ml-auto bg-primary text-white text-xs font-bold px-2 py-0.5 rounded-full">
                       {item.badge}
                     </span>
                   )}
@@ -121,23 +132,23 @@ export function Sidebar({ collapsed, setCollapsed }: SidebarProps) {
 
         {/* Progress Goal */}
         {!collapsed && (
-          <div className="p-4 border-t-2 border-dark-border">
-            <div className="bg-primary/10 border-2 border-primary/30 p-4">
-              <p className="text-xs font-black text-primary mb-2 uppercase tracking-wider">Target 2026</p>
-              <div className="h-3 w-full bg-dark-elevated border border-dark-border overflow-hidden">
-                <div className="h-full bg-primary" style={{width: "75%"}}></div>
+          <div className="p-4 border-t border-gray-200">
+            <div className="bg-primary/10 border border-primary/20 p-4 rounded-xl">
+              <p className="text-xs font-bold text-primary mb-2 uppercase tracking-wider">Target 2026</p>
+              <div className="h-2 w-full bg-gray-200 rounded-full overflow-hidden">
+                <div className="h-full bg-primary rounded-full" style={{width: "75%"}}></div>
               </div>
-              <p className="text-[10px] text-slate-400 mt-2 font-bold">₹12.5L / ₹15L Commission Goal</p>
+              <p className="text-[10px] text-gray-500 mt-2 font-bold">₹12.5L / ₹15L Goal</p>
             </div>
           </div>
         )}
 
         {/* Logout */}
-        <div className="p-3 border-t-2 border-dark-border">
+        <div className="p-3 border-t border-gray-200">
           <button
             onClick={handleSignOut}
             className={cn(
-              "flex items-center gap-3 px-4 py-2 border-2 border-transparent text-slate-400 hover:text-white hover:bg-dark-elevated hover:border-dark-border transition-all duration-200 w-full font-bold",
+              "flex items-center gap-3 px-4 py-2 border border-transparent text-gray-500 hover:text-gray-900 hover:bg-gray-100 transition-all duration-200 w-full font-bold rounded-lg",
               collapsed && "justify-center"
             )}
           >

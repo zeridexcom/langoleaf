@@ -1,15 +1,16 @@
 "use client";
 
-import { Bell, Search, User, Coins, Zap } from "lucide-react";
-import { cn } from "@/lib/utils/cn";
+import { Search, User, Coins, Zap } from "lucide-react";
 import { ThemeToggle } from "@/components/theme/theme-toggle";
+import { GlobalSearch } from "@/components/search/global-search";
+import { NotificationDropdown } from "@/components/notifications/notification-dropdown";
 import { useState, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
 
 export function Header() {
   const [user, setUser] = useState<any>(null);
   const [coins, setCoins] = useState(0);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchOpen, setSearchOpen] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -22,7 +23,7 @@ export function Header() {
           const { data: profile } = await supabase
             .from("profiles")
             .select("*, freelancer_profiles(*)")
-            .eq("id", authUser.id)
+            .eq("user_id", authUser.id)
             .single();
           
           if (profile) {
@@ -40,77 +41,82 @@ export function Header() {
     loadUserData();
   }, []);
 
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (searchQuery.trim()) {
-      window.location.href = `/students?search=${encodeURIComponent(searchQuery)}`;
+  // Keyboard shortcut for search (Cmd/Ctrl + K)
+  useEffect(() => {
+    function handleKeyDown(e: KeyboardEvent) {
+      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
+        e.preventDefault();
+        setSearchOpen(true);
+      }
     }
-  };
+    
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 h-16 bg-dark-surface border-b-2 border-dark-border">
-      <div className="flex items-center justify-between h-full px-6">
-        {/* Logo */}
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-primary flex items-center justify-center border-2 border-white/20 shadow-lg shadow-primary/30">
-            <Zap className="w-5 h-5 text-white" fill="currentColor" />
-          </div>
-          <div>
-            <h1 className="text-lg font-black text-white tracking-tight">EduAgent Pro</h1>
-            <p className="text-[10px] font-bold text-primary uppercase tracking-wider">Growth Dashboard</p>
-          </div>
-        </div>
-
-        {/* Search */}
-        <form onSubmit={handleSearch} className="hidden md:flex items-center flex-1 max-w-md mx-8">
-          <div className="relative w-full">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search students, applications..."
-              className="w-full pl-10 pr-4 py-2 bg-dark-elevated border-2 border-dark-border text-sm text-white placeholder:text-slate-500 focus:outline-none focus:border-primary font-medium"
-            />
-          </div>
-        </form>
-
-        {/* Right Section */}
-        <div className="flex items-center gap-3">
-          {/* Theme Toggle */}
-          <ThemeToggle />
-
-          {/* Coins Display */}
-          <div className="flex items-center gap-2 px-3 py-1.5 bg-dark-elevated border-2 border-dark-border">
-            <Coins className="w-4 h-4 text-amber-400" />
-            <span className="text-sm font-bold text-amber-400">
-              {loading ? "..." : coins.toLocaleString()}
-            </span>
-          </div>
-
-          {/* Notifications */}
-          <button className="relative p-2 text-slate-400 hover:text-white hover:bg-dark-elevated transition-colors border-2 border-transparent hover:border-dark-border">
-            <Bell className="w-5 h-5" />
-            <span className="absolute top-0 right-0 w-2 h-2 bg-primary border border-dark-surface" />
-          </button>
-
-          {/* Profile */}
-          <button className="flex items-center gap-3 p-1 hover:bg-dark-elevated transition-colors border-2 border-transparent hover:border-dark-border">
-            <div className="w-8 h-8 bg-primary/20 flex items-center justify-center border border-primary/30">
-              <User className="w-4 h-4 text-primary" />
+    <>
+      <GlobalSearch isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
+      
+      <header className="fixed top-0 left-0 right-0 z-50 h-16 bg-white border-b border-gray-200 shadow-sm">
+        <div className="flex items-center justify-between h-full px-6">
+          {/* Logo */}
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-primary flex items-center justify-center rounded-xl shadow-md">
+              <Zap className="w-5 h-5 text-white" fill="currentColor" />
             </div>
-            <div className="hidden sm:block text-left">
-              <p className="text-sm font-bold text-white">
-                {loading ? "..." : user?.full_name || "Agent"}
-              </p>
-              <p className="text-[10px] font-bold text-slate-500 uppercase">
-                {user?.freelancer_profiles?.[0]?.agent_id || "ID: AGT-001"}
-              </p>
+            <div>
+              <h1 className="text-lg font-black text-gray-900 tracking-tight">Lango</h1>
+              <p className="text-[10px] font-bold text-primary uppercase tracking-wider">Partner Portal</p>
+            </div>
+          </div>
+
+          {/* Search Bar - Click to open global search */}
+          <button
+            onClick={() => setSearchOpen(true)}
+            className="hidden md:flex items-center flex-1 max-w-md mx-8 px-4 py-2 bg-gray-50 border border-gray-200 rounded-xl text-left hover:bg-gray-100 transition-colors group"
+          >
+            <Search className="w-4 h-4 text-gray-400 mr-3" />
+            <span className="text-sm text-gray-400 flex-1">Search students, applications...</span>
+            <div className="flex items-center gap-1 text-xs text-gray-400">
+              <kbd className="px-1.5 py-0.5 bg-white border border-gray-200 rounded">⌘</kbd>
+              <kbd className="px-1.5 py-0.5 bg-white border border-gray-200 rounded">K</kbd>
             </div>
           </button>
+
+          {/* Right Section */}
+          <div className="flex items-center gap-3">
+            {/* Theme Toggle */}
+            <ThemeToggle />
+
+            {/* Coins Display */}
+            <div className="flex items-center gap-2 px-3 py-1.5 bg-gray-50 border border-gray-200 rounded-lg">
+              <Coins className="w-4 h-4 text-amber-500" />
+              <span className="text-sm font-bold text-amber-500">
+                {loading ? "..." : coins.toLocaleString()}
+              </span>
+            </div>
+
+            {/* Notifications Dropdown */}
+            <NotificationDropdown />
+
+            {/* Profile */}
+            <button className="flex items-center gap-3 p-1 hover:bg-gray-100 transition-colors rounded-lg border border-transparent hover:border-gray-200">
+              <div className="w-8 h-8 bg-primary/10 flex items-center justify-center rounded-lg border border-primary/20">
+                <User className="w-4 h-4 text-primary" />
+              </div>
+              <div className="hidden sm:block text-left">
+                <p className="text-sm font-bold text-gray-900">
+                  {loading ? "..." : user?.full_name || "Agent"}
+                </p>
+                <p className="text-[10px] font-bold text-gray-500 uppercase">
+                  {user?.freelancer_profiles?.[0]?.agent_id || "ID: AGT-001"}
+                </p>
+              </div>
+            </button>
+          </div>
         </div>
-      </div>
-    </header>
+      </header>
+    </>
   );
 }
-

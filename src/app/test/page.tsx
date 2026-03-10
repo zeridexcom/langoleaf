@@ -6,7 +6,7 @@ export default function TestPage() {
         <p className="text-gray-400">Server is running correctly on port 3005</p>
         <a 
           href="/login" 
-          className="inline-block mt-6 px-6 py-3 bg-[#6d28d9] text-white rounded-xl hover:bg-[#6d28d9]/80 transition-colors"
+          className="inline-block mt-6 px-6 py-3 bg-primary text-white rounded-xl hover:bg-primary/80 transition-colors"
         >
           Go to Login
         </a>

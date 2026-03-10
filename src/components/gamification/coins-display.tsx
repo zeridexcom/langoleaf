@@ -18,8 +18,8 @@ export function CoinsDisplay() {
       </div>
 
       {/* Level Badge */}
-      <div className="hidden sm:flex items-center gap-2 px-3 py-2 bg-[#252542] border border-[#2d2d4a] rounded-2xl">
-        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#6d28d9] to-[#22d3ee] flex items-center justify-center text-white text-xs font-bold">
+      <div className="hidden sm:flex items-center gap-2 px-3 py-2 bg-dark-elevated border border-dark-border rounded-2xl">
+        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-white text-xs font-bold">
           S
         </div>
         <div>

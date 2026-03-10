@@ -38,10 +38,13 @@ export default function SignupPage() {
     setErrorMessage(null);
     
     try {
+      // Hardcoded production URL to fix OAuth redirect
+      const redirectUrl = 'https://freelancer.langoleaf.com/auth/callback';
+      
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: `${window.location.origin}/auth/callback`,
+          redirectTo: redirectUrl,
         },
       });
       
@@ -140,7 +143,7 @@ export default function SignupPage() {
       {/* Logo */}
       <div className="text-center mb-8">
         <div className="flex items-center justify-center gap-2 mb-4">
-          <School className="w-8 h-8 text-primary" />
+          <img src="/images/logo.png" alt="Langoleaf" className="w-8 h-8 object-contain rounded-lg" />
           <h2 className="text-2xl font-black tracking-tight text-slate-900 dark:text-white">
             freelancer.<span className="text-primary">langoleaf</span>
           </h2>

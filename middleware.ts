@@ -19,6 +19,14 @@ export async function middleware(request: NextRequest) {
     return response
   }
 
+  // Handle OAuth callback code on homepage - redirect to auth/callback
+  const code = request.nextUrl.searchParams.get('code')
+  if (code && request.nextUrl.pathname === '/') {
+    const redirectUrl = new URL('/auth/callback', request.url)
+    redirectUrl.searchParams.set('code', code)
+    return NextResponse.redirect(redirectUrl)
+  }
+
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,

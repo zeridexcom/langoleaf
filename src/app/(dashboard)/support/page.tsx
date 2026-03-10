@@ -34,18 +34,18 @@ export default function SupportPage() {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold text-white">Help & Support</h1>
-        <p className="text-gray-400 mt-1">Find answers or get in touch with our team</p>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Help & Support</h1>
+        <p className="text-gray-500 dark:text-gray-400 mt-1">Find answers or get in touch with our team</p>
       </div>
 
       {/* Tabs */}
-      <div className="flex items-center gap-2 border-b border-[#2d2d4a]">
+      <div className="flex items-center gap-2 border-b border-gray-200 dark:border-gray-700">
         <button
           onClick={() => setActiveTab("faq")}
           className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors ${
             activeTab === "faq"
-              ? "text-[#6d28d9] border-[#6d28d9]"
-              : "text-gray-400 border-transparent hover:text-white"
+              ? "text-primary border-primary"
+              : "text-gray-500 dark:text-gray-400 border-transparent hover:text-gray-700 dark:hover:text-gray-200"
           }`}
         >
           <HelpCircle className="w-4 h-4 inline mr-2" />
@@ -55,8 +55,8 @@ export default function SupportPage() {
           onClick={() => setActiveTab("contact")}
           className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors ${
             activeTab === "contact"
-              ? "text-[#6d28d9] border-[#6d28d9]"
-              : "text-gray-400 border-transparent hover:text-white"
+              ? "text-primary border-primary"
+              : "text-gray-500 dark:text-gray-400 border-transparent hover:text-gray-700 dark:hover:text-gray-200"
           }`}
         >
           <MessageCircle className="w-4 h-4 inline mr-2" />
@@ -69,13 +69,13 @@ export default function SupportPage() {
           {faqs.map((faq, index) => (
             <div
               key={index}
-              className="bg-[#1a1a2e] border border-[#2d2d4a] rounded-xl overflow-hidden"
+              className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden"
             >
               <button
                 onClick={() => setOpenFaq(openFaq === index ? null : index)}
-                className="w-full flex items-center justify-between p-4 text-left hover:bg-[#252542] transition-colors"
+                className="w-full flex items-center justify-between p-4 text-left hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
               >
-                <span className="text-sm font-medium text-white">{faq.question}</span>
+                <span className="text-sm font-medium text-gray-900 dark:text-white">{faq.question}</span>
                 <ChevronDown
                   className={`w-5 h-5 text-gray-400 transition-transform ${
                     openFaq === index ? "rotate-180" : ""
@@ -84,7 +84,7 @@ export default function SupportPage() {
               </button>
               {openFaq === index && (
                 <div className="px-4 pb-4">
-                  <p className="text-sm text-gray-400 leading-relaxed">{faq.answer}</p>
+                  <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">{faq.answer}</p>
                 </div>
               )}
             </div>
@@ -94,47 +94,47 @@ export default function SupportPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Contact Methods */}
           <div className="space-y-4">
-            <div className="bg-[#1a1a2e] border border-[#2d2d4a] rounded-xl p-4 flex items-center gap-4">
-              <div className="p-3 bg-[#6d28d9]/10 rounded-xl">
-                <Phone className="w-5 h-5 text-[#6d28d9]" />
+            <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl p-4 flex items-center gap-4">
+              <div className="p-3 bg-primary/10 rounded-xl">
+                <Phone className="w-5 h-5 text-primary" />
               </div>
               <div>
-                <p className="text-sm font-medium text-white">Phone Support</p>
-                <p className="text-sm text-gray-400">+91 1800-123-4567</p>
-                <p className="text-xs text-gray-500">Mon-Fri, 9AM-6PM IST</p>
+                <p className="text-sm font-medium text-gray-900 dark:text-white">Phone Support</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">+91 1800-123-4567</p>
+                <p className="text-xs text-gray-400 dark:text-gray-500">Mon-Fri, 9AM-6PM IST</p>
               </div>
             </div>
 
-            <div className="bg-[#1a1a2e] border border-[#2d2d4a] rounded-xl p-4 flex items-center gap-4">
-              <div className="p-3 bg-[#22d3ee]/10 rounded-xl">
-                <Mail className="w-5 h-5 text-[#22d3ee]" />
+            <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl p-4 flex items-center gap-4">
+              <div className="p-3 bg-accent/10 rounded-xl">
+                <Mail className="w-5 h-5 text-accent" />
               </div>
               <div>
-                <p className="text-sm font-medium text-white">Email Support</p>
-                <p className="text-sm text-gray-400">support@langoleaf.com</p>
-                <p className="text-xs text-gray-500">24/7 response within 24h</p>
+                <p className="text-sm font-medium text-gray-900 dark:text-white">Email Support</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">support@langoleaf.com</p>
+                <p className="text-xs text-gray-400 dark:text-gray-500">24/7 response within 24h</p>
               </div>
             </div>
 
-            <div className="bg-[#1a1a2e] border border-[#2d2d4a] rounded-xl p-4 flex items-center gap-4">
-              <div className="p-3 bg-emerald-500/10 rounded-xl">
-                <MessageCircle className="w-5 h-5 text-emerald-400" />
+            <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl p-4 flex items-center gap-4">
+              <div className="p-3 bg-emerald-100 dark:bg-emerald-500/10 rounded-xl">
+                <MessageCircle className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
               </div>
               <div>
-                <p className="text-sm font-medium text-white">Live Chat</p>
-                <p className="text-sm text-gray-400">Available for Gold+ agents</p>
-                <p className="text-xs text-gray-500">Instant response</p>
+                <p className="text-sm font-medium text-gray-900 dark:text-white">Live Chat</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">Available for Gold+ agents</p>
+                <p className="text-xs text-gray-400 dark:text-gray-500">Instant response</p>
               </div>
             </div>
           </div>
 
           {/* Contact Form */}
-          <div className="bg-[#1a1a2e] border border-[#2d2d4a] rounded-xl p-6">
-            <h3 className="text-lg font-semibold text-white mb-4">Send us a message</h3>
+          <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl p-6">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Send us a message</h3>
             <form className="space-y-4">
               <div>
-                <label className="block text-sm text-gray-400 mb-2">Subject</label>
-                <select className="w-full px-4 py-2 bg-[#252542] border border-[#2d2d4a] rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-[#6d28d9]/50">
+                <label className="block text-sm text-gray-500 dark:text-gray-400 mb-2">Subject</label>
+                <select className="w-full px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/50">
                   <option>General Inquiry</option>
                   <option>Technical Issue</option>
                   <option>Payment Question</option>
@@ -142,16 +142,16 @@ export default function SupportPage() {
                 </select>
               </div>
               <div>
-                <label className="block text-sm text-gray-400 mb-2">Message</label>
+                <label className="block text-sm text-gray-500 dark:text-gray-400 mb-2">Message</label>
                 <textarea
                   rows={4}
                   placeholder="Describe your issue or question..."
-                  className="w-full px-4 py-2 bg-[#252542] border border-[#2d2d4a] rounded-xl text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[#6d28d9]/50 resize-none"
+                  className="w-full px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-xl text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-primary/50 resize-none"
                 />
               </div>
               <button
                 type="submit"
-                className="w-full flex items-center justify-center gap-2 py-2 bg-[#6d28d9] text-white font-medium rounded-xl hover:bg-[#6d28d9]/90 transition-colors"
+                className="w-full flex items-center justify-center gap-2 py-2 bg-primary text-white font-medium rounded-xl hover:bg-primary/90 transition-colors"
               >
                 <Send className="w-4 h-4" />
                 Send Message
