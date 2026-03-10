@@ -17,20 +17,29 @@ interface Document {
 }
 
 interface DocumentListProps {
-  studentId: string;
+  studentId?: string;
+  documents?: Document[];
+  onRefresh?: () => void;
   onDelete?: (documentId: string) => void;
 }
 
-export function DocumentList({ studentId, onDelete }: DocumentListProps) {
-  const [documents, setDocuments] = useState<Document[]>([]);
-  const [loading, setLoading] = useState(true);
+export function DocumentList({ studentId, documents: propDocuments, onRefresh, onDelete }: DocumentListProps) {
+  const [documents, setDocuments] = useState<Document[]>(propDocuments || []);
+  const [loading, setLoading] = useState(!propDocuments);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    loadDocuments();
-  }, [studentId]);
+    if (propDocuments) {
+      setDocuments(propDocuments);
+      setLoading(false);
+    } else if (studentId) {
+      loadDocuments();
+    }
+  }, [studentId, propDocuments]);
 
   const loadDocuments = async () => {
+    if (!studentId) return;
+    
     try {
       setLoading(true);
       const response = await fetch(`/api/documents?studentId=${studentId}`);
