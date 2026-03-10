@@ -45,13 +45,13 @@ const documents = [
 const getFileIcon = (type: string) => {
   switch (type) {
     case "pdf":
-      return <FileText className="w-8 h-8 text-red-400" />;
+      return <FileText className="w-8 h-8 text-red-500" />;
     case "image":
-      return <Image className="w-8 h-8 text-blue-400" />;
+      return <Image className="w-8 h-8 text-blue-500" />;
     case "doc":
       return <FileText className="w-8 h-8 text-blue-600" />;
     case "spreadsheet":
-      return <FileSpreadsheet className="w-8 h-8 text-emerald-400" />;
+      return <FileSpreadsheet className="w-8 h-8 text-emerald-500" />;
     default:
       return <File className="w-8 h-8 text-gray-400" />;
   }
@@ -73,10 +73,10 @@ export default function DocumentsPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-white">Documents</h1>
-          <p className="text-gray-400 mt-1">Manage student documents and uploads</p>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Documents</h1>
+          <p className="text-gray-500 dark:text-gray-400 mt-1">Manage student documents and uploads</p>
         </div>
-        <button className="flex items-center gap-2 px-4 py-2 bg-[#ec5b13] text-white rounded-xl hover:bg-[#ec5b13]/90 transition-colors">
+        <button className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-xl hover:bg-primary/90 transition-colors">
           <Upload className="w-4 h-4" />
           Upload Document
         </button>
@@ -85,19 +85,19 @@ export default function DocumentsPage() {
       {/* Filters */}
       <div className="flex flex-col sm:flex-row gap-4">
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
           <input
             type="text"
             placeholder="Search documents..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 bg-dark-surface border border-dark-border rounded-xl text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[#ec5b13]/50"
+            className="w-full pl-10 pr-4 py-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-primary/50"
           />
         </div>
         <select
           value={categoryFilter}
           onChange={(e) => setCategoryFilter(e.target.value)}
-          className="px-4 py-2 bg-dark-surface border border-dark-border rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-[#ec5b13]/50"
+          className="px-4 py-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/50"
         >
           <option value="all">All Categories</option>
           <option value="Academic">Academic</option>
@@ -111,28 +111,28 @@ export default function DocumentsPage() {
         {filteredDocuments.map((doc) => (
           <div
             key={doc.id}
-            className="bg-dark-surface border border-dark-border rounded-xl p-4 hover:border-[#ec5b13]/50 transition-colors"
+            className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl p-4 hover:border-primary/50 transition-colors"
           >
             <div className="flex items-start gap-4">
-              <div className="p-3 bg-[#252542] rounded-xl">
+              <div className="p-3 bg-gray-100 dark:bg-gray-800 rounded-xl">
                 {getFileIcon(doc.type)}
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-white truncate">{doc.name}</p>
-                <p className="text-xs text-gray-400 mt-1">{doc.student}</p>
+                <p className="text-sm font-medium text-gray-900 dark:text-white truncate">{doc.name}</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{doc.student}</p>
                 <div className="flex items-center gap-2 mt-2">
-                  <span className="text-xs text-gray-500">{doc.size}</span>
-                  <span className="w-1 h-1 bg-gray-500 rounded-full" />
-                  <span className="text-xs text-gray-500">{doc.uploadedAt}</span>
+                  <span className="text-xs text-gray-500 dark:text-gray-400">{doc.size}</span>
+                  <span className="w-1 h-1 bg-gray-300 dark:bg-gray-600 rounded-full" />
+                  <span className="text-xs text-gray-500 dark:text-gray-400">{doc.uploadedAt}</span>
                 </div>
               </div>
             </div>
-            <div className="flex items-center gap-2 mt-4 pt-4 border-t border-dark-border">
-              <button className="flex-1 flex items-center justify-center gap-2 py-2 text-sm text-gray-400 hover:text-white hover:bg-[#252542] rounded-lg transition-colors">
+            <div className="flex items-center gap-2 mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+              <button className="flex-1 flex items-center justify-center gap-2 py-2 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors">
                 <Download className="w-4 h-4" />
                 Download
               </button>
-              <button className="p-2 text-gray-400 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors">
+              <button className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg transition-colors">
                 <Trash2 className="w-4 h-4" />
               </button>
             </div>
@@ -141,9 +141,9 @@ export default function DocumentsPage() {
       </div>
 
       {filteredDocuments.length === 0 && (
-        <div className="text-center py-12 bg-dark-surface border border-dark-border rounded-xl">
-          <FileText className="w-12 h-12 text-gray-500 mx-auto mb-4" />
-          <p className="text-gray-400">No documents found</p>
+        <div className="text-center py-12 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl">
+          <FileText className="w-12 h-12 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
+          <p className="text-gray-500 dark:text-gray-400">No documents found</p>
         </div>
       )}
     </div>
