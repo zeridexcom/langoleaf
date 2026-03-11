@@ -4,33 +4,60 @@
 
 @layer base {
   :root {
-    /* Swiss International Style - Strict Palette */
-    --background: 0 0% 100%; /* Pure White */
-    --foreground: 0 0% 0%; /* Pure Black */
+    /* Light theme (default) - EduAgent Pro Theme */
+    --background: 0 0% 97%;
+    --foreground: 20 20% 10%;
     --card: 0 0% 100%;
-    --card-foreground: 0 0% 0%;
+    --card-foreground: 20 20% 10%;
     --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 0%;
-    --primary: 9 100% 50%; /* Swiss Red #FF3000 */
+    --popover-foreground: 20 20% 10%;
+    --primary: 20 85% 50%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 0 0% 95%; /* Muted Gray #F2F2F2 */
-    --secondary-foreground: 0 0% 0%;
-    --muted: 0 0% 95%;
-    --muted-foreground: 0 0% 0%;
-    --accent: 9 100% 50%; /* Swiss Red */
-    --accent-foreground: 0 0% 100%;
-    --destructive: 9 100% 50%;
-    --destructive-foreground: 0 0% 100%;
-    --border: 0 0% 0%; /* Pure Black */
-    --input: 0 0% 0%;
-    --ring: 9 100% 50%; /* Swiss Red */
-    --radius: 0px; /* Strictly Rectangular */
+    --secondary: 20 10% 95%;
+    --secondary-foreground: 20 20% 15%;
+    --muted: 20 10% 95%;
+    --muted-foreground: 20 10% 45%;
+    --accent: 25 85% 65%;
+    --accent-foreground: 20 20% 10%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 20 10% 90%;
+    --input: 20 10% 90%;
+    --ring: 20 85% 50%;
+    --radius: 1.5rem;
     
-    /* Swiss Style Custom Properties */
-    --swiss-red: #FF3000;
-    --swiss-black: #000000;
-    --swiss-white: #FFFFFF;
-    --swiss-muted: #F2F2F2;
+    /* Custom colors - EduAgent Pro Light Theme */
+    --dark-bg: #ffffff;
+    --dark-surface: #f8f6f6;
+    --dark-elevated: #ffffff;
+    --dark-border: #e5e5e5;
+    --light-bg: #f8f6f6;
+    --light-surface: #ffffff;
+    --primary-orange: #ec5b13;
+    --accent-orange: #f4a261;
+    --coins-gold: #fbbf24;
+  }
+
+  .dark {
+    --background: 15 30% 8%;
+    --foreground: 20 10% 95%;
+    --card: 15 25% 12%;
+    --card-foreground: 20 10% 95%;
+    --popover: 15 25% 12%;
+    --popover-foreground: 20 10% 95%;
+    --primary: 20 85% 50%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 15 20% 18%;
+    --secondary-foreground: 20 10% 95%;
+    --muted: 15 20% 18%;
+    --muted-foreground: 20 10% 60%;
+    --accent: 25 85% 65%;
+    --accent-foreground: 20 10% 95%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 15 20% 20%;
+    --input: 15 20% 20%;
+    --ring: 20 85% 50%;
   }
 
   * {
@@ -38,7 +65,7 @@
   }
 
   body {
-    @apply bg-white text-black antialiased;
+    @apply bg-background text-foreground antialiased;
     font-feature-settings: "rlig" 1, "calt" 1;
   }
 
@@ -48,147 +75,104 @@
 }
 
 @layer utilities {
-  /* Swiss Pattern Utilities - Grid Pattern (24px) */
-  .swiss-grid-pattern {
-    background-image: 
-      linear-gradient(to right, rgba(0,0,0,0.03) 1px, transparent 1px),
-      linear-gradient(to bottom, rgba(0,0,0,0.03) 1px, transparent 1px);
-    background-size: 24px 24px;
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-[#ec5b13] to-[#f4a261];
   }
 
-  /* Dot Matrix Pattern (16px) */
-  .swiss-dots {
-    background-image: radial-gradient(circle, rgba(0,0,0,0.04) 1px, transparent 1px);
-    background-size: 16px 16px;
+  .glass {
+    @apply bg-[#2a1b14]/80 backdrop-blur-xl border border-[#4a3023] shadow-2xl;
   }
 
-  /* Diagonal Lines Pattern */
-  .swiss-diagonal {
-    background-image: repeating-linear-gradient(
-      45deg,
-      transparent,
-      transparent 10px,
-      rgba(0,0,0,0.02) 10px,
-      rgba(0,0,0,0.02) 11px
-    );
+  .glow-primary {
+    box-shadow: 0 0 20px rgba(236, 91, 19, 0.3);
   }
 
-  /* Noise Texture Overlay */
-  .swiss-noise {
-    position: relative;
-  }
-  .swiss-noise::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-    opacity: 0.015;
-    pointer-events: none;
-    z-index: 1;
+  .glow-accent {
+    box-shadow: 0 0 20px rgba(244, 162, 97, 0.3);
   }
 
-  /* Swiss Typography Utilities */
-  .swiss-heading {
-    @apply uppercase font-black tracking-tighter;
+  .card-hover {
+    @apply transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl rounded-2xl;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
   }
 
-  .swiss-label {
-    @apply uppercase font-bold tracking-widest text-xs;
+  .card-hover:hover {
+    box-shadow: 0 20px 50px rgba(236, 91, 19, 0.15);
   }
 
-  /* Swiss Border Utilities */
-  .swiss-border-thick {
-    @apply border-4 border-black;
-  }
-
-  .swiss-border-thin {
-    @apply border-2 border-black;
-  }
-
-  /* Swiss Hover States - Color Inversion */
-  .swiss-hover-red {
-    @apply transition-all duration-150 ease-out;
-  }
-  .swiss-hover-red:hover {
-    @apply bg-[#FF3000] text-white border-[#FF3000];
-  }
-
-  .swiss-hover-black {
-    @apply transition-all duration-150 ease-out;
-  }
-  .swiss-hover-black:hover {
-    @apply bg-black text-white border-black;
-  }
-
-  /* Active Negative Space */
-  .swiss-space-generous {
-    @apply p-8 md:p-12 lg:p-16;
-  }
-
-  /* Swiss Section Number Labels */
-  .swiss-section-number {
-    @apply text-[#FF3000] font-black text-sm tracking-widest uppercase;
-  }
+  /* Funnel gradients for EduAgent Pro */
+  .funnel-gradient-1 { background: linear-gradient(90deg, #ec5b13 0%, #f4a261 100%); opacity: 0.4; @apply rounded-full; }
+  .funnel-gradient-2 { background: linear-gradient(90deg, #ec5b13 0%, #f4a261 100%); opacity: 0.6; @apply rounded-full; }
+  .funnel-gradient-3 { background: linear-gradient(90deg, #ec5b13 0%, #f4a261 100%); opacity: 0.8; @apply rounded-full; }
+  .funnel-gradient-4 { background: linear-gradient(90deg, #ec5b13 0%, #f4a261 100%); opacity: 1; @apply rounded-full; }
 }
 
-/* Swiss Custom Scrollbar */
+/* Custom scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #F2F2F2;
+  background: #2a1b14;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #000000;
+  background: #4a3023;
+  border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #FF3000;
+  background: rgba(236, 91, 19, 0.5);
 }
 
-/* Swiss Status Indicators */
-.status-pending { @apply bg-[#FF3000]/10 text-[#FF3000] border-2 border-[#FF3000]; }
-.status-approved { @apply bg-black text-white border-2 border-black; }
-.status-rejected { @apply bg-[#FF3000] text-white border-2 border-[#FF3000]; }
-.status-review { @apply bg-[#F2F2F2] text-black border-2 border-black; }
-.status-enrolled { @apply bg-black text-white border-2 border-black; }
-.status-submitted { @apply bg-[#F2F2F2] text-black border-2 border-black; }
-
-/* Reduced Motion Support */
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
+/* Status badge animations */
+@keyframes status-pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
   }
 }
 
-/* Responsive styles for 125%+ zoom - Swiss Scale */
+.status-pending {
+  animation: status-pulse 2s ease-in-out infinite;
+}
+
+/* Status colors */
+.status-submitted { @apply bg-blue-500/20 text-blue-400 border-blue-500/30; }
+.status-approved { @apply bg-emerald-500/20 text-emerald-400 border-emerald-500/30; }
+.status-rejected { @apply bg-red-500/20 text-red-400 border-red-500/30; }
+.status-pending { @apply bg-amber-500/20 text-amber-400 border-amber-500/30; }
+.status-enrolled { @apply bg-primary/20 text-primary border-primary/30; }
+.status-review { @apply bg-cyan-500/20 text-cyan-400 border-cyan-500/30; }
+
+/* Responsive styles for 125%+ zoom */
 @media (min-resolution: 120dpi) {
+  /* Increase base font size for better readability at 125% zoom */
   html {
     font-size: 14px;
   }
   
+  /* Adjust container padding */
   .max-w-7xl {
     padding-left: 1rem;
     padding-right: 1rem;
   }
   
+  /* Reduce large headings size */
   h1 {
     font-size: 2.5rem !important;
-    line-height: 1.1 !important;
+    line-height: 1.2 !important;
   }
   
   h2 {
     font-size: 2rem !important;
-    line-height: 1.1 !important;
+    line-height: 1.2 !important;
   }
   
+  /* Adjust hero section */
   .text-5xl {
     font-size: 2.25rem !important;
   }
@@ -197,6 +181,7 @@
     font-size: 3rem !important;
   }
   
+  /* Reduce spacing */
   .py-24 {
     padding-top: 3rem;
     padding-bottom: 3rem;
@@ -207,6 +192,7 @@
     padding-bottom: 1.5rem;
   }
   
+  /* Adjust grid gaps */
   .gap-12 {
     gap: 1.5rem;
   }
@@ -215,6 +201,7 @@
     gap: 1rem;
   }
   
+  /* Make buttons slightly smaller */
   .px-8 {
     padding-left: 1.25rem;
     padding-right: 1.25rem;
@@ -225,6 +212,7 @@
     padding-bottom: 0.75rem;
   }
   
+  /* Adjust card padding */
   .p-8 {
     padding: 1.25rem;
   }
@@ -233,11 +221,13 @@
     padding: 1rem;
   }
   
+  /* Reduce marquee text size */
   .animate-marquee-left,
   .animate-marquee-right {
     font-size: 1.5rem !important;
   }
   
+  /* Stack grid columns earlier */
   .lg\:grid-cols-2 {
     grid-template-columns: 1fr;
   }
@@ -250,11 +240,13 @@
     grid-template-columns: 1fr;
   }
   
+  /* Adjust navigation */
   header .max-w-7xl {
     padding-left: 0.75rem;
     padding-right: 0.75rem;
   }
   
+  /* Reduce icon sizes */
   .w-14 {
     width: 2.5rem;
   }

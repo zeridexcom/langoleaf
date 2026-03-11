@@ -5,6 +5,7 @@ import {
   Users,
   FileText,
   FolderOpen,
+  Wallet,
   UserCircle,
   Bell,
   HelpCircle,
@@ -17,6 +18,7 @@ import {
   TrendingUp,
 } from "lucide-react";
 import { cn } from "@/lib/utils/cn";
+import { useState } from "react";
 import { usePathname } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
@@ -62,15 +64,15 @@ export function Sidebar({ collapsed, setCollapsed }: SidebarProps) {
   return (
     <aside
       className={cn(
-        "fixed left-0 top-16 h-[calc(100vh-4rem)] bg-white border-r-2 border-black transition-all duration-150 ease-out z-40",
+        "fixed left-0 top-16 h-[calc(100vh-4rem)] bg-white border-r border-gray-200 transition-all duration-300 z-40 shadow-sm rounded-r-xl",
         collapsed ? "w-20" : "w-64"
       )}
     >
       <div className="flex flex-col h-full">
-        {/* Collapse Button - Swiss Style */}
+        {/* Collapse Button */}
         <button
           onClick={() => setCollapsed(!collapsed)}
-          className="absolute -right-3 top-6 w-6 h-6 bg-black flex items-center justify-center text-white border-2 border-black hover:bg-[#FF3000] hover:border-[#FF3000] transition-all duration-150 ease-out"
+          className="absolute -right-3 top-6 w-6 h-6 bg-primary flex items-center justify-center text-white rounded-full shadow-md hover:bg-primary/80 transition-colors"
         >
           {collapsed ? (
             <ChevronRight className="w-4 h-4" />
@@ -79,46 +81,46 @@ export function Sidebar({ collapsed, setCollapsed }: SidebarProps) {
           )}
         </button>
 
-        {/* User Profile Card - Swiss Style */}
+        {/* User Profile Card */}
         {!collapsed && (
-          <div className="p-4 border-b-2 border-black">
-            <div className="flex gap-3 items-center p-3 bg-[#F2F2F2] border-2 border-black">
-              <div className="bg-center bg-no-repeat aspect-square bg-cover size-12 border-2 border-black" 
-                   style={{backgroundImage: 'url("https://ui-avatars.com/api/?name=Agent&background=000000&color=fff")'}}>
+          <div className="p-4 border-b border-gray-200">
+            <div className="flex gap-3 items-center p-3 bg-gray-50 border border-gray-200 rounded-xl">
+              <div className="bg-center bg-no-repeat aspect-square bg-cover size-12 rounded-xl" 
+                   style={{backgroundImage: 'url("https://ui-avatars.com/api/?name=Agent&background=ec5b13&color=fff")'}}>
               </div>
               <div className="flex flex-col truncate">
-                <h1 className="text-black text-sm font-black uppercase tracking-tight">Agent</h1>
-                <p className="text-[#FF3000] text-xs font-black uppercase tracking-widest">Partner</p>
+                <h1 className="text-gray-900 text-sm font-black leading-tight">Agent</h1>
+                <p className="text-gray-500 text-xs font-bold uppercase tracking-wider">Partner</p>
               </div>
             </div>
           </div>
         )}
 
-        {/* Navigation - Swiss Style */}
-        <nav className="flex-1 py-4 px-3 swiss-dots">
-          <ul className="space-y-0">
+        {/* Navigation */}
+        <nav className="flex-1 py-4 px-3">
+          <ul className="space-y-1">
             {menuItems.map((item) => (
               <li key={item.label}>
                 <a
                   href={item.href}
                   className={cn(
-                    "flex items-center gap-3 px-4 py-3 border-b-2 border-black transition-all duration-150 ease-out group font-black uppercase text-xs tracking-wide",
+                    "flex items-center gap-3 px-4 py-3 border transition-all duration-200 group font-bold rounded-lg",
                     activeItem === item.label
-                      ? "bg-black text-white border-black"
-                      : "text-black hover:bg-[#FF3000] hover:text-white hover:border-[#FF3000]"
+                      ? "bg-primary text-white border-primary shadow-sm"
+                      : "text-gray-500 hover:bg-gray-100 hover:text-gray-900 border-transparent"
                   )}
                 >
                   <item.icon
                     className={cn(
                       "w-5 h-5 flex-shrink-0",
-                      activeItem === item.label ? "text-white" : "text-black group-hover:text-white"
+                      activeItem === item.label ? "text-white" : "text-gray-500"
                     )}
                   />
                   {!collapsed && (
-                    <span className="text-xs">{item.label}</span>
+                    <span className="text-sm">{item.label}</span>
                   )}
                   {!collapsed && item.badge && (
-                    <span className="ml-auto bg-[#FF3000] text-white text-xs font-black px-2 py-0.5">
+                    <span className="ml-auto bg-primary text-white text-xs font-bold px-2 py-0.5 rounded-full">
                       {item.badge}
                     </span>
                   )}
@@ -128,30 +130,30 @@ export function Sidebar({ collapsed, setCollapsed }: SidebarProps) {
           </ul>
         </nav>
 
-        {/* Progress Goal - Swiss Style */}
+        {/* Progress Goal */}
         {!collapsed && (
-          <div className="p-4 border-t-2 border-black bg-[#F2F2F2]">
-            <div className="border-2 border-black p-4 bg-white">
-              <p className="text-xs font-black text-black mb-2 uppercase tracking-widest">Target 2026</p>
-              <div className="h-2 w-full bg-white border border-black">
-                <div className="h-full bg-[#FF3000]" style={{width: "75%"}}></div>
+          <div className="p-4 border-t border-gray-200">
+            <div className="bg-primary/10 border border-primary/20 p-4 rounded-xl">
+              <p className="text-xs font-bold text-primary mb-2 uppercase tracking-wider">Target 2026</p>
+              <div className="h-2 w-full bg-gray-200 rounded-full overflow-hidden">
+                <div className="h-full bg-primary rounded-full" style={{width: "75%"}}></div>
               </div>
-              <p className="text-[10px] text-black mt-2 font-black uppercase">₹12.5L / ₹15L Goal</p>
+              <p className="text-[10px] text-gray-500 mt-2 font-bold">₹12.5L / ₹15L Goal</p>
             </div>
           </div>
         )}
 
-        {/* Logout - Swiss Style */}
-        <div className="p-3 border-t-2 border-black">
+        {/* Logout */}
+        <div className="p-3 border-t border-gray-200">
           <button
             onClick={handleSignOut}
             className={cn(
-              "flex items-center gap-3 px-4 py-3 border-2 border-black text-black hover:bg-black hover:text-white transition-all duration-150 ease-out w-full font-black uppercase text-xs tracking-wide",
+              "flex items-center gap-3 px-4 py-2 border border-transparent text-gray-500 hover:text-gray-900 hover:bg-gray-100 transition-all duration-200 w-full font-bold rounded-lg",
               collapsed && "justify-center"
             )}
           >
             <LogOut className="w-5 h-5" />
-            {!collapsed && <span className="text-xs">Sign Out</span>}
+            {!collapsed && <span className="text-sm">Sign Out</span>}
           </button>
         </div>
       </div>
