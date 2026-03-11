@@ -1,18 +1,18 @@
 import type { Metadata } from "next";
-import { Public_Sans } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme/theme-provider";
 import { PageTransition } from "@/components/page-transition";
 
-const publicSans = Public_Sans({
+const inter = Inter({
   subsets: ["latin"],
-  variable: "--font-public-sans",
-  weight: ["400", "500", "600", "700", "800"],
+  variable: "--font-inter",
+  weight: ["400", "500", "600", "700", "800", "900"],
 });
 
 export const metadata: Metadata = {
-  title: "EduAgent Pro - Growth Dashboard",
-  description: "Partner portal for freelancers to manage students and track admissions",
+  title: "freelancer.langoleaf - Swiss Education Network",
+  description: "Objective, precise, and universal. Join the elite network of independent education agents.",
 };
 
 export default function RootLayout({
@@ -22,7 +22,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${publicSans.variable} font-sans antialiased bg-background-light dark:bg-dark-bg text-slate-900 dark:text-white`}>
+      <body className={`${inter.variable} font-sans antialiased bg-white text-black swiss-noise`}>
         <ThemeProvider defaultTheme="light">
           <PageTransition>
             {children}

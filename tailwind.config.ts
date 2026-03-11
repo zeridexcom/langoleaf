@@ -15,38 +15,26 @@ const config: Config = {
         ring: "hsl(var(--ring))",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
+        // Swiss International Style - Strict Palette
         primary: {
-          DEFAULT: "#ec5b13",
-          foreground: "#ffffff",
-          50: "#fef2eb",
-          100: "#fde6d6",
-          200: "#fbc9ad",
-          300: "#f9a47f",
-          400: "#f47d4f",
-          500: "#ec5b13",
-          600: "#d44a0f",
-          700: "#b33a0e",
-          800: "#8f2f11",
-          900: "#752911",
+          DEFAULT: "#FF3000", // Swiss Red
+          foreground: "#FFFFFF",
         },
         secondary: {
-          DEFAULT: "hsl(var(--secondary))",
-          foreground: "hsl(var(--secondary-foreground))",
+          DEFAULT: "#F2F2F2", // Muted Gray
+          foreground: "#000000",
         },
         destructive: {
           DEFAULT: "hsl(var(--destructive))",
           foreground: "hsl(var(--destructive-foreground))",
         },
         muted: {
-          DEFAULT: "hsl(var(--muted))",
-          foreground: "hsl(var(--muted-foreground))",
+          DEFAULT: "#F2F2F2",
+          foreground: "#000000",
         },
         accent: {
-          DEFAULT: "#f4a261",
-          foreground: "#221610",
-          cyan: "#22d3ee",
-          teal: "#14b8a6",
-          coral: "#f97316",
+          DEFAULT: "#FF3000", // Swiss Red only
+          foreground: "#FFFFFF",
         },
         popover: {
           DEFAULT: "hsl(var(--popover))",
@@ -56,39 +44,29 @@ const config: Config = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        dark: {
-          bg: "#221610",
-          surface: "#2a1b14",
-          elevated: "#3d271d",
-          border: "#4a3023",
-        },
-        light: {
-          bg: "#f8f6f6",
-          surface: "#ffffff",
-          elevated: "#fdfdfd",
-          border: "#e5e5e5",
+        swiss: {
+          red: "#FF3000",
+          black: "#000000",
+          white: "#FFFFFF",
+          muted: "#F2F2F2",
         },
         status: {
-          pending: "#f59e0b",
-          approved: "#10b981",
-          rejected: "#ef4444",
-          review: "#3b82f6",
-        },
-        coins: {
-          DEFAULT: "#fbbf24",
-          glow: "#f59e0b",
+          pending: "#FF3000", // Swiss Red
+          approved: "#000000", // Black
+          rejected: "#FF3000", // Red
+          review: "#666666", // Gray
         },
       },
       borderRadius: {
-        lg: "var(--radius)",
-        md: "calc(var(--radius) - 2px)",
-        sm: "calc(var(--radius) - 4px)",
-        "2xl": "1rem",
-        "3xl": "1.5rem",
+        lg: "0px", // Strictly rectangular
+        md: "0px",
+        sm: "0px",
+        "2xl": "0px",
+        "3xl": "0px",
       },
       fontFamily: {
-        sans: ["Public Sans", "system-ui", "sans-serif"],
-        display: ["Public Sans", "system-ui", "sans-serif"],
+        sans: ["Inter", "system-ui", "sans-serif"],
+        display: ["Inter", "system-ui", "sans-serif"],
         mono: ["JetBrains Mono", "monospace"],
       },
       keyframes: {
@@ -100,31 +78,18 @@ const config: Config = {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: "0" },
         },
-        "coin-fly": {
-          "0%": { transform: "translateY(0) scale(1)", opacity: "1" },
-          "50%": { transform: "translateY(-50px) scale(1.2)", opacity: "1" },
-          "100%": { transform: "translateY(-100px) scale(0)", opacity: "0" },
-        },
-        "badge-pop": {
-          "0%": { transform: "scale(0)", opacity: "0" },
-          "50%": { transform: "scale(1.2)" },
-          "100%": { transform: "scale(1)", opacity: "1" },
-        },
-        "progress-fill": {
-          "0%": { width: "0%" },
-          "100%": { width: "var(--progress-width)" },
-        },
-        "float": {
-          "0%, 100%": { transform: "translateY(0)" },
-          "50%": { transform: "translateY(-10px)" },
-        },
-        "pulse-glow": {
-          "0%, 100%": { boxShadow: "0 0 20px rgba(236, 91, 19, 0.3)" },
-          "50%": { boxShadow: "0 0 40px rgba(236, 91, 19, 0.6)" },
-        },
+        // Swiss Style - Mechanical, snappy animations
         "slide-in": {
           "0%": { transform: "translateX(-100%)", opacity: "0" },
           "100%": { transform: "translateX(0)", opacity: "1" },
+        },
+        "fade-in": {
+          "0%": { opacity: "0" },
+          "100%": { opacity: "1" },
+        },
+        "scale-in": {
+          "0%": { transform: "scale(0.95)", opacity: "0" },
+          "100%": { transform: "scale(1)", opacity: "1" },
         },
         "marquee-left": {
           "0%": { transform: "translateX(0)" },
@@ -134,18 +99,20 @@ const config: Config = {
           "0%": { transform: "translateX(-50%)" },
           "100%": { transform: "translateX(0)" },
         },
+        "rotate-90": {
+          "0%": { transform: "rotate(0deg)" },
+          "100%": { transform: "rotate(90deg)" },
+        },
       },
       animation: {
-        "accordion-down": "accordion-down 0.2s ease-out",
-        "accordion-up": "accordion-up 0.2s ease-out",
-        "coin-fly": "coin-fly 1s ease-out",
-        "badge-pop": "badge-pop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275)",
-        "progress-fill": "progress-fill 1s ease-out",
-        "float": "float 3s ease-in-out infinite",
-        "pulse-glow": "pulse-glow 2s ease-in-out infinite",
-        "slide-in": "slide-in 0.3s ease-out",
+        "accordion-down": "accordion-down 0.15s ease-out",
+        "accordion-up": "accordion-up 0.15s ease-out",
+        "slide-in": "slide-in 0.2s ease-out",
+        "fade-in": "fade-in 0.15s ease-out",
+        "scale-in": "scale-in 0.15s ease-out",
         "marquee-left": "marquee-left 20s linear infinite",
         "marquee-right": "marquee-right 25s linear infinite",
+        "rotate-90": "rotate-90 0.15s ease-out forwards",
       },
     },
   },

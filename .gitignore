@@ -47,3 +47,9 @@ logs
 # Cache
 .cache/
 dist/
+
+# Aider
+.aider*
+
+# Freelancer portal (duplicate)
+/freelancer-portal/
