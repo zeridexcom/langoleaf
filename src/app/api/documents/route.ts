@@ -47,7 +47,7 @@ export async function GET(request: NextRequest) {
     // Merge database records with Cloudinary data
     const documents = dbDocuments?.map((dbDoc) => {
       const cloudDoc = cloudinaryResult.documents?.find(
-        (d) => d.id === dbDoc.public_id
+        (d: { id: string; typeLabel?: string; thumbnail?: string }) => d.id === dbDoc.public_id
       );
       return {
         id: dbDoc.id,
