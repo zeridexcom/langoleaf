@@ -1,14 +1,27 @@
 import { v2 as cloudinary } from "cloudinary";
 
 // Configure Cloudinary - SERVER ONLY
+const cloudName = process.env.CLOUDINARY_CLOUD_NAME;
+const apiKey = process.env.CLOUDINARY_API_KEY;
+const apiSecret = process.env.CLOUDINARY_API_SECRET;
+
 cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
+  cloud_name: cloudName,
+  api_key: apiKey,
+  api_secret: apiSecret,
   secure: true,
 });
 
 export { cloudinary };
+
+// Check if Cloudinary is configured
+export function isCloudinaryConfigured(): { configured: boolean; missing: string[] } {
+  const missing: string[] = [];
+  if (!cloudName) missing.push("CLOUDINARY_CLOUD_NAME");
+  if (!apiKey) missing.push("CLOUDINARY_API_KEY");
+  if (!apiSecret) missing.push("CLOUDINARY_API_SECRET");
+  return { configured: missing.length === 0, missing };
+}
 
 // Upload document to Cloudinary - SERVER ONLY
 export async function uploadStudentDocument(
@@ -17,6 +30,15 @@ export async function uploadStudentDocument(
   documentType: string,
   fileName: string
 ) {
+  // Check configuration first
+  const { configured, missing } = isCloudinaryConfigured();
+  if (!configured) {
+    return {
+      success: false,
+      error: `Missing Cloudinary env vars: ${missing.join(", ")}. Add these in Vercel Dashboard → Settings → Environment Variables.`,
+    };
+  }
+
   try {
     const folder = `students/${studentId}/${documentType}`;
     const publicId = `${Date.now()}_${fileName.replace(/\.[^/.]+$/, "")}`;
