@@ -47,11 +47,11 @@ export default function AddStudentPage() {
       const { data: student, error } = await supabase
         .from("students")
         .insert({
-          full_name: `${formData.firstName} ${formData.lastName}`,
+          name: `${formData.firstName} ${formData.lastName}`,
           email: formData.email,
           phone: formData.phone,
-          interested_course: formData.program,
-          education_level: formData.program,
+          program: formData.program,
+          university: formData.university,
           status: "lead",
           freelancer_id: user.id,
         })
