@@ -15,12 +15,20 @@ cloudinary.config({
 export { cloudinary };
 
 // Check if Cloudinary is configured
-export function isCloudinaryConfigured(): { configured: boolean; missing: string[] } {
+export function isCloudinaryConfigured(): { configured: boolean; missing: string[]; present: string[] } {
   const missing: string[] = [];
-  if (!cloudName) missing.push("CLOUDINARY_CLOUD_NAME");
-  if (!apiKey) missing.push("CLOUDINARY_API_KEY");
-  if (!apiSecret) missing.push("CLOUDINARY_API_SECRET");
-  return { configured: missing.length === 0, missing };
+  const present: string[] = [];
+  
+  if (cloudName) present.push("CLOUDINARY_CLOUD_NAME");
+  else missing.push("CLOUDINARY_CLOUD_NAME");
+  
+  if (apiKey) present.push("CLOUDINARY_API_KEY");
+  else missing.push("CLOUDINARY_API_KEY");
+  
+  if (apiSecret) present.push("CLOUDINARY_API_SECRET");
+  else missing.push("CLOUDINARY_API_SECRET");
+  
+  return { configured: missing.length === 0, missing, present };
 }
 
 // Upload document to Cloudinary - SERVER ONLY
@@ -31,17 +39,22 @@ export async function uploadStudentDocument(
   fileName: string
 ) {
   // Check configuration first
-  const { configured, missing } = isCloudinaryConfigured();
+  const { configured, missing, present } = isCloudinaryConfigured();
+  
+  console.log("Cloudinary config check:", { configured, missing, present, cloudName: cloudName ? "SET" : "MISSING" });
+  
   if (!configured) {
     return {
       success: false,
-      error: `Missing Cloudinary env vars: ${missing.join(", ")}. Add these in Vercel Dashboard → Settings → Environment Variables.`,
+      error: `Missing Cloudinary env vars: ${missing.join(", ")}. Found: ${present.join(", ") || "none"}. Add missing vars in Vercel Dashboard → Settings → Environment Variables.`,
     };
   }
 
   try {
     const folder = `students/${studentId}/${documentType}`;
     const publicId = `${Date.now()}_${fileName.replace(/\.[^/.]+$/, "")}`;
+
+    console.log("Starting Cloudinary upload:", { folder, publicId, fileSize: file.length });
 
     const result = await new Promise((resolve, reject) => {
       const uploadStream = cloudinary.uploader.upload_stream(
@@ -60,10 +73,20 @@ export async function uploadStudentDocument(
           tags: ["student_document", studentId, documentType],
         },
         (error, result) => {
-          if (error) reject(error);
-          else resolve(result);
+          if (error) {
+            console.error("Cloudinary upload_stream error:", error);
+            reject(error);
+          } else {
+            console.log("Cloudinary upload success:", result?.public_id);
+            resolve(result);
+          }
         }
       );
+
+      uploadStream.on("error", (err) => {
+        console.error("Cloudinary stream error:", err);
+        reject(err);
+      });
 
       uploadStream.end(file);
     });
@@ -78,9 +101,10 @@ export async function uploadStudentDocument(
     };
   } catch (error) {
     console.error("Error uploading to Cloudinary:", error);
+    const errorMessage = error instanceof Error ? error.message : String(error);
     return {
       success: false,
-      error: error instanceof Error ? error.message : "Upload failed",
+      error: `Cloudinary error: ${errorMessage}. Check Vercel logs for details.`,
     };
   }
 }
