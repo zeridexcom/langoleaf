@@ -9,7 +9,7 @@ interface Notification {
   title: string;
   message: string;
   type: string;
-  read: boolean;
+  is_read: boolean;
   created_at: string;
 }
 
@@ -57,7 +57,7 @@ export function NotificationDropdown() {
       const { data, error } = await supabase
         .from("notifications")
         .select("*")
-        .eq("user_id", user.id)
+        .eq("freelancer_id", user.id)
         .order("created_at", { ascending: false })
         .limit(5);
 
@@ -67,7 +67,7 @@ export function NotificationDropdown() {
       }
 
       setNotifications(data || []);
-      setUnreadCount(data?.filter(n => !n.read).length || 0);
+      setUnreadCount(data?.filter(n => !n.is_read).length || 0);
     } catch (err) {
       console.error("Error:", err);
     }
@@ -160,14 +160,14 @@ export function NotificationDropdown() {
                   <div
                     key={notification.id}
                     className={`flex items-start gap-3 p-3 hover:bg-gray-50 transition-colors border-b border-gray-100 last:border-0 ${
-                      !notification.read ? "bg-primary/5" : ""
+                      !notification.is_read ? "bg-primary/5" : ""
                     }`}
                   >
                     <div className={`p-2 rounded-lg ${bgClass} flex-shrink-0`}>
                       <Icon className={`w-4 h-4 ${colorClass}`} />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className={`text-sm font-medium ${!notification.read ? "text-gray-900" : "text-gray-600"}`}>
+                      <p className={`text-sm font-medium ${!notification.is_read ? "text-gray-900" : "text-gray-600"}`}>
                         {notification.title}
                       </p>
                       <p className="text-xs text-gray-500 mt-0.5 line-clamp-2">
@@ -177,7 +177,7 @@ export function NotificationDropdown() {
                         {formatTime(notification.created_at)}
                       </p>
                     </div>
-                    {!notification.read && (
+                    {!notification.is_read && (
                       <span className="w-2 h-2 bg-primary rounded-full flex-shrink-0 mt-1" />
                     )}
                   </div>

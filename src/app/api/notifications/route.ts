@@ -20,8 +20,8 @@ export async function GET() {
     const { count: unreadCount, error: countError } = await supabase
       .from("notifications")
       .select("*", { count: "exact", head: true })
-      .eq("user_id", session.user.id)
-      .eq("read", false);
+      .eq("freelancer_id", session.user.id)
+      .eq("is_read", false);
 
     if (countError) {
       console.error("Error fetching unread count:", countError);
@@ -31,8 +31,8 @@ export async function GET() {
     const { data: notifications, error: notificationsError } = await supabase
       .from("notifications")
       .select("*")
-      .eq("user_id", session.user.id)
-      .order("read", { ascending: true }) // Unread first
+      .eq("freelancer_id", session.user.id)
+      .order("is_read", { ascending: true }) // Unread first
       .order("created_at", { ascending: false })
       .limit(5);
 
@@ -81,9 +81,9 @@ export async function PATCH(request: Request) {
 
     const { error } = await supabase
       .from("notifications")
-      .update({ read: true })
+      .update({ is_read: true })
       .in("id", notificationIds)
-      .eq("user_id", session.user.id);
+      .eq("freelancer_id", session.user.id);
 
     if (error) {
       console.error("Error marking notifications as read:", error);
