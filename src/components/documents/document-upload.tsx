@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import { Upload, X, FileText, Image, CheckCircle, AlertCircle } from "lucide-react";
+import { Upload, X, FileText, Image, CheckCircle, AlertCircle, AlertTriangle } from "lucide-react";
 import { cn } from "@/lib/utils/cn";
 import { DocumentType, documentTypeLabels } from "@/lib/cloudinary/client";
 
@@ -14,6 +14,12 @@ interface DocumentUploadProps {
   }) => void;
   onUploadError?: (error: string) => void;
   category?: string;
+}
+
+interface UploadError {
+  error: string;
+  details: string;
+  step: string;
 }
 
 const documentTypes: { value: DocumentType; label: string; icon: any }[] = [
@@ -38,7 +44,7 @@ export function DocumentUpload({
   const [isDragging, setIsDragging] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<UploadError | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 
   const handleDragOver = useCallback((e: React.DragEvent) => {
@@ -82,20 +88,20 @@ export function DocumentUpload({
     const maxSize = 10 * 1024 * 1024; // 10MB
 
     if (!allowedTypes.includes(file.type)) {
-      setError("Invalid file type. Allowed: JPG, PNG, PDF");
+      setError({ error: "Invalid file type", details: "Allowed: JPG, PNG, PDF", step: "client validation" });
       setIsUploading(false);
       return;
     }
 
     if (file.size > maxSize) {
-      setError("File too large. Max size: 10MB");
+      setError({ error: "File too large", details: "Max size: 10MB", step: "client validation" });
       setIsUploading(false);
       return;
     }
 
     try {
       if (!studentId) {
-        setError("Student ID is required");
+        setError({ error: "No student selected", details: "Student ID is missing. Please refresh and try again.", step: "client validation" });
         setIsUploading(false);
         return;
       }
@@ -113,7 +119,16 @@ export function DocumentUpload({
       const result = await response.json();
 
       if (!response.ok) {
-        throw new Error(result.error || "Upload failed");
+        // Show detailed error from API
+        setError({
+          error: result.error || "Upload failed",
+          details: result.details || "Unknown error",
+          step: result.step || "unknown"
+        });
+        if (onUploadError) {
+          onUploadError(`${result.error}: ${result.details}`);
+        }
+        return;
       }
 
       setSuccess(`${documentTypeLabels[selectedType]} uploaded successfully!`);
@@ -130,7 +145,7 @@ export function DocumentUpload({
       await syncToSheets();
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : "Upload failed";
-      setError(errorMessage);
+      setError({ error: "Network error", details: errorMessage, step: "fetch" });
       if (onUploadError) {
         onUploadError(errorMessage);
       }
@@ -218,11 +233,23 @@ export function DocumentUpload({
         </label>
       </div>
 
-      {/* Error Message */}
+      {/* Error Message - Detailed */}
       {error && (
-        <div className="flex items-center gap-2 p-3 bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 rounded-lg">
-          <AlertCircle className="w-4 h-4 text-red-500" />
-          <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
+        <div className="p-4 bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 rounded-lg">
+          <div className="flex items-start gap-3">
+            <AlertTriangle className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" />
+            <div className="flex-1">
+              <p className="text-sm font-semibold text-red-700 dark:text-red-400">
+                {error.error}
+              </p>
+              <p className="text-sm text-red-600 dark:text-red-300 mt-1">
+                {error.details}
+              </p>
+              <p className="text-xs text-red-500 dark:text-red-400 mt-2 font-mono bg-red-100 dark:bg-red-500/20 px-2 py-1 rounded">
+                Step: {error.step}
+              </p>
+            </div>
+          </div>
         </div>
       )}
 

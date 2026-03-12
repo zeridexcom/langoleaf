@@ -14,41 +14,92 @@ export async function GET() {
 }
 
 export async function POST(request: NextRequest) {
+  let step = "starting";
+  
   try {
     // Check authentication
+    step = "checking authentication";
     const supabase = createClient();
     const {
       data: { user },
+      error: authError,
     } = await supabase.auth.getUser();
 
+    if (authError) {
+      return NextResponse.json({ 
+        error: "Auth check failed", 
+        details: authError.message,
+        step 
+      }, { status: 401 });
+    }
+
     if (!user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      return NextResponse.json({ 
+        error: "Not logged in", 
+        details: "Please log in and try again",
+        step 
+      }, { status: 401 });
     }
 
     // Parse form data
-    const formData = await request.formData();
+    step = "parsing form data";
+    let formData;
+    try {
+      formData = await request.formData();
+    } catch (e) {
+      return NextResponse.json({ 
+        error: "Failed to read form data", 
+        details: "The file might be too large or corrupted",
+        step 
+      }, { status: 400 });
+    }
+    
     const file = formData.get("file") as File;
     const studentId = formData.get("studentId") as string;
     const documentType = formData.get("documentType") as DocumentType;
 
-    if (!file || !studentId || !documentType) {
-      return NextResponse.json(
-        { error: "Missing required fields" },
-        { status: 400 }
-      );
+    if (!file) {
+      return NextResponse.json({ 
+        error: "No file selected", 
+        details: "Please select a file to upload",
+        step 
+      }, { status: 400 });
+    }
+    
+    if (!studentId) {
+      return NextResponse.json({ 
+        error: "No student selected", 
+        details: "Student ID is missing. Please refresh and try again.",
+        step 
+      }, { status: 400 });
+    }
+    
+    if (!documentType) {
+      return NextResponse.json({ 
+        error: "No document type selected", 
+        details: "Please select a document type",
+        step 
+      }, { status: 400 });
     }
 
     // Validate file
+    step = "validating file";
     const validation = validateFile(file);
     if (!validation.valid) {
-      return NextResponse.json({ error: validation.error }, { status: 400 });
+      return NextResponse.json({ 
+        error: "Invalid file", 
+        details: validation.error,
+        step 
+      }, { status: 400 });
     }
 
     // Convert file to buffer
+    step = "reading file";
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
 
     // Upload to Cloudinary
+    step = "uploading to Cloudinary";
     const result = await uploadStudentDocument(
       buffer,
       studentId,
@@ -57,20 +108,22 @@ export async function POST(request: NextRequest) {
     );
 
     if (!result.success) {
-      return NextResponse.json(
-        { error: result.error },
-        { status: 500 }
-      );
+      return NextResponse.json({ 
+        error: "Cloudinary upload failed", 
+        details: result.error || "Unknown error from Cloudinary. Check if CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, and CLOUDINARY_API_SECRET are set in Vercel environment variables.",
+        step 
+      }, { status: 500 });
     }
 
     // Save document reference to database
+    step = "saving to database";
     const { data: documentRecord, error: dbError } = await supabase
       .from("student_documents")
       .insert({
         student_id: studentId,
         type: documentType,
-        url: result.url,
-        public_id: result.publicId,
+        url: result.url!,
+        public_id: result.publicId!,
         format: result.format,
         size: result.size,
         uploaded_by: user.id,
@@ -79,8 +132,12 @@ export async function POST(request: NextRequest) {
       .single();
 
     if (dbError) {
-      console.error("Error saving document to database:", dbError);
-      // Don't fail the request, just log the error
+      return NextResponse.json({ 
+        error: "Database save failed", 
+        details: `${dbError.message} (Code: ${dbError.code}). The file was uploaded to Cloudinary but not saved to database.`,
+        step,
+        cloudinaryUrl: result.url 
+      }, { status: 500 });
     }
 
     return NextResponse.json({
@@ -97,9 +154,10 @@ export async function POST(request: NextRequest) {
     });
   } catch (error) {
     console.error("Error in upload-document API:", error);
-    return NextResponse.json(
-      { error: "Failed to upload document" },
-      { status: 500 }
-    );
+    return NextResponse.json({ 
+      error: "Unexpected error", 
+      details: error instanceof Error ? error.message : "Unknown error occurred",
+      step 
+    }, { status: 500 });
   }
 }
