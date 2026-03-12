@@ -22,13 +22,13 @@ export function Header() {
         if (authUser) {
           const { data: profile } = await supabase
             .from("profiles")
-            .select("*, freelancer_profiles(*)")
-            .eq("user_id", authUser.id)
+            .select("*")
+            .eq("id", authUser.id)
             .single();
           
           if (profile) {
             setUser(profile);
-            setCoins(profile.freelancer_profiles?.[0]?.coins_balance || 0);
+            setCoins(profile.coins_balance || 0);
           }
         }
       } catch (error) {
@@ -110,7 +110,7 @@ export function Header() {
                   {loading ? "..." : user?.full_name || "Agent"}
                 </p>
                 <p className="text-[10px] font-bold text-gray-500 uppercase">
-                  {user?.freelancer_profiles?.[0]?.agent_id || "ID: AGT-001"}
+                  {user?.agent_code || "ID: AGT-001"}
                 </p>
               </div>
             </button>
