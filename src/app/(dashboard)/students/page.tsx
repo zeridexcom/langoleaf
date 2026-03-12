@@ -1,10 +1,11 @@
 "use client";
 
 import { useState, useEffect, Suspense } from "react";
-import { Search, Filter, Plus, MoreVertical, Phone, Mail } from "lucide-react";
+import { Search, Filter, Plus, Mail } from "lucide-react";
 import { cn } from "@/lib/utils/cn";
 import { createClient } from "@/lib/supabase/client";
 import { useSearchParams } from "next/navigation";
+import { StudentActions } from "@/components/students/student-actions";
 
 const statusStyles: Record<string, string> = {
   application_submitted: "bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-400 border border-blue-200 dark:border-blue-500/30",
@@ -144,7 +145,8 @@ function StudentsContent() {
                 filteredStudents.map((student) => (
                   <tr
                     key={student.id}
-                    className="border-b border-gray-200 dark:border-gray-700 last:border-0 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"
+                    className="border-b border-gray-200 dark:border-gray-700 last:border-0 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors cursor-pointer"
+                    onClick={() => window.location.href = `/students/${student.id}`}
                   >
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
@@ -175,9 +177,11 @@ function StudentsContent() {
                       {new Date(student.created_at).toLocaleDateString()}
                     </td>
                     <td className="px-6 py-4 text-right">
-                      <button className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors">
-                        <MoreVertical className="w-4 h-4 text-gray-400" />
-                      </button>
+                      <StudentActions 
+                        studentId={student.id} 
+                        studentName={student.name}
+                        onDelete={() => loadStudents()}
+                      />
                     </td>
                   </tr>
                 ))
