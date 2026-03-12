@@ -101,10 +101,19 @@ export async function uploadStudentDocument(
     };
   } catch (error) {
     console.error("Error uploading to Cloudinary:", error);
-    const errorMessage = error instanceof Error ? error.message : String(error);
+    let errorMessage: string;
+    
+    if (error instanceof Error) {
+      errorMessage = error.message;
+    } else if (typeof error === "object" && error !== null) {
+      errorMessage = JSON.stringify(error);
+    } else {
+      errorMessage = String(error);
+    }
+    
     return {
       success: false,
-      error: `Cloudinary error: ${errorMessage}. Check Vercel logs for details.`,
+      error: `Cloudinary error: ${errorMessage}`,
     };
   }
 }
