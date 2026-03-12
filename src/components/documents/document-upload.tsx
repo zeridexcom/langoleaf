@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import { Upload, X, FileText, Image, CheckCircle, AlertCircle, AlertTriangle } from "lucide-react";
+import { Upload, X, FileText, Image, CheckCircle, AlertCircle, AlertTriangle, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils/cn";
 import { DocumentType, documentTypeLabels } from "@/lib/cloudinary/client";
 
@@ -208,16 +208,29 @@ export function DocumentUpload({
         />
         <label htmlFor="document-upload" className="cursor-pointer">
           {isUploading ? (
-            <div className="space-y-3">
-              <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+            <div className="space-y-4 py-4">
+              {/* Animated Spinner */}
+              <div className="flex justify-center">
+                <Loader2 className="w-10 h-10 text-primary animate-spin" />
+              </div>
+              
+              {/* Progress Bar */}
+              <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3 overflow-hidden">
                 <div
-                  className="bg-primary h-2 rounded-full transition-all duration-300"
-                  style={{ width: `${uploadProgress}%` }}
+                  className="bg-primary h-3 rounded-full transition-all duration-500 ease-out animate-pulse"
+                  style={{ width: `${uploadProgress || 30}%` }}
                 />
               </div>
-              <p className="text-sm text-gray-500 dark:text-gray-400">
-                Uploading {documentTypeLabels[selectedType]}...
-              </p>
+              
+              {/* Loading Text */}
+              <div className="space-y-1">
+                <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                  Uploading {documentTypeLabels[selectedType]}...
+                </p>
+                <p className="text-xs text-gray-500 dark:text-gray-400">
+                  Please wait, this may take a moment
+                </p>
+              </div>
             </div>
           ) : (
             <>

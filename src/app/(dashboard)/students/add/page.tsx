@@ -29,6 +29,7 @@ export default function AddStudentPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showDocumentUpload, setShowDocumentUpload] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [refreshKey, setRefreshKey] = useState(0);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -79,7 +80,8 @@ export default function AddStudentPage() {
   };
 
   const handleDocumentUpload = () => {
-    // Refresh document list after upload
+    // Refresh document list after upload by incrementing refreshKey
+    setRefreshKey(prev => prev + 1);
   };
 
   if (success && studentId) {
@@ -114,7 +116,7 @@ export default function AddStudentPage() {
             <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
               Uploaded Documents
             </h2>
-            <DocumentList studentId={studentId} />
+            <DocumentList studentId={studentId} refreshKey={refreshKey} />
           </div>
 
           {/* Actions */}
@@ -127,9 +129,15 @@ export default function AddStudentPage() {
             </a>
             <a
               href={`/students/add`}
-              className="px-6 py-2 bg-primary text-white rounded-xl hover:bg-primary/90 transition-colors"
+              className="px-6 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
             >
               Add Another Student
+            </a>
+            <a
+              href="/students"
+              className="px-6 py-2 bg-primary text-white rounded-xl hover:bg-primary/90 transition-colors font-medium"
+            >
+              Finish
             </a>
           </div>
         </div>

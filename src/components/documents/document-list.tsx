@@ -21,9 +21,10 @@ interface DocumentListProps {
   documents?: Document[];
   onRefresh?: () => void;
   onDelete?: (documentId: string) => void;
+  refreshKey?: number;
 }
 
-export function DocumentList({ studentId, documents: propDocuments, onRefresh, onDelete }: DocumentListProps) {
+export function DocumentList({ studentId, documents: propDocuments, onRefresh, onDelete, refreshKey }: DocumentListProps) {
   const [documents, setDocuments] = useState<Document[]>(propDocuments || []);
   const [loading, setLoading] = useState(!propDocuments);
   const [error, setError] = useState<string | null>(null);
@@ -35,7 +36,7 @@ export function DocumentList({ studentId, documents: propDocuments, onRefresh, o
     } else if (studentId) {
       loadDocuments();
     }
-  }, [studentId, propDocuments]);
+  }, [studentId, propDocuments, refreshKey]);
 
   const loadDocuments = async () => {
     if (!studentId) return;
