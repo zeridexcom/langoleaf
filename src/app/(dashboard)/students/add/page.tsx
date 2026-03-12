@@ -52,7 +52,7 @@ export default function AddStudentPage() {
           phone: formData.phone,
           program: formData.program,
           university: formData.university,
-          status: "lead",
+          status: "application_submitted",
           freelancer_id: user.id,
         })
         .select()
