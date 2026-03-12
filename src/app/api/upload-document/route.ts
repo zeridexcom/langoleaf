@@ -5,6 +5,14 @@ import { validateFile, DocumentType } from "@/lib/cloudinary/client";
 
 export const dynamic = "force-dynamic";
 
+// GET handler for testing
+export async function GET() {
+  return NextResponse.json({ 
+    message: "Upload document API is working",
+    methods: ["POST"]
+  });
+}
+
 export async function POST(request: NextRequest) {
   try {
     // Check authentication
