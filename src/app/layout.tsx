@@ -3,6 +3,7 @@ import { Public_Sans } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme/theme-provider";
 import { PageTransition } from "@/components/page-transition";
+import { QueryProvider } from "@/providers/QueryProvider";
 
 const publicSans = Public_Sans({
   subsets: ["latin"],
@@ -23,11 +24,13 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${publicSans.variable} font-sans antialiased bg-background-light dark:bg-dark-bg text-slate-900 dark:text-white`}>
-        <ThemeProvider defaultTheme="light">
-          <PageTransition>
-            {children}
-          </PageTransition>
-        </ThemeProvider>
+        <QueryProvider>
+          <ThemeProvider defaultTheme="light">
+            <PageTransition>
+              {children}
+            </PageTransition>
+          </ThemeProvider>
+        </QueryProvider>
       </body>
     </html>
   );
