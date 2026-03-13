@@ -14,8 +14,6 @@ import {
   CheckCircle,
   Calendar,
   MapPin,
-  Briefcase,
-  School,
   Heart,
   Tag,
   AlertCircle,
@@ -92,9 +90,6 @@ interface FormData {
   university: string;
   previousEducation: string;
   
-  // Work
-  workExperience: string;
-  
   // Additional
   source: string;
   tags: string[];
@@ -119,7 +114,6 @@ const initialFormData: FormData = {
   program: "",
   university: "",
   previousEducation: "",
-  workExperience: "",
   source: "",
   tags: [],
 };
@@ -243,7 +237,6 @@ export default function AddStudentPage() {
           emergency_contact_phone: formData.emergencyContactPhone || null,
           emergency_contact_relation: formData.emergencyContactRelation || null,
           previous_education: formData.previousEducation || null,
-          work_experience: formData.workExperience || null,
           source: formData.source || null,
           tags: formData.tags,
         })
@@ -748,27 +741,6 @@ export default function AddStudentPage() {
               </div>
             </section>
 
-            {/* Work Experience */}
-            <section id="work" className="bg-white border border-gray-200 rounded-2xl p-6">
-              <h2 className="text-lg font-semibold text-gray-900 mb-6 flex items-center gap-2">
-                <Briefcase className="w-5 h-5 text-purple-500" />
-                Work Experience
-              </h2>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Experience Details
-                </label>
-                <textarea
-                  value={formData.workExperience}
-                  onChange={(e) => updateField("workExperience", e.target.value)}
-                  rows={4}
-                  className="w-full px-4 py-2 bg-white border border-gray-300 rounded-xl text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/50 resize-none"
-                  placeholder="Previous work experience, companies, roles, duration, etc."
-                />
-              </div>
-            </section>
-
             {/* Additional Information */}
             <section id="additional" className="bg-white border border-gray-200 rounded-2xl p-6">
               <h2 className="text-lg font-semibold text-gray-900 mb-6 flex items-center gap-2">
@@ -855,7 +827,7 @@ export default function AddStudentPage() {
                 program: formData.program,
                 university: formData.university,
                 previousEducation: formData.previousEducation,
-                workExperience: formData.workExperience,
+                workExperience: "",
                 source: formData.source,
                 tags: formData.tags,
               }}

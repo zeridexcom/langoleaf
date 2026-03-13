@@ -254,12 +254,6 @@ export const STUDENT_FORM_SECTIONS: FormSection[] = [
     optional: ["previousEducation"],
   },
   {
-    id: "work",
-    title: "Work Experience",
-    required: [],
-    optional: ["workExperience"],
-  },
-  {
     id: "additional",
     title: "Additional Information",
     required: [],
