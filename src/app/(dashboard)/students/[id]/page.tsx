@@ -8,12 +8,12 @@ import { DocumentList } from "@/components/documents/document-list";
 import { DocumentUpload } from "@/components/documents/document-upload";
 
 const statusStyles: Record<string, string> = {
-  application_submitted: "bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-400",
-  documents_pending: "bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-400",
-  under_review: "bg-primary/10 text-primary dark:bg-primary/20",
-  approved: "bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400",
-  enrolled: "bg-purple-100 text-purple-700 dark:bg-purple-500/20 dark:text-purple-400",
-  rejected: "bg-red-100 text-red-700 dark:bg-red-500/20 dark:text-red-400",
+  application_submitted: "bg-blue-100 text-blue-700",
+  documents_pending: "bg-amber-100 text-amber-700",
+  under_review: "bg-primary/10 text-primary",
+  approved: "bg-emerald-100 text-emerald-700",
+  enrolled: "bg-purple-100 text-purple-700",
+  rejected: "bg-red-100 text-red-700",
 };
 
 const statusLabels: Record<string, string> = {
@@ -106,33 +106,33 @@ export default function StudentDetailPage() {
         <div className="flex items-center gap-4">
           <a
             href="/students"
-            className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
+            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
           >
-            <ArrowLeft className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+            <ArrowLeft className="w-5 h-5 text-gray-600" />
           </a>
           <div>
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">{student.name}</h1>
-            <p className="text-gray-500 dark:text-gray-400">Student Details</p>
+            <h1 className="text-2xl font-bold text-gray-900">{student.name}</h1>
+            <p className="text-gray-500">Student Details</p>
           </div>
         </div>
         <div className="flex items-center gap-2">
           <button
             onClick={() => setShowUploadModal(true)}
-            className="inline-flex items-center gap-2 px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+            className="inline-flex items-center gap-2 px-4 py-2 border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 transition-colors"
           >
             <Upload className="w-4 h-4" />
             Upload Docs
           </button>
           <a
             href={`/students/${studentId}/edit`}
-            className="inline-flex items-center gap-2 px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+            className="inline-flex items-center gap-2 px-4 py-2 border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 transition-colors"
           >
             <Edit className="w-4 h-4" />
             Edit
           </a>
           <button
             onClick={() => setShowDeleteConfirm(true)}
-            className="inline-flex items-center gap-2 px-4 py-2 border border-red-300 dark:border-red-600 text-red-600 dark:text-red-400 rounded-xl hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors"
+            className="inline-flex items-center gap-2 px-4 py-2 border border-red-300 text-red-600 rounded-xl hover:bg-red-50 transition-colors"
           >
             <Trash2 className="w-4 h-4" />
             Delete
@@ -155,8 +155,8 @@ export default function StudentDetailPage() {
       </div>
 
       {/* Personal Information */}
-      <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl p-6">
-        <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-6 flex items-center gap-2">
+      <div className="bg-white border border-gray-200 rounded-2xl p-6">
+        <h2 className="text-lg font-semibold text-gray-900 mb-6 flex items-center gap-2">
           <User className="w-5 h-5 text-primary" />
           Personal Information
         </h2>
@@ -166,8 +166,8 @@ export default function StudentDetailPage() {
               <User className="w-5 h-5 text-primary" />
             </div>
             <div>
-              <p className="text-sm text-gray-500 dark:text-gray-400">Full Name</p>
-              <p className="font-medium text-gray-900 dark:text-white">{student.name}</p>
+              <p className="text-sm text-gray-500">Full Name</p>
+              <p className="font-medium text-gray-900">{student.name}</p>
             </div>
           </div>
           <div className="flex items-center gap-3">
@@ -175,8 +175,8 @@ export default function StudentDetailPage() {
               <Mail className="w-5 h-5 text-primary" />
             </div>
             <div>
-              <p className="text-sm text-gray-500 dark:text-gray-400">Email</p>
-              <p className="font-medium text-gray-900 dark:text-white">{student.email}</p>
+              <p className="text-sm text-gray-500">Email</p>
+              <p className="font-medium text-gray-900">{student.email}</p>
             </div>
           </div>
           <div className="flex items-center gap-3">
@@ -184,8 +184,8 @@ export default function StudentDetailPage() {
               <Phone className="w-5 h-5 text-primary" />
             </div>
             <div>
-              <p className="text-sm text-gray-500 dark:text-gray-400">Phone</p>
-              <p className="font-medium text-gray-900 dark:text-white">{student.phone || "Not provided"}</p>
+              <p className="text-sm text-gray-500">Phone</p>
+              <p className="font-medium text-gray-900">{student.phone || "Not provided"}</p>
             </div>
           </div>
           <div className="flex items-center gap-3">
@@ -193,16 +193,16 @@ export default function StudentDetailPage() {
               <Calendar className="w-5 h-5 text-primary" />
             </div>
             <div>
-              <p className="text-sm text-gray-500 dark:text-gray-400">Date Added</p>
-              <p className="font-medium text-gray-900 dark:text-white">{new Date(student.created_at).toLocaleDateString()}</p>
+              <p className="text-sm text-gray-500">Date Added</p>
+              <p className="font-medium text-gray-900">{new Date(student.created_at).toLocaleDateString()}</p>
             </div>
           </div>
         </div>
       </div>
 
       {/* Academic Information */}
-      <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl p-6">
-        <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-6 flex items-center gap-2">
+      <div className="bg-white border border-gray-200 rounded-2xl p-6">
+        <h2 className="text-lg font-semibold text-gray-900 mb-6 flex items-center gap-2">
           <GraduationCap className="w-5 h-5 text-accent" />
           Academic Information
         </h2>
@@ -212,8 +212,8 @@ export default function StudentDetailPage() {
               <BookOpen className="w-5 h-5 text-accent" />
             </div>
             <div>
-              <p className="text-sm text-gray-500 dark:text-gray-400">Program</p>
-              <p className="font-medium text-gray-900 dark:text-white">{student.program || "Not specified"}</p>
+              <p className="text-sm text-gray-500">Program</p>
+              <p className="font-medium text-gray-900">{student.program || "Not specified"}</p>
             </div>
           </div>
           <div className="flex items-center gap-3">
@@ -221,17 +221,17 @@ export default function StudentDetailPage() {
               <Building2 className="w-5 h-5 text-accent" />
             </div>
             <div>
-              <p className="text-sm text-gray-500 dark:text-gray-400">University</p>
-              <p className="font-medium text-gray-900 dark:text-white">{student.university || "Not specified"}</p>
+              <p className="text-sm text-gray-500">University</p>
+              <p className="font-medium text-gray-900">{student.university || "Not specified"}</p>
             </div>
           </div>
         </div>
       </div>
 
       {/* Documents Section */}
-      <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl p-6">
+      <div className="bg-white border border-gray-200 rounded-2xl p-6">
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+          <h2 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
             <FileText className="w-5 h-5 text-primary" />
             Documents
           </h2>
@@ -248,15 +248,15 @@ export default function StudentDetailPage() {
       {/* Delete Confirmation Modal */}
       {showDeleteConfirm && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white dark:bg-gray-900 rounded-2xl p-6 max-w-md w-full mx-4">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">Delete Student?</h3>
-            <p className="text-gray-500 dark:text-gray-400 mb-6">
+          <div className="bg-white rounded-2xl p-6 max-w-md w-full mx-4">
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">Delete Student?</h3>
+            <p className="text-gray-500 mb-6">
               Are you sure you want to delete <strong>{student.name}</strong>? This action cannot be undone.
             </p>
             <div className="flex gap-3 justify-end">
               <button
                 onClick={() => setShowDeleteConfirm(false)}
-                className="px-4 py-2 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors"
+                className="px-4 py-2 text-gray-500 hover:text-gray-700 transition-colors"
               >
                 Cancel
               </button>
@@ -274,12 +274,12 @@ export default function StudentDetailPage() {
       {/* Upload Modal */}
       {showUploadModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white dark:bg-gray-900 rounded-2xl p-6 max-w-lg w-full mx-4 max-h-[90vh] overflow-y-auto">
+          <div className="bg-white rounded-2xl p-6 max-w-lg w-full mx-4 max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Upload Documents</h3>
+              <h3 className="text-lg font-semibold text-gray-900">Upload Documents</h3>
               <button
                 onClick={() => setShowUploadModal(false)}
-                className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg"
+                className="p-2 hover:bg-gray-100 rounded-lg"
               >
                 ×
               </button>

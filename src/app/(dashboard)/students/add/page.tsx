@@ -89,19 +89,19 @@ export default function AddStudentPage() {
       <div className="max-w-3xl mx-auto">
         {/* Success Header */}
         <div className="flex items-center gap-4 mb-8">
-          <div className="p-2 bg-emerald-100 dark:bg-emerald-500/10 rounded-lg">
+          <div className="p-2 bg-emerald-100 rounded-lg">
             <CheckCircle className="w-6 h-6 text-emerald-500" />
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Student Added Successfully!</h1>
-            <p className="text-gray-500 dark:text-gray-400">Now upload documents for {formData.firstName} {formData.lastName}</p>
+            <h1 className="text-2xl font-bold text-gray-900">Student Added Successfully!</h1>
+            <p className="text-gray-500">Now upload documents for {formData.firstName} {formData.lastName}</p>
           </div>
         </div>
 
         {/* Document Upload Section */}
         <div className="space-y-6">
-          <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl p-6">
-            <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+          <div className="bg-white border border-gray-200 rounded-2xl p-6">
+            <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
               <Upload className="w-5 h-5 text-primary" />
               Upload Documents
             </h2>
@@ -112,8 +112,8 @@ export default function AddStudentPage() {
           </div>
 
           {/* Document List */}
-          <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl p-6">
-            <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+          <div className="bg-white border border-gray-200 rounded-2xl p-6">
+            <h2 className="text-lg font-semibold text-gray-900 mb-4">
               Uploaded Documents
             </h2>
             <DocumentList studentId={studentId} refreshKey={refreshKey} />
@@ -123,13 +123,13 @@ export default function AddStudentPage() {
           <div className="flex items-center justify-end gap-4">
             <a
               href="/students"
-              className="px-6 py-2 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors"
+              className="px-6 py-2 text-gray-500 hover:text-gray-700 transition-colors"
             >
               Back to Students
             </a>
             <a
               href={`/students/add`}
-              className="px-6 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+              className="px-6 py-2 border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 transition-colors"
             >
               Add Another Student
             </a>
@@ -151,54 +151,54 @@ export default function AddStudentPage() {
       <div className="flex items-center gap-4 mb-8">
         <a
           href="/students"
-          className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
+          className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
         >
-          <ArrowLeft className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+          <ArrowLeft className="w-5 h-5 text-gray-600" />
         </a>
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Add New Student</h1>
-          <p className="text-gray-500 dark:text-gray-400">Register a new student for admission</p>
+          <h1 className="text-2xl font-bold text-gray-900">Add New Student</h1>
+          <p className="text-gray-500">Register a new student for admission</p>
         </div>
       </div>
 
       {/* Form */}
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Personal Information */}
-        <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl p-6">
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-6 flex items-center gap-2">
+        <div className="bg-white border border-gray-200 rounded-2xl p-6">
+          <h2 className="text-lg font-semibold text-gray-900 mb-6 flex items-center gap-2">
             <User className="w-5 h-5 text-primary" />
             Personal Information
           </h2>
           
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
                 First Name *
               </label>
               <input
                 type="text"
                 value={formData.firstName}
                 onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
-                className="w-full px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-xl text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-primary/50"
+                className="w-full px-4 py-2 bg-white border border-gray-300 rounded-xl text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/50"
                 placeholder="Enter first name"
                 required
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
                 Last Name *
               </label>
               <input
                 type="text"
                 value={formData.lastName}
                 onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
-                className="w-full px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-xl text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-primary/50"
+                className="w-full px-4 py-2 bg-white border border-gray-300 rounded-xl text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/50"
                 placeholder="Enter last name"
                 required
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
                 Email *
               </label>
               <div className="relative">
@@ -207,14 +207,14 @@ export default function AddStudentPage() {
                   type="email"
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  className="w-full pl-10 pr-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-xl text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-primary/50"
+                  className="w-full pl-10 pr-4 py-2 bg-white border border-gray-300 rounded-xl text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/50"
                   placeholder="student@example.com"
                   required
                 />
               </div>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
                 Phone Number *
               </label>
               <div className="relative">
@@ -223,7 +223,7 @@ export default function AddStudentPage() {
                   type="tel"
                   value={formData.phone}
                   onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                  className="w-full pl-10 pr-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-xl text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-primary/50"
+                  className="w-full pl-10 pr-4 py-2 bg-white border border-gray-300 rounded-xl text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/50"
                   placeholder="+91 98765 43210"
                   required
                 />
@@ -233,15 +233,15 @@ export default function AddStudentPage() {
         </div>
 
         {/* Academic Information */}
-        <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl p-6">
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-6 flex items-center gap-2">
+        <div className="bg-white border border-gray-200 rounded-2xl p-6">
+          <h2 className="text-lg font-semibold text-gray-900 mb-6 flex items-center gap-2">
             <GraduationCap className="w-5 h-5 text-accent" />
             Academic Information
           </h2>
           
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
                 Program *
               </label>
               <div className="relative">
@@ -249,7 +249,7 @@ export default function AddStudentPage() {
                 <select
                   value={formData.program}
                   onChange={(e) => setFormData({ ...formData, program: e.target.value })}
-                  className="w-full pl-10 pr-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/50 appearance-none"
+                  className="w-full pl-10 pr-4 py-2 bg-white border border-gray-300 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary/50 appearance-none"
                   required
                 >
                   <option value="">Select Program</option>
@@ -262,7 +262,7 @@ export default function AddStudentPage() {
               </div>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
                 Preferred University *
               </label>
               <div className="relative">
@@ -270,7 +270,7 @@ export default function AddStudentPage() {
                 <select
                   value={formData.university}
                   onChange={(e) => setFormData({ ...formData, university: e.target.value })}
-                  className="w-full pl-10 pr-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/50 appearance-none"
+                  className="w-full pl-10 pr-4 py-2 bg-white border border-gray-300 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary/50 appearance-none"
                   required
                 >
                   <option value="">Select University</option>
@@ -289,7 +289,7 @@ export default function AddStudentPage() {
         <div className="flex items-center justify-end gap-4">
           <a
             href="/students"
-            className="px-6 py-2 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors"
+            className="px-6 py-2 text-gray-500 hover:text-gray-700 transition-colors"
           >
             Cancel
           </a>
