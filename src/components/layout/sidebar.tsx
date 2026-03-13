@@ -18,11 +18,19 @@ import {
   TrendingUp,
 } from "lucide-react";
 import { cn } from "@/lib/utils/cn";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
-const menuItems = [
+interface MenuItem {
+  icon: React.ElementType;
+  label: string;
+  href: string;
+  badge?: number;
+  adminOnly?: boolean;
+}
+
+const allMenuItems: MenuItem[] = [
   { icon: LayoutDashboard, label: "Dashboard", href: "/dashboard" },
   { icon: Rocket, label: "Campaigns", href: "/campaigns" },
   { icon: School, label: "Language Hub", href: "/language-hub" },
@@ -33,7 +41,7 @@ const menuItems = [
   { icon: UserCircle, label: "Profile", href: "/profile" },
   { icon: Bell, label: "Notifications", href: "/notifications", badge: 3 },
   { icon: HelpCircle, label: "Support", href: "/support" },
-  { icon: Shield, label: "Admin", href: "/admin" },
+  { icon: Shield, label: "Admin", href: "/admin", adminOnly: true },
 ];
 
 interface SidebarProps {
@@ -44,11 +52,36 @@ interface SidebarProps {
 export function Sidebar({ collapsed, setCollapsed }: SidebarProps) {
   const pathname = usePathname();
   const supabase = createClient();
+  const [userRole, setUserRole] = useState<string | null>(null);
+  
+  // Fetch user role on mount
+  useEffect(() => {
+    const fetchUserRole = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("role")
+          .eq("id", user.id)
+          .single();
+        setUserRole(profile?.role || "freelancer");
+      }
+    };
+    fetchUserRole();
+  }, [supabase]);
+  
+  // Filter menu items based on role
+  const menuItems = allMenuItems.filter(item => {
+    if (item.adminOnly) {
+      return userRole === "admin";
+    }
+    return true;
+  });
   
   // Determine active item based on current pathname
   const getActiveItem = () => {
     const currentPath = pathname || "/dashboard";
-    const activeMenuItem = menuItems.find(item => 
+    const activeMenuItem = menuItems.find((item: MenuItem) => 
       currentPath === item.href || currentPath.startsWith(item.href + "/")
     );
     return activeMenuItem?.label || "Dashboard";

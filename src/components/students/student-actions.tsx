@@ -8,9 +8,19 @@ interface StudentActionsProps {
   studentId: string;
   studentName: string;
   onDelete?: () => void;
+  isSelected?: boolean;
+  onSelect?: (selected: boolean) => void;
+  showCheckbox?: boolean;
 }
 
-export function StudentActions({ studentId, studentName, onDelete }: StudentActionsProps) {
+export function StudentActions({ 
+  studentId, 
+  studentName, 
+  onDelete, 
+  isSelected, 
+  onSelect, 
+  showCheckbox 
+}: StudentActionsProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -49,13 +59,22 @@ export function StudentActions({ studentId, studentName, onDelete }: StudentActi
 
   return (
     <>
-      <div className="relative" ref={dropdownRef}>
-        <button
-          onClick={() => setIsOpen(!isOpen)}
-          className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-        >
-          <MoreVertical className="w-4 h-4 text-gray-400" />
-        </button>
+      <div className="flex items-center gap-2">
+        {showCheckbox && onSelect && (
+          <input
+            type="checkbox"
+            checked={isSelected}
+            onChange={(e) => onSelect(e.target.checked)}
+            className="w-4 h-4 rounded border-gray-300 text-primary focus:ring-primary"
+          />
+        )}
+        <div className="relative" ref={dropdownRef}>
+          <button
+            onClick={() => setIsOpen(!isOpen)}
+            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+          >
+            <MoreVertical className="w-4 h-4 text-gray-400" />
+          </button>
 
         {isOpen && (
           <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-xl shadow-lg z-50 py-1">
@@ -87,6 +106,7 @@ export function StudentActions({ studentId, studentName, onDelete }: StudentActi
             </button>
           </div>
         )}
+        </div>
       </div>
 
       {/* Delete Confirmation Modal */}

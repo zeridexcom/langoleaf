@@ -1,4 +1,4 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient, useInfiniteQuery } from "@tanstack/react-query";
 import { createClient } from "@/lib/supabase/client";
 
 // Types
@@ -14,6 +14,53 @@ export interface Student {
   created_at: string;
   updated_at: string;
   applications?: any[];
+  date_of_birth?: string | null;
+  gender?: string | null;
+  nationality?: string | null;
+  address?: string | null;
+  city?: string | null;
+  state?: string | null;
+  pincode?: string | null;
+  emergency_contact_name?: string | null;
+  emergency_contact_phone?: string | null;
+  previous_education?: string | null;
+  work_experience?: string | null;
+  source?: string | null;
+  tags?: string[];
+  profile_completion?: number;
+}
+
+export interface StudentFilters {
+  search?: string;
+  status?: string[];
+  program?: string;
+  university?: string;
+  source?: string;
+  tags?: string[];
+  dateFrom?: string;
+  dateTo?: string;
+}
+
+export interface StudentSort {
+  sortBy: string;
+  sortOrder: "asc" | "desc";
+}
+
+export interface PaginatedStudentsResponse {
+  students: Student[];
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+    hasMore: boolean;
+  };
+  filters: {
+    programs: string[];
+    universities: string[];
+    sources: string[];
+    tags: string[];
+  };
 }
 
 // Query keys
@@ -21,6 +68,8 @@ export const studentKeys = {
   all: ["students"] as const,
   lists: () => [...studentKeys.all, "list"] as const,
   list: (filters: Record<string, any>) => [...studentKeys.lists(), { filters }] as const,
+  infinite: () => [...studentKeys.all, "infinite"] as const,
+  infiniteList: (filters: Record<string, any>) => [...studentKeys.infinite(), { filters }] as const,
   details: () => [...studentKeys.all, "detail"] as const,
   detail: (id: string) => [...studentKeys.details(), id] as const,
 };
@@ -40,6 +89,34 @@ async function fetchStudents(): Promise<Student[]> {
 
   if (error) throw error;
   return data || [];
+}
+
+// Fetch paginated students
+async function fetchPaginatedStudents(
+  page: number,
+  limit: number,
+  filters: StudentFilters,
+  sort: StudentSort
+): Promise<PaginatedStudentsResponse> {
+  const params = new URLSearchParams();
+  params.set("page", page.toString());
+  params.set("limit", limit.toString());
+  params.set("sortBy", sort.sortBy);
+  params.set("sortOrder", sort.sortOrder);
+  
+  if (filters.search) params.set("search", filters.search);
+  if (filters.program) params.set("program", filters.program);
+  if (filters.university) params.set("university", filters.university);
+  if (filters.source) params.set("source", filters.source);
+  if (filters.dateFrom) params.set("dateFrom", filters.dateFrom);
+  if (filters.dateTo) params.set("dateTo", filters.dateTo);
+  
+  filters.status?.forEach(s => params.append("status", s));
+  filters.tags?.forEach(t => params.append("tags", t));
+
+  const response = await fetch(`/api/students?${params.toString()}`);
+  if (!response.ok) throw new Error("Failed to fetch students");
+  return response.json();
 }
 
 // Fetch single student
@@ -200,5 +277,71 @@ export function useCheckDuplicatePhone() {
   return useMutation({
     mutationFn: ({ phone, excludeId }: { phone: string; excludeId?: string }) => 
       checkDuplicatePhone(phone, excludeId),
+  });
+}
+
+// Infinite query hook for paginated students
+export function useInfiniteStudents(
+  filters: StudentFilters,
+  sort: StudentSort,
+  limit: number = 20
+) {
+  return useInfiniteQuery({
+    queryKey: studentKeys.infiniteList({ ...filters, ...sort }),
+    queryFn: ({ pageParam = 1 }) => 
+      fetchPaginatedStudents(pageParam, limit, filters, sort),
+    getNextPageParam: (lastPage) => {
+      if (lastPage.pagination.hasMore) {
+        return lastPage.pagination.page + 1;
+      }
+      return undefined;
+    },
+    initialPageParam: 1,
+  });
+}
+
+// Bulk delete students
+async function bulkDeleteStudents(ids: string[]): Promise<void> {
+  const supabase = createClient();
+  const { error } = await supabase
+    .from("students")
+    .delete()
+    .in("id", ids);
+
+  if (error) throw error;
+}
+
+// Bulk update student status
+async function bulkUpdateStatus(ids: string[], status: string): Promise<void> {
+  const supabase = createClient();
+  const { error } = await supabase
+    .from("students")
+    .update({ status, updated_at: new Date().toISOString() })
+    .in("id", ids);
+
+  if (error) throw error;
+}
+
+// Bulk operations hooks
+export function useBulkDeleteStudents() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: bulkDeleteStudents,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: studentKeys.all });
+    },
+  });
+}
+
+export function useBulkUpdateStatus() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ ids, status }: { ids: string[]; status: string }) => 
+      bulkUpdateStatus(ids, status),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: studentKeys.all });
+    },
   });
 }

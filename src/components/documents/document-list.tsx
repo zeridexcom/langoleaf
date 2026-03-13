@@ -1,9 +1,22 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { FileText, Image, Download, Trash2, ExternalLink, FolderOpen } from "lucide-react";
+import { 
+  FileText, 
+  Image, 
+  Download, 
+  Trash2, 
+  ExternalLink, 
+  FolderOpen,
+  CheckCircle2,
+  XCircle,
+  Clock,
+  AlertCircle,
+  Eye
+} from "lucide-react";
 import { cn } from "@/lib/utils/cn";
 import { DocumentType, documentTypeLabels } from "@/lib/cloudinary/client";
+import { DocumentViewer } from "./document-viewer";
 
 export interface Document {
   id: string;
@@ -14,6 +27,11 @@ export interface Document {
   size: number;
   createdAt: string;
   thumbnail?: string;
+  status?: "pending" | "verified" | "rejected";
+  verifiedBy?: string;
+  verifiedAt?: string;
+  expiryDate?: string | null;
+  isExpiringSoon?: boolean;
 }
 
 interface DocumentListProps {
@@ -22,12 +40,23 @@ interface DocumentListProps {
   onRefresh?: () => void;
   onDelete?: (documentId: string) => void;
   refreshKey?: number;
+  onView?: (document: Document) => void;
+  showVerification?: boolean;
 }
 
-export function DocumentList({ studentId, documents: propDocuments, onRefresh, onDelete, refreshKey }: DocumentListProps) {
+export function DocumentList({ 
+  studentId, 
+  documents: propDocuments, 
+  onRefresh, 
+  onDelete, 
+  refreshKey,
+  onView,
+  showVerification = true
+}: DocumentListProps) {
   const [documents, setDocuments] = useState<Document[]>(propDocuments || []);
   const [loading, setLoading] = useState(!propDocuments);
   const [error, setError] = useState<string | null>(null);
+  const [viewingDocument, setViewingDocument] = useState<Document | null>(null);
 
   useEffect(() => {
     if (propDocuments) {
@@ -82,15 +111,45 @@ export function DocumentList({ studentId, documents: propDocuments, onRefresh, o
     }
   };
 
-  const formatFileSize = (bytes: number) => {
-    if (bytes === 0) return "0 Bytes";
-    const k = 1024;
-    const sizes = ["Bytes", "KB", "MB", "GB"];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
+function VerificationBadge({ status }: { status: string }) {
+  const configs = {
+    verified: {
+      icon: CheckCircle2,
+      className: "bg-emerald-100 text-emerald-700",
+      label: "Verified"
+    },
+    pending: {
+      icon: Clock,
+      className: "bg-amber-100 text-amber-700",
+      label: "Pending"
+    },
+    rejected: {
+      icon: XCircle,
+      className: "bg-red-100 text-red-700",
+      label: "Rejected"
+    }
   };
 
-  const getFileIcon = (format: string) => {
+  const config = configs[status as keyof typeof configs] || configs.pending;
+  const Icon = config.icon;
+
+  return (
+    <span className={cn("inline-flex items-center gap-1 px-2 py-0.5 text-xs font-medium rounded-full", config.className)}>
+      <Icon className="w-3 h-3" />
+      {config.label}
+    </span>
+  );
+}
+
+const formatFileSize = (bytes: number) => {
+  if (bytes === 0) return "0 Bytes";
+  const k = 1024;
+  const sizes = ["Bytes", "KB", "MB", "GB"];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
+};
+
+const getFileIcon = (format: string) => {
     if (["jpg", "jpeg", "png"].includes(format.toLowerCase())) {
       return <Image className="w-5 h-5 text-blue-500" />;
     }
@@ -172,22 +231,45 @@ export function DocumentList({ studentId, documents: propDocuments, onRefresh, o
 
                 {/* Document Info */}
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-gray-900 dark:text-white truncate">
-                    {doc.typeLabel}
-                  </p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">
-                    {formatFileSize(doc.size)} • {new Date(doc.createdAt).toLocaleDateString()}
-                  </p>
+                  <div className="flex items-center gap-2">
+                    <p className="text-sm font-medium text-gray-900 dark:text-white truncate">
+                      {doc.typeLabel}
+                    </p>
+                    {showVerification && doc.status && (
+                      <VerificationBadge status={doc.status} />
+                    )}
+                  </div>
+                  <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
+                    <span>{formatFileSize(doc.size)}</span>
+                    <span>•</span>
+                    <span>{new Date(doc.createdAt).toLocaleDateString()}</span>
+                    {doc.isExpiringSoon && (
+                      <>
+                        <span>•</span>
+                        <span className="text-red-500 font-medium flex items-center gap-1">
+                          <AlertCircle className="w-3 h-3" />
+                          Expiring soon
+                        </span>
+                      </>
+                    )}
+                  </div>
                 </div>
 
                 {/* Actions */}
                 <div className="flex items-center gap-1">
+                  <button
+                    onClick={() => onView ? onView(doc) : setViewingDocument(doc)}
+                    className="p-2 text-gray-400 hover:text-primary hover:bg-primary/10 rounded-lg transition-colors"
+                    title="View"
+                  >
+                    <Eye className="w-4 h-4" />
+                  </button>
                   <a
                     href={doc.url}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="p-2 text-gray-400 hover:text-primary hover:bg-primary/10 rounded-lg transition-colors"
-                    title="View"
+                    title="Open in new tab"
                   >
                     <ExternalLink className="w-4 h-4" />
                   </a>
@@ -212,6 +294,16 @@ export function DocumentList({ studentId, documents: propDocuments, onRefresh, o
           </div>
         </div>
       ))}
+
+      {/* Document Viewer Modal */}
+      {viewingDocument && (
+        <DocumentViewer
+          documentId={viewingDocument.id}
+          fileName={viewingDocument.typeLabel}
+          fileType={viewingDocument.format === "pdf" ? "application/pdf" : `image/${viewingDocument.format}`}
+          onClose={() => setViewingDocument(null)}
+        />
+      )}
     </div>
   );
 }

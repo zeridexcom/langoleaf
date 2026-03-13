@@ -93,7 +93,13 @@ export async function middleware(request: NextRequest) {
     '/support'
   ]
   
+  // Admin-only routes
+  const adminRoutes = [
+    '/admin'
+  ]
+  
   const isProtectedRoute = protectedRoutes.some(route => pathname.startsWith(route))
+  const isAdminRoute = adminRoutes.some(route => pathname.startsWith(route))
 
   // Protect dashboard routes - but don't block if auth fails (graceful degradation)
   if (isProtectedRoute && !user) {
@@ -103,6 +109,17 @@ export async function middleware(request: NextRequest) {
     }
     // For page routes, redirect to login
     return NextResponse.redirect(new URL('/login', request.url))
+  }
+
+  // Protect admin routes - check role from user metadata or make a lightweight check
+  if (isAdminRoute && user) {
+    // Check if user has admin role in metadata (set during auth)
+    const userRole = user.user_metadata?.role || user.app_metadata?.role
+    
+    if (userRole !== 'admin') {
+      // Redirect non-admin users to dashboard
+      return NextResponse.redirect(new URL('/dashboard', request.url))
+    }
   }
 
   // Redirect logged in users away from auth pages
