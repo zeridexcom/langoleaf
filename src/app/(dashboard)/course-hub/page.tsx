@@ -118,14 +118,14 @@ export default function CourseHubPage() {
           </div>
         </div>
 
-        {/* Section 1: Foreign Education */}
+        {/* Section 1: Online Degree */}
         <section className="space-y-4">
           <div className="flex items-center justify-between">
-            <h2 className="text-xl font-bold text-gray-900">Foreign Education</h2>
+            <h2 className="text-xl font-bold text-gray-900">Online Degree</h2>
           </div>
           <div className="flex overflow-x-auto gap-4 pb-4 snap-x snap-mandatory hide-scrollbar -mx-4 px-4 sm:mx-0 sm:px-0">
             <div className="min-w-[280px] md:min-w-[320px] lg:min-w-[350px] snap-start bg-gray-50 border-2 border-dashed border-gray-200 rounded-xl p-8 flex flex-col items-center justify-center text-center h-[200px]">
-              <span className="text-sm font-medium text-gray-500">Foreign Education courses will appear here</span>
+              <span className="text-sm font-medium text-gray-500">Online Degree courses will appear here</span>
             </div>
           </div>
         </section>
