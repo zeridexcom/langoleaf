@@ -18,17 +18,15 @@ export function DashboardLayoutClient({
   useRealtimeNotifications();
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 flex flex-col">
       <Header />
-      <div className="flex justify-center">
+      <div className="flex flex-1 relative">
         <Sidebar collapsed={sidebarCollapsed} setCollapsed={setSidebarCollapsed} />
         <main className={cn(
-          "flex-1 pt-24 pb-12 transition-all duration-300",
-          sidebarCollapsed ? "lg:ml-20" : "lg:ml-64"
+          "flex-1 pt-24 pb-12 transition-all duration-300 min-w-0",
+          sidebarCollapsed ? "lg:pl-20" : "lg:pl-64"
         )}>
-          <DashboardPageLayout>
-            {children}
-          </DashboardPageLayout>
+          {children}
         </main>
       </div>
     </div>

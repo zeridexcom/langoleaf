@@ -303,11 +303,13 @@ const onlineDegreeCourses: Course[] = [
   }
 ];
 
+import { DashboardPageLayout } from "@/components/ui/design-system";
+
 export default function CourseHubPage() {
   const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
 
   return (
-    <div className="relative min-h-[calc(100-vh-4rem)]">
+    <DashboardPageLayout className="pb-24">
       <div className={`space-y-8 transition-all duration-500 ${selectedCourse ? 'xl:pr-[400px] lg:pr-[320px] opacity-50 blur-[2px]' : ''}`}>
         {/* Header */}
         <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 bg-white p-6 border border-gray-200 rounded-xl shadow-sm">
@@ -583,6 +585,6 @@ export default function CourseHubPage() {
           />
         )}
       </AnimatePresence>
-    </div>
+    </DashboardPageLayout>
   );
 }
