@@ -33,7 +33,7 @@ interface MenuItem {
 const allMenuItems: MenuItem[] = [
   { icon: LayoutDashboard, label: "Dashboard", href: "/dashboard" },
   { icon: Rocket, label: "Campaigns", href: "/campaigns" },
-  { icon: School, label: "Language Hub", href: "/language-hub" },
+  { icon: School, label: "Course Hub", href: "/course-hub" },
   { icon: Users, label: "Students", href: "/students" },
   { icon: FileText, label: "Applications", href: "/applications" },
   { icon: TrendingUp, label: "Earnings", href: "/earnings" },
