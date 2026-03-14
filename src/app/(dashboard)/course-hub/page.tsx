@@ -104,8 +104,196 @@ const languageCourses = [
   }
 ];
 
+const onlineDegreeCourses = [
+  {
+    title: "Rosy Royal Institutions",
+    slug: "rosy-royal-institutions",
+    shortDescription: "A group of institutions in Bangalore offering programs in Homeopathy, Physiotherapy, Nursing, Pharmacy, and Management.",
+    suitableFor: [
+      "Nursing & Healthcare aspirants",
+      "Pharmacy students",
+      "Aviation & Management professionals"
+    ],
+    courseIncludes: [
+      "BHMS & BPT",
+      "M.Sc/B.Sc Nursing & GNM",
+      "B.Pharm & D.Pharm",
+      "BBA Aviation & Global",
+      "BCA in Cloud, AI & Security",
+      "Forensic Science with IAS Coaching"
+    ],
+    benefits: [
+      "Approved by Government of Karnataka",
+      "Multiple health science institutions",
+      "Professional IAS/IPS coaching integrated",
+      "Bangalore based specialized campus"
+    ]
+  },
+  {
+    title: "Yenepoya University",
+    slug: "yenepoya-university",
+    shortDescription: "Deemed to be University offering BBA in International Business & Business Analytics with Meta certifications.",
+    suitableFor: [
+      "Data Analyst aspirants",
+      "Digital Marketing enthusiasts",
+      "International Business managers"
+    ],
+    courseIncludes: [
+      "BBA International Business",
+      "Business Analytics & Data Science",
+      "Meta Digital Marketing Certification",
+      "SEO & SEM Specialization",
+      "Export & Import Management"
+    ],
+    benefits: [
+      "Meta professional certification",
+      "Industry-standard analytics tools",
+      "Strong global business focus",
+      "Career outcomes in Data Science"
+    ]
+  },
+  {
+    title: "Chinmaya Vishwa Vidyapeeth",
+    slug: "cvv-university",
+    shortName: "CVV",
+    shortDescription: "A premier Deemed University offering B.Tech, BCA(Hons), and specialized BBA/B.Com programs.",
+    suitableFor: [
+      "Engineering & Tech students",
+      "Psychology scholars",
+      "Accounting & Finance aspirants"
+    ],
+    courseIncludes: [
+      "B.Tech in CSE, AI/ML & Cyber",
+      "BCA(Hons) in Robotics & DevOps",
+      "B.Com(Hons) with ACCA-UK",
+      "BBA(Hons) in Supply Chain",
+      "Applied & Clinical Psychology",
+      "Sanskrit & Education Degrees"
+    ],
+    benefits: [
+      "ACCA-UK International collaboration",
+      "Robotics & AI specialization labs",
+      "Vedic wisdom & modern tech integration",
+      "Full-time & Part-time PhD options"
+    ]
+  },
+  {
+    title: "Vidya College of Nursing",
+    slug: "vidya-nursing",
+    shortDescription: "A specialized nursing college recognized by INC & KNC and affiliated with RGUHS Bengaluru.",
+    suitableFor: [
+      "Nursing professionals",
+      "Clinical practice students",
+      "Healthcare service aspirants"
+    ],
+    courseIncludes: [
+      "B.Sc Nursing",
+      "GNM (General Nursing & Midwifery)"
+    ],
+    benefits: [
+      "Affiliated to RGUHS Bengaluru",
+      "Recognized by INC & KNC",
+      "Government of Karnataka approved",
+      "Specialized clinical training"
+    ]
+  },
+  {
+    title: "ELIMS College",
+    slug: "elims-college",
+    shortDescription: "College of Arts and Science offering professional BBA, B.Com, and BCA with global certifications.",
+    suitableFor: [
+      "Logistics & Aviation students",
+      "Accounting & CMA aspirants",
+      "Cyber Security enthusiasts"
+    ],
+    courseIncludes: [
+      "BBA Logistics & CILT Certification",
+      "B.Com with ACCA (9 paper exemption)",
+      "B.Com with CMA (USA)",
+      "BCA in AI & Data Science",
+      "B.Sc CS in Cloud & Ethical Hacking"
+    ],
+    benefits: [
+      "9 paper exemption for ACCA",
+      "CILT International Certification",
+      "CMA USA exam preparation",
+      "Advanced AI & Cloud labs"
+    ]
+  },
+  {
+    title: "MET's Group of Institutions",
+    slug: "mets-group",
+    shortDescription: "Educational group offering Engineering, Pharmacy, and professional Management degrees.",
+    suitableFor: [
+      "Tech & Biotech students",
+      "Pharmacy scholars",
+      "Logistics & Aviation aspirants"
+    ],
+    courseIncludes: [
+      "B.Tech in CS & Biotech",
+      "B.Pharm Program",
+      "BBA in Aviation & Logistics",
+      "B.Com in ACCA & AI",
+      "BCA in Cloud & Ethical Hacking"
+    ],
+    benefits: [
+      "Multi-disciplinary learning environment",
+      "ACCA paper exemptions available",
+      "Specialized Biotech research",
+      "Cyber Security focus in IT"
+    ]
+  },
+  {
+    title: "MES Group of Institutions",
+    slug: "mes-institutions",
+    shortDescription: "Established group in Aluva offering Engineering and professional BA/B.Sc/B.Com degrees with add-ons.",
+    suitableFor: [
+      "Robotics & AI Engineering students",
+      "Psychology & Media scholars",
+      "Hospital Administration aspirants"
+    ],
+    courseIncludes: [
+      "B.Tech in Robotics & AI",
+      "BA/B.Com with Hospital Admin",
+      "BCA in Machine Learning",
+      "B.Sc Psychology labs",
+      "M.Com in Finance & Tax"
+    ],
+    benefits: [
+      "Specialized Robotics labs",
+      "Professional Hospital Admin add-on",
+      "GST & SAP Finance training",
+      "Central Ernakulam location"
+    ]
+  },
+  {
+    title: "Udupi Group of Institutions",
+    slug: "udupi-group",
+    shortDescription: "Manipal-based institution offering Health Sciences, Management, and Creative Design programs.",
+    suitableFor: [
+      "Allied Health Science students",
+      "Fashion & Interior Designers",
+      "Hospitality & Hotel managers"
+    ],
+    courseIncludes: [
+      "B.Sc Nursing & BPT",
+      "Cardiac & Respiratory Tech",
+      "Hotel Management (BHS)",
+      "Aviation & Hospitality Management",
+      "BCA in Big Data & Analytics",
+      "Fashion & Interior Design"
+    ],
+    benefits: [
+      "Manipal education hub campus",
+      "Diverse health science portfolio",
+      "Specialized creative design school",
+      "Job-ready aviation & logistics"
+    ]
+  }
+];
+
 export default function CourseHubPage() {
-  const [selectedCourse, setSelectedCourse] = useState<typeof languageCourses[0] | null>(null);
+  const [selectedCourse, setSelectedCourse] = useState<any | null>(null);
 
   return (
     <div className="relative min-h-[calc(100-vh-4rem)]">
@@ -123,10 +311,55 @@ export default function CourseHubPage() {
           <div className="flex items-center justify-between">
             <h2 className="text-xl font-bold text-gray-900">Online Degree</h2>
           </div>
-          <div className="flex overflow-x-auto gap-4 pb-4 snap-x snap-mandatory hide-scrollbar -mx-4 px-4 sm:mx-0 sm:px-0">
-            <div className="min-w-[280px] md:min-w-[320px] lg:min-w-[350px] snap-start bg-gray-50 border-2 border-dashed border-gray-200 rounded-xl p-8 flex flex-col items-center justify-center text-center h-[200px]">
-              <span className="text-sm font-medium text-gray-500">Online Degree courses will appear here</span>
-            </div>
+          <div className="flex overflow-x-auto gap-6 pb-6 pt-2 snap-x snap-mandatory hide-scrollbar -mx-4 px-4 sm:mx-0 sm:px-0">
+            {onlineDegreeCourses.map((course) => (
+              <div key={course.slug} className="min-w-[320px] md:min-w-[380px] lg:min-w-[420px] snap-center bg-white border border-gray-200 rounded-2xl p-6 flex flex-col hover:shadow-xl transition-all duration-300 hover:border-primary/50 relative overflow-hidden group">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full -mr-16 -mt-16 transition-transform group-hover:scale-150 duration-500 ease-out"></div>
+                
+                <div className="flex items-start gap-4 mb-4 relative z-10">
+                  <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center text-primary shrink-0 shadow-sm border border-primary/20 group-hover:bg-primary group-hover:text-white transition-colors duration-300">
+                    <GraduationCap className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <h3 className="font-black text-xl text-gray-900 group-hover:text-primary transition-colors">{course.title}</h3>
+                  </div>
+                </div>
+
+                <p className="text-sm text-gray-600 mb-6 flex-grow leading-relaxed relative z-10">
+                  {course.shortDescription}
+                </p>
+
+                <div className="space-y-4 text-sm relative z-10">
+                  <div>
+                    <h4 className="font-bold text-gray-900 mb-2 flex items-center gap-1.5">
+                      <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full"></span>
+                      Ideal For
+                    </h4>
+                    <ul className="space-y-2 text-gray-600">
+                      {course.suitableFor.slice(0, 2).map((item, i) => (
+                        <li key={i} className="flex items-start gap-2">
+                          <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
+                          <span className="leading-tight">{item}</span>
+                        </li>
+                      ))}
+                      {course.suitableFor.length > 2 && (
+                        <li className="text-xs text-gray-400 italic pl-6">+ {course.suitableFor.length - 2} more</li>
+                      )}
+                    </ul>
+                  </div>
+                </div>
+
+                <div className="mt-8 relative z-10">
+                  <button 
+                    onClick={() => setSelectedCourse(course)}
+                    className="w-full bg-white hover:bg-primary hover:text-white text-gray-900 font-bold py-3 rounded-xl transition-all duration-300 border-2 border-gray-200 hover:border-primary shadow-sm hover:shadow-md flex items-center justify-center gap-2"
+                  >
+                    <BookOpen className="w-4 h-4" />
+                    View Details
+                  </button>
+                </div>
+              </div>
+            ))}
           </div>
         </section>
 
