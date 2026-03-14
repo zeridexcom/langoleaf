@@ -27,6 +27,11 @@ import { DocumentUpload } from "@/components/documents/document-upload";
 import { DocumentList } from "@/components/documents/document-list";
 import { createClient } from "@/lib/supabase/client";
 import { useDuplicateCheck, useRealtimeDuplicateCheck } from "@/hooks/useDuplicateCheck";
+import {
+  useBulkDeleteStudents,
+  useBulkUpdateStatus,
+  useCreateStudent,
+} from "@/hooks/useStudents";
 import { DuplicateWarningModal } from "@/components/students/duplicate-warning-modal";
 import { useFormDraft } from "@/hooks/useFormDraft";
 import { TagInput, STUDENT_TAG_SUGGESTIONS } from "@/components/ui/tag-input";
@@ -133,6 +138,9 @@ export default function AddStudentPage() {
   const { result, showModal, checkDuplicates, closeModal, clearDuplicates } = useDuplicateCheck();
   const { emailStatus, phoneStatus, duplicateStudent, checkEmail, checkPhone, resetStatus } = useRealtimeDuplicateCheck();
   
+  // Create student mutation
+  const createStudent = useCreateStudent();
+  
   // Draft management
   const { hasDraft, lastSaved, saveDraft, restoreDraft, clearDraft, startAutoSave, getLastSavedText } = useFormDraft({
     formId: "add-student",
@@ -202,69 +210,49 @@ export default function AddStudentPage() {
       return; // Modal will be shown
     }
 
-    setIsSubmitting(true);
+    // Submit using mutation hook
+    createStudent.mutate({
+      name: `${formData.firstName} ${formData.lastName}`,
+      email: formData.email,
+      phone: formData.phone,
+      program: formData.program,
+      university: formData.university,
+      status: "application_submitted", // Match user's previous hardcoded status
+      freelancer_id: "", // Hook will handle this
+      date_of_birth: formData.dateOfBirth?.toISOString().split("T")[0] || undefined,
+      gender: formData.gender || undefined,
+      nationality: formData.nationality || undefined,
+      address: formData.address || undefined,
+      city: formData.city || undefined,
+      state: formData.state || undefined,
+      pincode: formData.pincode || undefined,
+      emergency_contact_name: formData.emergencyContactName || undefined,
+      emergency_contact_phone: formData.emergencyContactPhone || undefined,
+      emergency_contact_relation: formData.emergencyContactRelation || undefined,
+      previous_education: formData.previousEducation || undefined,
+      source: formData.source || undefined,
+      tags: formData.tags,
+      notes: "", // Satisfy schema
+    }, {
+      onSuccess: async (student) => {
+        // Sync to Google Sheets
+        await fetch("/api/sync-sheets", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ studentId: student.id, action: "create" }),
+        });
 
-    try {
-      const supabase = createClient();
-      const { data: { user } } = await supabase.auth.getUser();
-
-      if (!user) {
-        toast.error("Please login first");
-        return;
+        clearDraft();
+        setStudentId(student.id);
+        setSuccess(true);
+        setShowDocumentUpload(true);
+        toast.success("Student added successfully!");
+      },
+      onError: (error) => {
+        console.error("Error creating student:", error);
+        toast.error("Failed to create student. Please try again.");
       }
-
-      // Create student in database
-      const { data: student, error } = await supabase
-        .from("students")
-        .insert({
-          name: `${formData.firstName} ${formData.lastName}`,
-          email: formData.email,
-          phone: formData.phone,
-          program: formData.program,
-          university: formData.university,
-          status: "application_submitted",
-          freelancer_id: user.id,
-          // New fields
-          date_of_birth: formData.dateOfBirth?.toISOString().split("T")[0] || null,
-          gender: formData.gender || null,
-          nationality: formData.nationality || null,
-          avatar_url: formData.avatarUrl || null,
-          address: formData.address || null,
-          city: formData.city || null,
-          state: formData.state || null,
-          pincode: formData.pincode || null,
-          emergency_contact_name: formData.emergencyContactName || null,
-          emergency_contact_phone: formData.emergencyContactPhone || null,
-          emergency_contact_relation: formData.emergencyContactRelation || null,
-          previous_education: formData.previousEducation || null,
-          source: formData.source || null,
-          tags: formData.tags,
-        })
-        .select()
-        .single();
-
-      if (error) throw error;
-
-      // Sync to Google Sheets
-      await fetch("/api/sync-sheets", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ studentId: student.id, action: "create" }),
-      });
-
-      // Clear draft on successful submission
-      clearDraft();
-
-      setStudentId(student.id);
-      setSuccess(true);
-      setShowDocumentUpload(true);
-      toast.success("Student added successfully!");
-    } catch (error) {
-      console.error("Error creating student:", error);
-      toast.error("Failed to create student. Please try again.");
-    } finally {
-      setIsSubmitting(false);
-    }
+    });
   };
 
   const handleDocumentUpload = () => {
@@ -787,12 +775,12 @@ export default function AddStudentPage() {
               </a>
               <Button
                 type="submit"
-                disabled={isSubmitting}
+                disabled={createStudent.isPending}
                 className="px-6 py-2 bg-primary text-white rounded-xl hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
               >
-                {isSubmitting ? (
+                {createStudent.isPending ? (
                   <>
-                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" />
+                    <Loader2 className="animate-spin h-4 w-4" />
                     Adding...
                   </>
                 ) : (

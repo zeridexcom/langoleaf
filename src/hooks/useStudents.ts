@@ -11,6 +11,7 @@ export interface Student {
   program: string | null;
   university: string | null;
   status: string;
+  notes?: string | null;
   freelancer_id: string;
   created_at: string;
   updated_at: string;
@@ -24,10 +25,11 @@ export interface Student {
   pincode?: string | null;
   emergency_contact_name?: string | null;
   emergency_contact_phone?: string | null;
+  emergency_contact_relation?: string | null;
   previous_education?: string | null;
   work_experience?: string | null;
   source?: string | null;
-  tags?: string[];
+  tags?: string[] | null;
   profile_completion?: number;
   // Admin view fields
   freelancer_name?: string;
@@ -275,7 +277,7 @@ export function useCreateStudent() {
   return useMutation({
     mutationFn: createStudent,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: studentKeys.lists() });
+      queryClient.invalidateQueries({ queryKey: studentKeys.all });
     },
   });
 }
@@ -287,7 +289,7 @@ export function useUpdateStudent() {
     mutationFn: updateStudent,
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: studentKeys.detail(data.id) });
-      queryClient.invalidateQueries({ queryKey: studentKeys.lists() });
+      queryClient.invalidateQueries({ queryKey: studentKeys.all });
     },
   });
 }
@@ -298,7 +300,7 @@ export function useDeleteStudent() {
   return useMutation({
     mutationFn: deleteStudent,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: studentKeys.lists() });
+      queryClient.invalidateQueries({ queryKey: studentKeys.all });
     },
   });
 }

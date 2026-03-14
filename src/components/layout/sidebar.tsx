@@ -47,13 +47,19 @@ const allMenuItems: MenuItem[] = [
 interface SidebarProps {
   collapsed: boolean;
   setCollapsed: (collapsed: boolean) => void;
+  isHovered: boolean;
+  setIsHovered: (hovered: boolean) => void;
 }
 
-export function Sidebar({ collapsed, setCollapsed }: SidebarProps) {
+export function Sidebar({ 
+  collapsed, 
+  setCollapsed, 
+  isHovered, 
+  setIsHovered 
+}: SidebarProps) {
   const pathname = usePathname();
   const supabase = createClient();
   const [userRole, setUserRole] = useState<string | null>(null);
-  const [isHovered, setIsHovered] = useState(false);
 
   // Effectively expanded if either manually uncollapsed OR hovered
   const isExpanded = !collapsed || isHovered;
@@ -101,9 +107,9 @@ export function Sidebar({ collapsed, setCollapsed }: SidebarProps) {
       onMouseEnter={() => collapsed && setIsHovered(true)}
       onMouseLeave={() => collapsed && setIsHovered(false)}
       className={cn(
-        "fixed left-0 top-16 h-[calc(100vh-4rem)] bg-white border-r border-gray-200 transition-all duration-300 z-40 shadow-sm overflow-hidden",
+        "fixed left-4 top-20 h-[calc(100vh-6rem)] bg-white/80 backdrop-blur-xl border border-white/20 transition-all duration-300 z-40 shadow-2xl rounded-3xl overflow-hidden",
         "hidden lg:block",
-        isExpanded ? "w-64" : "w-20"
+        isExpanded ? "w-64" : "w-16"
       )}
     >
       <div className="flex flex-col h-full">
@@ -128,7 +134,7 @@ export function Sidebar({ collapsed, setCollapsed }: SidebarProps) {
             <div className={cn(
               "bg-center bg-no-repeat aspect-square bg-cover rounded-xl transition-all duration-300 shrink-0 shadow-sm",
               isExpanded ? "size-11" : "size-10"
-            )} 
+            )}
                  style={{backgroundImage: 'url("https://ui-avatars.com/api/?name=Agent&background=ec5b13&color=fff")'}}>
             </div>
             <div className={cn(
@@ -149,32 +155,29 @@ export function Sidebar({ collapsed, setCollapsed }: SidebarProps) {
                 <a
                   href={item.href}
                   className={cn(
-                    "flex items-center gap-3 px-3.5 py-3 border transition-all duration-300 group font-bold rounded-xl",
+                    "flex items-center gap-3 px-3.5 py-3 transition-all duration-300 group font-bold rounded-2xl relative",
                     activeItem === item.label
-                      ? "bg-primary text-white border-primary shadow-premium"
-                      : "text-gray-500 hover:bg-gray-100 hover:text-gray-900 border-transparent"
+                      ? "bg-primary text-white shadow-lg shadow-primary/30 scale-[1.03] z-10"
+                      : "text-gray-500 hover:bg-white hover:text-gray-900 hover:shadow-xl hover:scale-105 active:scale-95"
                   )}
                 >
                   <item.icon
                     className={cn(
-                      "w-5 h-5 flex-shrink-0 transition-colors",
-                      activeItem === item.label ? "text-white" : "text-gray-400 group-hover:text-gray-600"
+                      "w-5 h-5 flex-shrink-0 transition-all duration-300",
+                      activeItem === item.label ? "text-white scale-110" : "text-gray-400 group-hover:text-gray-600 group-hover:scale-110"
                     )}
                   />
                   <span className={cn(
-                    "text-sm truncate transition-all duration-300",
-                    isExpanded ? "opacity-100 translate-x-0' w-auto" : "opacity-0 -translate-x-4 w-0 pointer-events-none"
-                  )}>
-                    {item.label}
-                  </span>
-                  {item.badge && (
-                    <span className={cn(
-                      "ml-auto bg-primary text-white text-[10px] font-black px-1.5 py-0.5 rounded-full transition-all duration-300",
-                      isExpanded ? "opacity-100 scale-100" : "opacity-0 scale-50 pointer-events-none"
-                    )}>
-                      {item.badge}
-                    </span>
-                  )}
+                "ml-3 font-medium truncate transition-all duration-300",
+                isExpanded ? "opacity-100 w-auto" : "opacity-0 w-0 pointer-events-none"
+              )}>
+                {item.label}
+              </span>
+              {item.badge && isExpanded && (
+                <span className="ml-auto bg-primary text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[18px] text-center animate-in fade-in duration-300">
+                  {item.badge}
+                </span>
+              )}
                 </a>
               </li>
             ))}
@@ -183,18 +186,18 @@ export function Sidebar({ collapsed, setCollapsed }: SidebarProps) {
 
         {/* Progress Goal */}
         <div className={cn(
-          "p-4 transition-all duration-300 border-t border-gray-100",
+          "p-4 transition-all duration-300 border-t border-gray-100/50",
           !isExpanded && "px-3"
         )}>
           <div className={cn(
-            "bg-primary/5 border border-primary/10 p-4 rounded-2xl transition-all duration-300",
-            !isExpanded && "p-2 border-transparent bg-transparent"
+            "bg-primary/10 backdrop-blur-md border border-primary/20 p-4 rounded-3xl transition-all duration-300",
+            !isExpanded && "p-2 border-transparent bg-transparent shadow-none"
           )}>
             <p className={cn(
               "text-[10px] font-black text-primary mb-2 uppercase tracking-widest transition-all duration-300",
               isExpanded ? "opacity-100 h-auto" : "opacity-0 h-0 overflow-hidden"
             )}>Target 2026</p>
-            <div className="h-2 w-full bg-gray-100 rounded-full overflow-hidden shadow-inner">
+            <div className="h-2 w-full bg-black/5 rounded-full overflow-hidden shadow-inner">
               <div className="h-full bg-primary rounded-full shadow-sm" style={{width: "75%"}}></div>
             </div>
             <p className={cn(
@@ -209,7 +212,7 @@ export function Sidebar({ collapsed, setCollapsed }: SidebarProps) {
           <button
             onClick={handleSignOut}
             className={cn(
-              "flex items-center gap-3 px-4 py-2 text-gray-400 hover:text-red-600 hover:bg-red-50 transition-all duration-300 w-full font-bold rounded-xl group",
+              "flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-red-600 hover:bg-red-50 transition-all duration-300 w-full font-bold rounded-2xl group active:scale-95 hover:scale-[1.02]",
               !isExpanded && "justify-center px-0"
             )}
           >
