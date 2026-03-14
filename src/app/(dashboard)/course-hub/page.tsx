@@ -6,7 +6,18 @@ import { motion, AnimatePresence } from "framer-motion";
 
 export const dynamic = "force-dynamic";
 
-const languageCourses = [
+interface Course {
+  title: string;
+  slug: string;
+  shortDescription: string;
+  suitableFor: string[];
+  courseIncludes: string[];
+  benefits: string[];
+  levels?: string[];
+  shortName?: string;
+}
+
+const languageCourses: Course[] = [
   {
     title: "IELTS Preparation",
     slug: "ielts-preparation",
@@ -104,7 +115,7 @@ const languageCourses = [
   }
 ];
 
-const onlineDegreeCourses = [
+const onlineDegreeCourses: Course[] = [
   {
     title: "Rosy Royal Institutions",
     slug: "rosy-royal-institutions",
@@ -293,7 +304,7 @@ const onlineDegreeCourses = [
 ];
 
 export default function CourseHubPage() {
-  const [selectedCourse, setSelectedCourse] = useState<any | null>(null);
+  const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
 
   return (
     <div className="relative min-h-[calc(100-vh-4rem)]">
