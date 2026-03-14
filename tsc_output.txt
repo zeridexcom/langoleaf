@@ -1,0 +1,4 @@
+src/app/(dashboard)/settings/notifications/page.tsx(9,23): error TS2307: Cannot find module 'sonner' or its corresponding type declarations.
+src/app/layout.tsx(7,25): error TS2307: Cannot find module 'sonner' or its corresponding type declarations.
+src/components/ui/switch.tsx(4,35): error TS2307: Cannot find module '@radix-ui/react-switch' or its corresponding type declarations.
+src/hooks/useRealtimeNotifications.tsx(6,23): error TS2307: Cannot find module 'sonner' or its corresponding type declarations.

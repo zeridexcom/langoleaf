@@ -98,6 +98,7 @@ export function Sidebar({ collapsed, setCollapsed }: SidebarProps) {
     <aside
       className={cn(
         "fixed left-0 top-16 h-[calc(100vh-4rem)] bg-white border-r border-gray-200 transition-all duration-300 z-40 shadow-sm rounded-r-xl",
+        "hidden lg:block", // Hide on mobile/tablet unless explicitly handled by a mobile menu
         collapsed ? "w-20" : "w-64"
       )}
     >

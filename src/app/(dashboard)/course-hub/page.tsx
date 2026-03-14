@@ -308,7 +308,7 @@ export default function CourseHubPage() {
 
   return (
     <div className="relative min-h-[calc(100-vh-4rem)]">
-      <div className={`space-y-8 transition-all duration-500 ${selectedCourse ? 'pr-[400px] opacity-50 blur-[2px]' : ''}`}>
+      <div className={`space-y-8 transition-all duration-500 ${selectedCourse ? 'xl:pr-[400px] lg:pr-[320px] opacity-50 blur-[2px]' : ''}`}>
         {/* Header */}
         <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 bg-white p-6 border border-gray-200 rounded-xl shadow-sm">
           <div>
@@ -479,7 +479,7 @@ export default function CourseHubPage() {
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
             transition={{ type: "spring", damping: 25, stiffness: 200 }}
-            className="fixed top-0 right-0 bottom-0 w-full max-w-[400px] bg-white border-l border-gray-200 shadow-2xl z-[60] flex flex-col"
+            className="fixed top-0 right-0 bottom-0 w-full max-w-[320px] xl:max-w-[400px] bg-white border-l border-gray-200 shadow-2xl z-[60] flex flex-col"
           >
             <div className="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
               <h2 className="text-xl font-black text-gray-900 uppercase tracking-tight">Course Details</h2>

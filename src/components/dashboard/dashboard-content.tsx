@@ -123,37 +123,41 @@ export function DashboardContent() {
       />
 
       {/* Hero Banner */}
-      <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-6 bg-gradient-to-br from-primary/5 to-primary/10 p-8 border border-primary/20 rounded-2xl">
+      <div className="flex flex-col xl:flex-row justify-between items-start xl:items-end gap-6 bg-gradient-to-br from-primary/5 to-primary/10 p-6 lg:p-8 border border-primary/20 rounded-2xl">
         <div className="space-y-2">
           <div className="flex items-center gap-2 text-primary">
             <TrendingUp className="w-5 h-5" />
             <span className="text-xs font-black uppercase tracking-[0.2em]">Global Career Partner</span>
           </div>
-          <h1 className="text-3xl lg:text-4xl font-black text-gray-900 tracking-tight">
+          <h1 className="text-2xl lg:text-3xl xl:text-4xl font-black text-gray-900 tracking-tight">
             Level Up Your Earning Potential
           </h1>
-          <p className="text-gray-600 max-w-xl text-base font-medium">
+          <p className="text-gray-600 max-w-xl text-sm lg:text-base font-medium">
             The study abroad market is exploding! Over <span className="text-gray-900 font-black">10 Lakh students</span> in India plan to go abroad yearly. Are you ready to lead?
           </p>
         </div>
-        <div className="flex gap-4">
-          <MiniStatsCard
-            label="Commission"
-            value={`₹${(stats.totalEarnings || 0).toLocaleString()}`}
-            icon={Wallet}
-            color="primary"
-          />
-          <MiniStatsCard
-            label="Students"
-            value={stats.totalStudents || 0}
-            icon={Users}
-            color="success"
-          />
+        <div className="flex flex-wrap gap-4 w-full xl:w-auto">
+          <div className="flex-1 xl:flex-none min-w-[140px]">
+            <MiniStatsCard
+              label="Commission"
+              value={`₹${(stats.totalEarnings || 0).toLocaleString()}`}
+              icon={Wallet}
+              color="primary"
+            />
+          </div>
+          <div className="flex-1 xl:flex-none min-w-[140px]">
+            <MiniStatsCard
+              label="Students"
+              value={stats.totalStudents || 0}
+              icon={Users}
+              color="success"
+            />
+          </div>
         </div>
       </div>
 
       {/* Stats Overview */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
         <StatsCard
           title="Total Students"
           value={stats.totalStudents || 0}
@@ -188,9 +192,9 @@ export function DashboardContent() {
       <QuickActions />
 
       {/* Main Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
         {/* Recent Students */}
-        <div className="lg:col-span-2">
+        <div className="xl:col-span-2">
           <RecentStudents students={data.recentStudents} />
         </div>
 
@@ -201,7 +205,7 @@ export function DashboardContent() {
       </div>
 
       {/* Activity & Applications */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
         <RecentApplications applications={data.recentApplications} />
         <ActivityFeed applications={data.recentApplications} />
       </div>
