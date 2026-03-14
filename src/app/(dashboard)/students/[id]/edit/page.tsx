@@ -23,7 +23,7 @@ import { useChangeTracking } from "@/hooks/useChangeTracking";
 import { ChangeSummaryModal } from "@/components/students/change-summary-modal";
 import { UnsavedChangesModal } from "@/components/students/unsaved-changes-modal";
 import { useFormDraft } from "@/hooks/useFormDraft";
-import { studentBaseSchema, formatZodErrors } from "@/lib/validations/student";
+import { createStudentSchema, formatZodErrors } from "@/lib/validations/student";
 import { ZodError } from "zod";
 import { toast } from "react-hot-toast";
 
@@ -223,7 +223,8 @@ export default function EditStudentPage() {
   // Validate field on blur
   const validateField = useCallback((field: keyof FormData, value: any) => {
     try {
-      const fieldSchema = studentBaseSchema.shape[field];
+      const schemaField = field === "name" ? "fullName" : field;
+      const fieldSchema = (createStudentSchema.shape as any)[schemaField];
       if (fieldSchema) {
         fieldSchema.parse(value);
       }
@@ -234,10 +235,9 @@ export default function EditStudentPage() {
       });
     } catch (error) {
       if (error instanceof ZodError) {
-        const formatted = formatZodErrors(error);
         setErrors((prev) => ({
           ...prev,
-          ...formatted,
+          [field]: error.errors[0]?.message || "Invalid value",
         }));
       }
     }

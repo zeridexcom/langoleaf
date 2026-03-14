@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Sidebar } from "@/components/layout/sidebar";
 import { Header } from "@/components/layout/header";
+import { useRealtimeNotifications } from "@/hooks/useRealtimeNotifications";
 
 export function DashboardLayoutClient({
   children,
@@ -10,6 +11,9 @@ export function DashboardLayoutClient({
   children: React.ReactNode;
 }) {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+
+  // Initialize realtime notifications
+  useRealtimeNotifications();
 
   return (
     <div className="min-h-screen bg-gray-50">

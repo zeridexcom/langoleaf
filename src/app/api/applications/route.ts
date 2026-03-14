@@ -1,10 +1,34 @@
 import { createClient } from "@/lib/supabase/server";
 import { NextResponse } from "next/server";
-import { cache } from "@/lib/redis/client";
+import { z } from "zod";
+import { ApplicationService } from "@/lib/services/application-service";
+import { AppError } from "@/lib/utils/error";
+import { awardCoinsForApplicationSubmitted, awardCoinsForEnrollment } from "@/lib/services/gamification-service";
 
 export const dynamic = "force-dynamic";
 
-// GET /api/applications - List applications
+// Validation schema for query parameters
+const querySchema = z.object({
+  page: z.coerce.number().min(1).default(1),
+  limit: z.coerce.number().min(1).max(100).default(20),
+  sortBy: z.enum(["created_at", "updated_at", "status"]).default("created_at"),
+  sortOrder: z.enum(["asc", "desc"]).default("desc"),
+  search: z.string().optional(),
+  status: z.array(z.string()).optional(),
+  universityId: z.string().optional(),
+  programId: z.string().optional(),
+  studentId: z.string().optional(),
+});
+
+// Validation schema for creating application
+const createApplicationSchema = z.object({
+  studentId: z.string().uuid("Invalid student ID"),
+  universityId: z.string().uuid("Invalid university ID"),
+  programId: z.string().uuid("Invalid program ID"),
+  intakeDate: z.string().optional(),
+});
+
+// GET /api/applications - List applications with pagination, sorting, and filtering
 export async function GET(request: Request) {
   try {
     const supabase = createClient();
@@ -12,52 +36,105 @@ export async function GET(request: Request) {
     // Check auth
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      return NextResponse.json(
+        { success: false, error: { code: "UNAUTHORIZED", message: "Authentication required" } },
+        { status: 401 }
+      );
     }
 
     // Get freelancer profile
-    const { data: profile } = await supabase
+    const { data: profile, error: profileError } = await supabase
       .from("profiles")
-      .select("id")
+      .select("id, role")
       .eq("id", user.id)
       .single();
 
-    if (!profile) {
-      return NextResponse.json({ error: "Profile not found" }, { status: 404 });
+    if (profileError || !profile) {
+      return NextResponse.json(
+        { success: false, error: { code: "NOT_FOUND", message: "Profile not found" } },
+        { status: 404 }
+      );
     }
 
-    // Try cache first
-    const cacheKey = `applications:${profile.id}`;
-    const cached = await cache.get(cacheKey);
-    if (cached) {
-      return NextResponse.json(cached);
+    // Parse and validate query parameters
+    const { searchParams } = new URL(request.url);
+    const queryResult = querySchema.safeParse({
+      page: searchParams.get("page"),
+      limit: searchParams.get("limit"),
+      sortBy: searchParams.get("sortBy"),
+      sortOrder: searchParams.get("sortOrder"),
+      search: searchParams.get("search") || undefined,
+      status: searchParams.getAll("status"),
+      universityId: searchParams.get("universityId") || undefined,
+      programId: searchParams.get("programId") || undefined,
+      studentId: searchParams.get("studentId") || undefined,
+    });
+
+    if (!queryResult.success) {
+      return NextResponse.json(
+        { 
+          success: false, 
+          error: { 
+            code: "VALIDATION_ERROR", 
+            message: "Invalid query parameters",
+            details: queryResult.error.flatten().fieldErrors 
+          } 
+        },
+        { status: 400 }
+      );
     }
 
-    // Fetch from DB
-    const { data: applications, error } = await supabase
-      .from("applications")
-      .select(`
-        *,
-        student:students(
-          id,
-          name,
-          email,
-          phone
-        )
-      `)
-      .eq("freelancer_id", profile.id)
-      .order("created_at", { ascending: false });
+    const { page, limit, sortBy, sortOrder, search, status, universityId, programId, studentId } = queryResult.data;
 
-    if (error) throw error;
+    // Check if user is admin
+    const isAdmin = profile.role === "admin" || profile.role === "super_admin";
 
-    // Cache for 5 minutes
-    await cache.set(cacheKey, applications, 300);
+    // Use ApplicationService for fetching applications
+    const result = await ApplicationService.listApplications(
+      isAdmin ? undefined : profile.id,
+      {
+        search,
+        status,
+        universityId,
+        programId,
+        studentId,
+      },
+      {
+        sortBy,
+        sortOrder,
+      },
+      page,
+      limit
+    );
 
-    return NextResponse.json(applications);
+    return NextResponse.json({
+      success: true,
+      data: result,
+    });
   } catch (error) {
     console.error("Error fetching applications:", error);
+    
+    if (error instanceof AppError) {
+      return NextResponse.json(
+        { 
+          success: false, 
+          error: { 
+            code: error.code, 
+            message: error.message 
+          } 
+        },
+        { status: error.statusCode || 500 }
+      );
+    }
+    
     return NextResponse.json(
-      { error: "Failed to fetch applications" },
+      { 
+        success: false, 
+        error: { 
+          code: "INTERNAL_ERROR", 
+          message: "Failed to fetch applications" 
+        } 
+      },
       { status: 500 }
     );
   }
@@ -71,93 +148,88 @@ export async function POST(request: Request) {
     // Check auth
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
-    const body = await request.json();
-    const { student_id, program, university, documents } = body;
-
-    // Validate required fields
-    if (!student_id || !program || !university) {
       return NextResponse.json(
-        { error: "Missing required fields: student_id, program, university" },
-        { status: 400 }
+        { success: false, error: { code: "UNAUTHORIZED", message: "Authentication required" } },
+        { status: 401 }
       );
     }
 
     // Get freelancer profile
-    const { data: profile } = await supabase
+    const { data: profile, error: profileError } = await supabase
       .from("profiles")
-      .select("id")
+      .select("id, role")
       .eq("id", user.id)
       .single();
 
-    if (!profile) {
-      return NextResponse.json({ error: "Profile not found" }, { status: 404 });
-    }
-
-    // Verify student belongs to this freelancer
-    const { data: student, error: studentError } = await supabase
-      .from("students")
-      .select("id, status")
-      .eq("id", student_id)
-      .eq("freelancer_id", profile.id)
-      .single();
-
-    if (studentError || !student) {
+    if (profileError || !profile) {
       return NextResponse.json(
-        { error: "Student not found or access denied" },
+        { success: false, error: { code: "NOT_FOUND", message: "Profile not found" } },
         { status: 404 }
       );
     }
 
-    // Create application
-    const { data: application, error } = await supabase
-      .from("applications")
-      .insert({
-        freelancer_id: profile.id,
-        student_id: student_id,
-        program: program,
-        university: university,
-        status: "application_submitted",
-        commission_amount: 0, // Will be set by admin
-      })
-      .select()
-      .single();
+    // Parse and validate request body
+    const body = await request.json();
+    const validationResult = createApplicationSchema.safeParse(body);
 
-    if (error) throw error;
-
-    // Update student status
-    await supabase
-      .from("students")
-      .update({ status: "application_submitted" })
-      .eq("id", student_id);
-
-    // Link documents to application if provided
-    if (documents && documents.length > 0) {
-      await supabase
-        .from("documents")
-        .update({ application_id: application.id })
-        .in("id", documents);
+    if (!validationResult.success) {
+      return NextResponse.json(
+        { 
+          success: false, 
+          error: { 
+            code: "VALIDATION_ERROR", 
+            message: "Invalid request body",
+            details: validationResult.error.flatten().fieldErrors 
+          } 
+        },
+        { status: 400 }
+      );
     }
 
-    // Invalidate caches
-    await cache.del(`applications:${profile.id}`);
-    await cache.del(`students:${profile.id}`);
-    await cache.del(`dashboard:${profile.id}`);
+    // Use ApplicationService to create application
+    const application = await ApplicationService.createApplication(
+      profile.id,
+      {
+        studentId: validationResult.data.studentId,
+        universityId: validationResult.data.universityId,
+        programId: validationResult.data.programId,
+        intakeDate: validationResult.data.intakeDate || new Date().toISOString().split('T')[0],
+      }
+    );
 
-    // Award coins for submitting application
-    await supabase.rpc("award_coins", {
-      profile_id: profile.id,
-      amount: 50,
-      reason: "application_submitted",
+    // Award coins for submitting an application (async, don't wait)
+    awardCoinsForApplicationSubmitted(profile.id, application.id).catch((err) => {
+      console.error("Failed to award coins for application:", err);
     });
 
-    return NextResponse.json(application, { status: 201 });
+    return NextResponse.json(
+      { success: true, data: application },
+      { status: 201 }
+    );
   } catch (error) {
     console.error("Error creating application:", error);
+    
+    if (error instanceof AppError) {
+      return NextResponse.json(
+        { 
+          success: false, 
+          error: { 
+            code: error.code, 
+            message: error.message 
+          } 
+        },
+        { status: error.statusCode || 500 }
+      );
+    }
+    
     return NextResponse.json(
-      { error: "Failed to create application" },
+      { 
+        success: false, 
+        error: { 
+          code: "INTERNAL_ERROR", 
+          message: "Failed to create application" 
+        } 
+      },
       { status: 500 }
     );
   }

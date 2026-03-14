@@ -4,6 +4,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/theme/theme-provider";
 import { PageTransition } from "@/components/page-transition";
 import { QueryProvider } from "@/providers/QueryProvider";
+import { Toaster } from "sonner";
 
 const publicSans = Public_Sans({
   subsets: ["latin"],
@@ -29,6 +30,16 @@ export default function RootLayout({
             <PageTransition>
               {children}
             </PageTransition>
+            <Toaster 
+              position="top-right"
+              richColors
+              closeButton
+              toastOptions={{
+                style: {
+                  fontFamily: 'var(--font-public-sans)',
+                },
+              }}
+            />
           </ThemeProvider>
         </QueryProvider>
       </body>

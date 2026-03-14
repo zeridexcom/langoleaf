@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient, useInfiniteQuery } from "@tanstack/react-query";
 import { createClient } from "@/lib/supabase/client";
+import { UserRole } from "@/types/permissions";
 
 // Types
 export interface Student {
@@ -28,6 +29,11 @@ export interface Student {
   source?: string | null;
   tags?: string[];
   profile_completion?: number;
+  // Admin view fields
+  freelancer_name?: string;
+  freelancer_email?: string;
+  total_applications?: number;
+  total_documents?: number;
 }
 
 export interface StudentFilters {
@@ -39,6 +45,7 @@ export interface StudentFilters {
   tags?: string[];
   dateFrom?: string;
   dateTo?: string;
+  freelancerId?: string; // For admin filtering by specific freelancer
 }
 
 export interface StudentSort {
@@ -72,19 +79,49 @@ export const studentKeys = {
   infiniteList: (filters: Record<string, any>) => [...studentKeys.infinite(), { filters }] as const,
   details: () => [...studentKeys.all, "detail"] as const,
   detail: (id: string) => [...studentKeys.details(), id] as const,
+  admin: () => [...studentKeys.all, "admin"] as const,
+  adminList: (filters: Record<string, any>) => [...studentKeys.admin(), { filters }] as const,
 };
 
-// Fetch all students
-async function fetchStudents(): Promise<Student[]> {
+// Get current user role
+async function getUserRole(): Promise<{ role: UserRole | null; userId: string | null }> {
   const supabase = createClient();
   const { data: { user } } = await supabase.auth.getUser();
   
-  if (!user) throw new Error("Not authenticated");
+  if (!user) return { role: null, userId: null };
 
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("role")
+    .eq("id", user.id)
+    .single();
+
+  return { 
+    role: (profile?.role as UserRole) || "freelancer", 
+    userId: user.id 
+  };
+}
+
+// Fetch all students (for freelancers - own students only, for admins - all students)
+async function fetchStudents(includeAll?: boolean): Promise<Student[]> {
+  const { role, userId } = await getUserRole();
+  
+  if (!userId) throw new Error("Not authenticated");
+
+  // If admin and includeAll is true, fetch from admin API
+  if (role === "admin" && includeAll) {
+    const response = await fetch("/api/admin/students?limit=1000");
+    if (!response.ok) throw new Error("Failed to fetch students");
+    const data = await response.json();
+    return data.students || [];
+  }
+
+  // Otherwise, fetch own students (freelancer or admin viewing own)
+  const supabase = createClient();
   const { data, error } = await supabase
     .from("students")
     .select("*, applications(*)")
-    .eq("freelancer_id", user.id)
+    .eq("freelancer_id", userId)
     .order("created_at", { ascending: false });
 
   if (error) throw error;
@@ -220,7 +257,7 @@ async function checkDuplicatePhone(phone: string, excludeId?: string): Promise<b
 export function useStudents() {
   return useQuery({
     queryKey: studentKeys.lists(),
-    queryFn: fetchStudents,
+    queryFn: () => fetchStudents(),
   });
 }
 

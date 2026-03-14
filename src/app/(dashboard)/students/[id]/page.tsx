@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { 
-  ArrowLeft, 
   Edit, 
   Trash2, 
   Mail, 
@@ -14,9 +13,7 @@ import {
   Calendar, 
   User, 
   FileText, 
-  Upload, 
   MapPin,
-  Bell,
   MessageSquare
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
@@ -28,25 +25,12 @@ import { QuickActionsPanel } from "@/components/students/quick-actions-panel";
 import { ProfileCompletionWidget } from "@/components/students/profile-completion-widget";
 import { DocumentGallery } from "@/components/students/document-gallery";
 import { RequiredDocumentsChecklist } from "@/components/students/required-documents-checklist";
-import { cn } from "@/lib/utils/cn";
-
-const statusStyles: Record<string, string> = {
-  application_submitted: "bg-blue-100 text-blue-700 border-blue-200",
-  documents_pending: "bg-amber-100 text-amber-700 border-amber-200",
-  under_review: "bg-primary/10 text-primary border-primary/30",
-  approved: "bg-emerald-100 text-emerald-700 border-emerald-200",
-  enrolled: "bg-purple-100 text-purple-700 border-purple-200",
-  rejected: "bg-red-100 text-red-700 border-red-200",
-};
-
-const statusLabels: Record<string, string> = {
-  application_submitted: "Application Submitted",
-  documents_pending: "Documents Pending",
-  under_review: "Under Review",
-  approved: "Approved",
-  enrolled: "Enrolled",
-  rejected: "Rejected",
-};
+import { PageHeader } from "@/components/ui/page-header";
+import { StatusBadge } from "@/components/ui/status-badge";
+import { EmptyState } from "@/components/ui/empty-state";
+import { SkeletonCard } from "@/components/ui/loading-spinner";
+import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const requiredDocumentTypes = [
   { type: "passport", label: "Passport" },
@@ -68,7 +52,6 @@ export default function StudentDetailPage() {
   const [refreshKey, setRefreshKey] = useState(0);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [showUploadModal, setShowUploadModal] = useState(false);
-  const [activeTab, setActiveTab] = useState<"overview" | "documents" | "activity" | "notes">("overview");
   const [showReminderModal, setShowReminderModal] = useState(false);
 
   useEffect(() => {
@@ -134,7 +117,6 @@ export default function StudentDetailPage() {
   };
 
   const handleQuickNote = () => {
-    setActiveTab("notes");
     // Scroll to notes section
     document.getElementById("notes-section")?.scrollIntoView({ behavior: "smooth" });
   };
@@ -169,83 +151,74 @@ export default function StudentDetailPage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      <div className="max-w-7xl mx-auto space-y-6">
+        <SkeletonCard />
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-2 space-y-6">
+            <SkeletonCard />
+            <SkeletonCard />
+          </div>
+          <div className="space-y-6">
+            <SkeletonCard />
+            <SkeletonCard />
+          </div>
+        </div>
       </div>
     );
   }
 
   if (!student) {
     return (
-      <div className="text-center py-12">
-        <p className="text-gray-500">Student not found</p>
-        <a href="/students" className="text-primary hover:underline mt-2 inline-block">
-          Back to Students
-        </a>
+      <div className="max-w-7xl mx-auto">
+        <EmptyState
+          title="Student not found"
+          description="The student you're looking for doesn't exist or you don't have access."
+          action={{
+            label: "Back to Students",
+            href: "/students",
+          }}
+        />
       </div>
     );
   }
 
   return (
     <div className="max-w-7xl mx-auto space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div className="flex items-center gap-4">
-          <a
-            href="/students"
-            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-          >
-            <ArrowLeft className="w-5 h-5 text-gray-600" />
-          </a>
-          <div className="flex items-center gap-3">
-            {student.avatar_url ? (
-              <img
-                src={student.avatar_url}
-                alt={student.name}
-                className="w-12 h-12 rounded-full object-cover border-2 border-gray-200"
-              />
-            ) : (
-              <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-lg font-semibold text-primary">
-                {student.name?.charAt(0).toUpperCase()}
-              </div>
-            )}
-            <div>
-              <h1 className="text-2xl font-bold text-gray-900">{student.name}</h1>
-              <p className="text-gray-500 text-sm">{student.email}</p>
-            </div>
-          </div>
-        </div>
-        <div className="flex items-center gap-2">
-          <a
-            href={`/students/${studentId}/edit`}
-            className="inline-flex items-center gap-2 px-4 py-2 border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 transition-colors"
-          >
-            <Edit className="w-4 h-4" />
-            Edit
-          </a>
-          <button
-            onClick={() => setShowDeleteConfirm(true)}
-            className="inline-flex items-center gap-2 px-4 py-2 border border-red-300 text-red-600 rounded-xl hover:bg-red-50 transition-colors"
-          >
-            <Trash2 className="w-4 h-4" />
-            Delete
-          </button>
-        </div>
-      </div>
+      {/* Page Header */}
+      <PageHeader
+        title={student.name}
+        description={student.email}
+        backHref="/students"
+        actions={
+          <>
+            <Button variant="outline" asChild>
+              <a href={`/students/${studentId}/edit`} className="flex items-center gap-2">
+                <Edit className="w-4 h-4" />
+                Edit
+              </a>
+            </Button>
+            <Button 
+              variant="outline" 
+              className="text-red-600 border-red-300 hover:bg-red-50"
+              onClick={() => setShowDeleteConfirm(true)}
+            >
+              <Trash2 className="w-4 h-4" />
+              Delete
+            </Button>
+          </>
+        }
+      />
 
       {/* Status Banner */}
-      <div className={cn(
-        "p-4 rounded-xl border",
-        statusStyles[student.status] || statusStyles.application_submitted
-      )}>
+      <div className="bg-white border border-gray-200 rounded-2xl p-4">
         <div className="flex items-center justify-between">
-          <div>
-            <p className="text-sm font-medium opacity-75">Current Status</p>
-            <p className="text-lg font-semibold">{statusLabels[student.status] || "Submitted"}</p>
+          <div className="flex items-center gap-3">
+            <span className="text-sm text-gray-500">Current Status</span>
+            <StatusBadge status={student.status} />
           </div>
           <div className="text-right">
-            <p className="text-sm opacity-75">Added on</p>
-            <p className="font-medium">{new Date(student.created_at).toLocaleDateString()}</p>
+            <p className="text-sm text-gray-500">Added on</p>
+            <p className="font-medium text-gray-900">{new Date(student.created_at).toLocaleDateString()}</p>
           </div>
         </div>
       </div>
@@ -255,34 +228,27 @@ export default function StudentDetailPage() {
         {/* Left Column - Main Info */}
         <div className="lg:col-span-2 space-y-6">
           {/* Tabs */}
-          <div className="bg-white border border-gray-200 rounded-2xl p-1">
-            <div className="flex gap-1">
-              {[
-                { id: "overview", label: "Overview", icon: User },
-                { id: "documents", label: "Documents", icon: FileText },
-                { id: "activity", label: "Activity", icon: Calendar },
-                { id: "notes", label: "Notes", icon: MessageSquare },
-              ].map((tab) => (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id as any)}
-                  className={cn(
-                    "flex-1 flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium rounded-xl transition-colors",
-                    activeTab === tab.id
-                      ? "bg-primary text-white"
-                      : "text-gray-600 hover:bg-gray-50"
-                  )}
-                >
-                  <tab.icon className="w-4 h-4" />
-                  {tab.label}
-                </button>
-              ))}
-            </div>
-          </div>
+          <Tabs defaultValue="overview" className="w-full">
+            <TabsList className="grid w-full grid-cols-4">
+              <TabsTrigger value="overview" className="flex items-center gap-2">
+                <User className="w-4 h-4" />
+                Overview
+              </TabsTrigger>
+              <TabsTrigger value="documents" className="flex items-center gap-2">
+                <FileText className="w-4 h-4" />
+                Documents
+              </TabsTrigger>
+              <TabsTrigger value="activity" className="flex items-center gap-2">
+                <Calendar className="w-4 h-4" />
+                Activity
+              </TabsTrigger>
+              <TabsTrigger value="notes" className="flex items-center gap-2">
+                <MessageSquare className="w-4 h-4" />
+                Notes
+              </TabsTrigger>
+            </TabsList>
 
-          {/* Tab Content */}
-          {activeTab === "overview" && (
-            <div className="space-y-6">
+            <TabsContent value="overview" className="mt-6 space-y-6">
               {/* Personal Information */}
               <div className="bg-white border border-gray-200 rounded-2xl p-6">
                 <h2 className="text-lg font-semibold text-gray-900 mb-6 flex items-center gap-2">
@@ -317,17 +283,13 @@ export default function StudentDetailPage() {
                   <DocumentGallery images={getImageDocuments()} />
                 </div>
               )}
-            </div>
-          )}
+            </TabsContent>
 
-          {activeTab === "documents" && (
-            <div className="space-y-6">
+            <TabsContent value="documents" className="mt-6 space-y-6">
               {/* Required Documents Checklist */}
               <RequiredDocumentsChecklist
                 documents={getRequiredDocuments()}
-                onUploadClick={(type) => {
-                  setShowUploadModal(true);
-                }}
+                onUploadClick={() => setShowUploadModal(true)}
               />
 
               {/* Document List */}
@@ -350,18 +312,18 @@ export default function StudentDetailPage() {
                   showVerification={true}
                 />
               </div>
-            </div>
-          )}
+            </TabsContent>
 
-          {activeTab === "activity" && (
-            <ActivityTimeline studentId={studentId} />
-          )}
+            <TabsContent value="activity" className="mt-6">
+              <ActivityTimeline studentId={studentId} />
+            </TabsContent>
 
-          {activeTab === "notes" && (
-            <div id="notes-section">
-              <NotesList studentId={studentId} />
-            </div>
-          )}
+            <TabsContent value="notes" className="mt-6">
+              <div id="notes-section">
+                <NotesList studentId={studentId} />
+              </div>
+            </TabsContent>
+          </Tabs>
         </div>
 
         {/* Right Column - Sidebar */}

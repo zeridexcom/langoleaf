@@ -1,7 +1,51 @@
 import { createClient } from "@/lib/supabase/server";
 import { NextResponse } from "next/server";
+import { z } from "zod";
+import { StudentService } from "@/lib/services/student-service";
+import { AppError } from "@/lib/utils/error";
+import { awardCoinsForStudentAdded } from "@/lib/services/gamification-service";
 
 export const dynamic = "force-dynamic";
+
+// Validation schema for query parameters
+const querySchema = z.object({
+  page: z.coerce.number().min(1).default(1),
+  limit: z.coerce.number().min(1).max(100).default(20),
+  sortBy: z.enum(["name", "email", "program", "university", "status", "created_at", "updated_at"]).default("created_at"),
+  sortOrder: z.enum(["asc", "desc"]).default("desc"),
+  search: z.string().optional(),
+  status: z.array(z.string()).optional(),
+  program: z.string().optional(),
+  university: z.string().optional(),
+  source: z.string().optional(),
+  tags: z.array(z.string()).optional(),
+  dateFrom: z.string().optional(),
+  dateTo: z.string().optional(),
+  freelancerId: z.string().uuid().optional(), // For admin filtering
+});
+
+// Validation schema for creating student
+const createStudentSchema = z.object({
+  name: z.string().min(1, "Name is required"),
+  email: z.string().email("Invalid email"),
+  phone: z.string().optional(),
+  program: z.string().optional(),
+  university: z.string().optional(),
+  date_of_birth: z.string().optional(),
+  gender: z.string().optional(),
+  nationality: z.string().optional(),
+  address: z.string().optional(),
+  city: z.string().optional(),
+  state: z.string().optional(),
+  pincode: z.string().optional(),
+  emergency_contact_name: z.string().optional(),
+  emergency_contact_phone: z.string().optional(),
+  previous_education: z.string().optional(),
+  work_experience: z.string().optional(),
+  source: z.string().optional(),
+  tags: z.array(z.string()).optional(),
+  notes: z.string().optional(),
+});
 
 // GET /api/students - List students with pagination, sorting, and filtering
 export async function GET(request: Request) {
@@ -11,142 +55,110 @@ export async function GET(request: Request) {
     // Check auth
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      return NextResponse.json(
+        { success: false, error: { code: "UNAUTHORIZED", message: "Authentication required" } },
+        { status: 401 }
+      );
     }
 
-    // Get freelancer profile
-    const { data: profile } = await supabase
+    // Get user profile with role
+    const { data: profile, error: profileError } = await supabase
       .from("profiles")
-      .select("id")
+      .select("id, role")
       .eq("id", user.id)
       .single();
 
-    if (!profile) {
-      return NextResponse.json({ error: "Profile not found" }, { status: 404 });
+    if (profileError || !profile) {
+      return NextResponse.json(
+        { success: false, error: { code: "NOT_FOUND", message: "Profile not found" } },
+        { status: 404 }
+      );
     }
 
-    // Parse query parameters
+    // Parse and validate query parameters
     const { searchParams } = new URL(request.url);
-    
-    // Pagination
-    const page = parseInt(searchParams.get("page") || "1");
-    const limit = parseInt(searchParams.get("limit") || "20");
-    const offset = (page - 1) * limit;
-    
-    // Sorting
-    const sortBy = searchParams.get("sortBy") || "created_at";
-    const sortOrder = searchParams.get("sortOrder") || "desc";
-    
-    // Search
-    const search = searchParams.get("search") || "";
-    
-    // Filters
-    const status = searchParams.getAll("status");
-    const program = searchParams.get("program") || "";
-    const university = searchParams.get("university") || "";
-    const source = searchParams.get("source") || "";
-    const tags = searchParams.getAll("tags");
-    const dateFrom = searchParams.get("dateFrom") || "";
-    const dateTo = searchParams.get("dateTo") || "";
+    const queryResult = querySchema.safeParse({
+      page: searchParams.get("page"),
+      limit: searchParams.get("limit"),
+      sortBy: searchParams.get("sortBy"),
+      sortOrder: searchParams.get("sortOrder"),
+      search: searchParams.get("search") || undefined,
+      status: searchParams.getAll("status"),
+      program: searchParams.get("program") || undefined,
+      university: searchParams.get("university") || undefined,
+      source: searchParams.get("source") || undefined,
+      tags: searchParams.getAll("tags"),
+      dateFrom: searchParams.get("dateFrom") || undefined,
+      dateTo: searchParams.get("dateTo") || undefined,
+      freelancerId: searchParams.get("freelancerId") || undefined,
+    });
 
-    // Build base query
-    let query = supabase
-      .from("students")
-      .select(`
-        *,
-        applications:applications(
-          id,
-          program,
-          university,
-          status,
-          commission_amount,
-          created_at
-        )
-      `, { count: "exact" })
-      .eq("freelancer_id", profile.id);
-
-    // Apply search filter
-    if (search) {
-      query = query.or(`name.ilike.%${search}%,email.ilike.%${search}%,phone.ilike.%${search}%`);
+    if (!queryResult.success) {
+      return NextResponse.json(
+        { 
+          success: false, 
+          error: { 
+            code: "VALIDATION_ERROR", 
+            message: "Invalid query parameters",
+            details: queryResult.error.flatten().fieldErrors 
+          } 
+        },
+        { status: 400 }
+      );
     }
 
-    // Apply status filter
-    if (status.length > 0 && !status.includes("all")) {
-      query = query.in("status", status);
-    }
+    const { page, limit, sortBy, sortOrder, search, status, program, university, source, tags, dateFrom, dateTo, freelancerId } = queryResult.data;
 
-    // Apply program filter
-    if (program) {
-      query = query.eq("program", program);
-    }
+    // Check if user is admin
+    const isAdmin = profile.role === "admin" || profile.role === "super_admin";
 
-    // Apply university filter
-    if (university) {
-      query = query.eq("university", university);
-    }
-
-    // Apply source filter
-    if (source) {
-      query = query.eq("source", source);
-    }
-
-    // Apply tags filter
-    if (tags.length > 0) {
-      query = query.contains("tags", tags);
-    }
-
-    // Apply date range filter
-    if (dateFrom) {
-      query = query.gte("created_at", dateFrom);
-    }
-    if (dateTo) {
-      query = query.lte("created_at", dateTo);
-    }
-
-    // Apply sorting
-    const validSortColumns = ["name", "email", "program", "university", "status", "created_at", "updated_at"];
-    const sortColumn = validSortColumns.includes(sortBy) ? sortBy : "created_at";
-    query = query.order(sortColumn, { ascending: sortOrder === "asc" });
-
-    // Apply pagination
-    query = query.range(offset, offset + limit - 1);
-
-    // Execute query
-    const { data: students, error, count } = await query;
-
-    if (error) throw error;
-
-    // Get unique values for filters (for dropdowns)
-    const { data: filterOptions } = await supabase
-      .from("students")
-      .select("program, university, source, tags")
-      .eq("freelancer_id", profile.id);
-
-    const programs = Array.from(new Set(filterOptions?.map(s => s.program).filter(Boolean)));
-    const universities = Array.from(new Set(filterOptions?.map(s => s.university).filter(Boolean)));
-    const sources = Array.from(new Set(filterOptions?.map(s => s.source).filter(Boolean)));
-    const allTags = Array.from(new Set(filterOptions?.flatMap(s => s.tags || []).filter(Boolean)));
+    // Use StudentService for fetching students
+    const result = await StudentService.listStudents(
+      isAdmin ? (freelancerId || undefined) : profile.id,
+      {
+        search,
+        status,
+        source,
+        tags,
+        dateFrom,
+        dateTo,
+      },
+      {
+        sortBy,
+        sortOrder,
+      },
+      page,
+      limit
+    );
 
     return NextResponse.json({
-      students: students || [],
-      pagination: {
-        page,
-        limit,
-        total: count || 0,
-        totalPages: Math.ceil((count || 0) / limit),
-        hasMore: (page * limit) < (count || 0),
-      },
-      filters: {
-        programs,
-        universities,
-        sources,
-        tags: allTags,
-      },
+      success: true,
+      data: result,
     });
   } catch (error) {
     console.error("Error fetching students:", error);
+    
+    if (error instanceof AppError) {
+      return NextResponse.json(
+        { 
+          success: false, 
+          error: { 
+            code: error.code, 
+            message: error.message 
+          } 
+        },
+        { status: error.statusCode || 500 }
+      );
+    }
+    
     return NextResponse.json(
-      { error: "Failed to fetch students" },
+      { 
+        success: false, 
+        error: { 
+          code: "INTERNAL_ERROR", 
+          message: "Failed to fetch students" 
+        } 
+      },
       { status: 500 }
     );
   }
@@ -160,47 +172,105 @@ export async function POST(request: Request) {
     // Check auth
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      return NextResponse.json(
+        { success: false, error: { code: "UNAUTHORIZED", message: "Authentication required" } },
+        { status: 401 }
+      );
     }
 
-    const body = await request.json();
-
     // Get freelancer profile
-    const { data: profile } = await supabase
+    const { data: profile, error: profileError } = await supabase
       .from("profiles")
-      .select("id")
+      .select("id, role")
       .eq("id", user.id)
       .single();
 
-    if (!profile) {
-      return NextResponse.json({ error: "Profile not found" }, { status: 404 });
+    if (profileError || !profile) {
+      return NextResponse.json(
+        { success: false, error: { code: "NOT_FOUND", message: "Profile not found" } },
+        { status: 404 }
+      );
     }
 
-    // Create student
-    const { data: student, error } = await supabase
-      .from("students")
-      .insert({
-        ...body,
-        freelancer_id: profile.id,
-        status: "lead",
-      })
-      .select()
-      .single();
+    // Parse and validate request body
+    const body = await request.json();
+    const validationResult = createStudentSchema.safeParse(body);
 
-    if (error) throw error;
+    if (!validationResult.success) {
+      return NextResponse.json(
+        { 
+          success: false, 
+          error: { 
+            code: "VALIDATION_ERROR", 
+            message: "Invalid request body",
+            details: validationResult.error.flatten().fieldErrors 
+          } 
+        },
+        { status: 400 }
+      );
+    }
 
-    // Award coins for adding student
-    await supabase.rpc("award_coins", {
-      profile_id: profile.id,
-      amount: 10,
-      reason: "new_student_added",
+    // Use StudentService to create student
+    const student = await StudentService.createStudentWithApplication(
+      profile.id,
+      {
+        student: {
+          full_name: validationResult.data.name,
+          email: validationResult.data.email,
+          phone: validationResult.data.phone || "",
+          date_of_birth: validationResult.data.date_of_birth || null,
+          gender: validationResult.data.gender || null,
+          nationality: validationResult.data.nationality || null,
+          address: validationResult.data.address || null,
+          city: validationResult.data.city || null,
+          state: validationResult.data.state || null,
+          pincode: validationResult.data.pincode || null,
+          emergency_contact_name: validationResult.data.emergency_contact_name || null,
+          emergency_contact_phone: validationResult.data.emergency_contact_phone || null,
+          previous_education: validationResult.data.previous_education || null,
+          work_experience: validationResult.data.work_experience || null,
+          source: validationResult.data.source || null,
+          tags: validationResult.data.tags || [],
+          notes: validationResult.data.notes || null,
+        },
+        application: null,
+        documents: [],
+      }
+    );
+
+    // Award coins for adding a student (async, don't wait)
+    awardCoinsForStudentAdded(profile.id, student.id).catch((err) => {
+      console.error("Failed to award coins for student:", err);
     });
 
-    return NextResponse.json(student, { status: 201 });
+    return NextResponse.json(
+      { success: true, data: student },
+      { status: 201 }
+    );
   } catch (error) {
     console.error("Error creating student:", error);
+    
+    if (error instanceof AppError) {
+      return NextResponse.json(
+        { 
+          success: false, 
+          error: { 
+            code: error.code, 
+            message: error.message 
+          } 
+        },
+        { status: error.statusCode || 500 }
+      );
+    }
+    
     return NextResponse.json(
-      { error: "Failed to create student" },
+      { 
+        success: false, 
+        error: { 
+          code: "INTERNAL_ERROR", 
+          message: "Failed to create student" 
+        } 
+      },
       { status: 500 }
     );
   }

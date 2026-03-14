@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { NextResponse } from "next/server";
 import { cache } from "@/lib/redis/client";
+import { awardCoinsForEnrollment } from "@/lib/services/gamification-service";
 
 export const dynamic = "force-dynamic";
 
@@ -90,6 +91,13 @@ export async function PATCH(
       return NextResponse.json({ error: "Profile not found" }, { status: 404 });
     }
 
+    // Get previous status to check for enrollment
+    const { data: previousApp } = await supabase
+      .from("applications")
+      .select("status")
+      .eq("id", params.id)
+      .single();
+
     // Update application
     const { data: application, error } = await supabase
       .from("applications")
@@ -104,6 +112,13 @@ export async function PATCH(
         { error: "Application not found or update failed" },
         { status: 404 }
       );
+    }
+
+    // Award coins if status changed to "enrolled"
+    if (body.status === "enrolled" && previousApp?.status !== "enrolled") {
+      awardCoinsForEnrollment(profile.id, application.id).catch((err) => {
+        console.error("Failed to award coins for enrollment:", err);
+      });
     }
 
     // Invalidate caches

@@ -22,6 +22,7 @@ ALTER TABLE students ADD COLUMN IF NOT EXISTS pincode TEXT;
 -- Emergency Contact
 ALTER TABLE students ADD COLUMN IF NOT EXISTS emergency_contact_name TEXT;
 ALTER TABLE students ADD COLUMN IF NOT EXISTS emergency_contact_phone TEXT;
+ALTER TABLE students ADD COLUMN IF NOT EXISTS emergency_contact_relation TEXT;
 
 -- Additional Information
 ALTER TABLE students ADD COLUMN IF NOT EXISTS previous_education TEXT;
