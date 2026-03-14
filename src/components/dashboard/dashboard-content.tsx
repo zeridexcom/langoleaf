@@ -124,18 +124,17 @@ export function DashboardContent() {
       />
 
       {/* Hero Banner */}
-      <div className="flex flex-col xl:flex-row justify-between items-start xl:items-end gap-6 bg-white p-8 border border-slate-200 rounded-2xl shadow-premium relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl -mr-32 -mt-32"></div>
+      <div className="flex flex-col xl:flex-row justify-between items-start xl:items-end gap-6 bg-gradient-to-br from-primary/5 to-primary/10 p-6 lg:p-8 border border-primary/20 rounded-2xl relative overflow-hidden">
         <div className="space-y-2 relative z-10">
           <div className="flex items-center gap-2 text-primary font-black uppercase tracking-widest text-[10px]">
             <TrendingUp className="w-4 h-4" />
             <span>Global Career Partner</span>
           </div>
-          <h1 className="text-2xl lg:text-3xl xl:text-4xl font-black text-slate-900 tracking-tight">
+          <h1 className="text-2xl lg:text-3xl xl:text-4xl font-black text-gray-900 tracking-tight">
             Level Up Your Earning Potential
           </h1>
-          <p className="text-slate-500 max-w-xl text-sm lg:text-base font-medium">
-            The study abroad market is exploding! Over <span className="text-slate-900 font-bold">10 Lakh students</span> in India plan to go abroad yearly.
+          <p className="text-gray-600 max-w-xl text-sm lg:text-base font-medium">
+            The study abroad market is exploding! Over <span className="text-gray-900 font-bold">10 Lakh students</span> in India plan to go abroad yearly.
           </p>
         </div>
         <div className="flex flex-wrap gap-4 w-full xl:w-auto relative z-10">

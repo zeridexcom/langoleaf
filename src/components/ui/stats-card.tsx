@@ -39,35 +39,38 @@ export function StatsCard({
   return (
     <div
       className={cn(
-        "bg-white border border-slate-200 rounded-xl p-6 transition-all duration-300 shadow-premium",
-        onClick && "cursor-pointer hover:shadow-premium-hover hover:border-slate-300",
+        "bg-white border border-gray-200 rounded-xl p-6 transition-all duration-300 shadow-premium",
+        onClick && "cursor-pointer hover:shadow-premium-hover hover:border-gray-300",
         className
       )}
       onClick={onClick}
     >
       <div className="flex items-start justify-between">
         <div className="flex-1">
-          <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-2 leading-none">
+          <p className="text-sm font-bold text-gray-500 uppercase tracking-wider mb-1">
             {title}
           </p>
-          <h3 className="text-2xl font-black text-slate-900 tracking-tight">{value}</h3>
+          <h3 className="text-2xl font-black text-gray-900 tracking-tight">{value}</h3>
           {description && (
-            <p className="text-xs text-slate-500 mt-1 font-medium">{description}</p>
+            <p className="text-sm text-gray-500 mt-1">{description}</p>
           )}
           {trend && (
-            <div className="flex items-center gap-1.5 mt-4">
-              <div className={cn(
-                "flex items-center gap-0.5 px-1.5 py-0.5 rounded-md text-[10px] font-black",
-                trend.isPositive ? "bg-emerald-50 text-emerald-600" : "bg-red-50 text-red-600"
-              )}>
-                {trend.isPositive ? (
-                  <TrendingUp className="w-3 h-3" />
-                ) : (
-                  <TrendingDown className="w-3 h-3" />
+            <div className="flex items-center gap-1 mt-3">
+              {trend.isPositive ? (
+                <TrendingUp className="w-4 h-4 text-green-500" />
+              ) : (
+                <TrendingDown className="w-4 h-4 text-red-500" />
+              )}
+              <span
+                className={cn(
+                  "text-sm font-bold",
+                  trend.isPositive ? "text-green-600" : "text-red-600"
                 )}
-                <span>{trend.isPositive ? "+" : ""}{trend.value}%</span>
-              </div>
-              <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">{trend.label}</span>
+              >
+                {trend.isPositive ? "+" : ""}
+                {trend.value}%
+              </span>
+              <span className="text-sm text-gray-500">{trend.label}</span>
             </div>
           )}
         </div>
@@ -99,18 +102,18 @@ export function MiniStatsCard({
   color = "primary",
 }: MiniStatsCardProps) {
   return (
-    <div className="flex items-center gap-4 p-4 bg-white border border-slate-200 rounded-xl shadow-premium flex-1 min-w-[160px]">
+    <div className="flex items-center gap-3 p-4 bg-white border border-gray-200 rounded-xl shadow-premium">
       <div
         className={cn(
           "w-10 h-10 rounded-lg flex items-center justify-center border",
           colorVariants[color]
         )}
       >
-        <Icon className="w-4 h-4" />
+        <Icon className="w-5 h-5" />
       </div>
       <div>
-        <p className="text-[9px] font-black text-slate-500 uppercase tracking-[0.2em] mb-1">{label}</p>
-        <p className="text-lg font-black text-slate-900 leading-none">{value}</p>
+        <p className="text-xs font-bold text-gray-500 uppercase">{label}</p>
+        <p className="text-lg font-black text-gray-900">{value}</p>
       </div>
     </div>
   );

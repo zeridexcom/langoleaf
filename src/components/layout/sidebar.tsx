@@ -97,7 +97,7 @@ export function Sidebar({ collapsed, setCollapsed }: SidebarProps) {
   return (
     <aside
       className={cn(
-        "fixed left-0 top-16 h-[calc(100vh-4rem)] bg-white border-r border-slate-200 transition-all duration-300 z-40 shadow-sm",
+        "fixed left-0 top-16 h-[calc(100vh-4rem)] bg-white border-r border-gray-200 transition-all duration-300 z-40 shadow-sm",
         "hidden lg:block",
         collapsed ? "w-20" : "w-64"
       )}
@@ -117,14 +117,14 @@ export function Sidebar({ collapsed, setCollapsed }: SidebarProps) {
 
         {/* User Profile Card */}
         {!collapsed && (
-          <div className="p-4 border-b border-slate-100">
-            <div className="flex gap-3 items-center p-2 bg-slate-50 border border-slate-100 rounded-xl">
-              <div className="bg-center bg-no-repeat aspect-square bg-cover size-10 rounded-lg shadow-sm" 
-                   style={{backgroundImage: 'url("https://ui-avatars.com/api/?name=Agent&background=4f46e5&color=fff")'}}>
+          <div className="p-4 border-b border-gray-200">
+            <div className="flex gap-3 items-center p-3 bg-gray-50 border border-gray-200 rounded-xl">
+              <div className="bg-center bg-no-repeat aspect-square bg-cover size-12 rounded-xl" 
+                   style={{backgroundImage: 'url("https://ui-avatars.com/api/?name=Agent&background=ec5b13&color=fff")'}}>
               </div>
               <div className="flex flex-col truncate">
-                <h1 className="text-slate-900 text-xs font-black leading-tight">Agent Portal</h1>
-                <p className="text-slate-400 text-[10px] font-black uppercase tracking-widest">Partner</p>
+                <h1 className="text-gray-900 text-sm font-black leading-tight">Agent</h1>
+                <p className="text-gray-500 text-xs font-bold uppercase tracking-wider">Partner</p>
               </div>
             </div>
           </div>
@@ -138,23 +138,23 @@ export function Sidebar({ collapsed, setCollapsed }: SidebarProps) {
                 <a
                   href={item.href}
                   className={cn(
-                    "flex items-center gap-3 px-4 py-2.5 transition-all duration-200 group font-black rounded-lg text-[10px] uppercase tracking-[0.15em]",
+                    "flex items-center gap-3 px-4 py-3 border transition-all duration-200 group font-bold rounded-lg",
                     activeItem === item.label
-                      ? "bg-slate-900 text-white shadow-premium"
-                      : "text-slate-500 hover:bg-slate-50 hover:text-slate-900"
+                      ? "bg-primary text-white border-primary shadow-sm"
+                      : "text-gray-500 hover:bg-gray-100 hover:text-gray-900 border-transparent"
                   )}
                 >
                   <item.icon
                     className={cn(
-                      "w-4 h-4 flex-shrink-0",
-                      activeItem === item.label ? "text-indigo-400" : "text-slate-400 group-hover:text-slate-600"
+                      "w-5 h-5 flex-shrink-0",
+                      activeItem === item.label ? "text-white" : "text-gray-500"
                     )}
                   />
                   {!collapsed && (
-                    <span className="flex-1 truncate">{item.label}</span>
+                    <span className="text-sm">{item.label}</span>
                   )}
                   {!collapsed && item.badge && (
-                    <span className="ml-auto bg-primary text-white text-[9px] font-black px-1.5 py-0.5 rounded-full">
+                    <span className="ml-auto bg-primary text-white text-xs font-bold px-2 py-0.5 rounded-full">
                       {item.badge}
                     </span>
                   )}
@@ -166,16 +166,13 @@ export function Sidebar({ collapsed, setCollapsed }: SidebarProps) {
 
         {/* Progress Goal */}
         {!collapsed && (
-          <div className="p-4 border-t border-slate-100">
-            <div className="bg-slate-50 border border-slate-100 p-4 rounded-xl">
-              <p className="text-[9px] font-black text-slate-500 mb-2 uppercase tracking-[0.2em]">Target 2026</p>
-              <div className="h-1.5 w-full bg-slate-200 rounded-full overflow-hidden">
-                <div className="h-full bg-indigo-600 rounded-full" style={{width: "75%"}}></div>
+          <div className="p-4 border-t border-gray-200">
+            <div className="bg-primary/10 border border-primary/20 p-4 rounded-xl">
+              <p className="text-xs font-bold text-primary mb-2 uppercase tracking-wider">Target 2026</p>
+              <div className="h-2 w-full bg-gray-200 rounded-full overflow-hidden">
+                <div className="h-full bg-primary rounded-full" style={{width: "75%"}}></div>
               </div>
-              <div className="flex justify-between items-center mt-2">
-                <p className="text-[10px] text-slate-900 font-black">₹12.5L</p>
-                <p className="text-[10px] text-slate-400 font-bold italic">82% to Goal</p>
-              </div>
+              <p className="text-[10px] text-gray-500 mt-2 font-bold">₹12.5L / ₹15L Goal</p>
             </div>
           </div>
         )}

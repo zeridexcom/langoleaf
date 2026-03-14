@@ -24,10 +24,10 @@ export function SectionPanel({ children, title, action, className }: {
   className?: string;
 }) {
   return (
-    <section className={cn("bg-white border border-slate-200 rounded-xl shadow-premium overflow-hidden", className)}>
+    <section className={cn("bg-white border border-gray-200 rounded-xl shadow-premium overflow-hidden", className)}>
       {(title || action) && (
-        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-slate-50/50">
-          {title && <h3 className="text-sm font-black text-slate-900 uppercase tracking-widest leading-none">{title}</h3>}
+        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 bg-gray-50/50">
+          {title && <h3 className="text-sm font-black text-gray-900 uppercase tracking-widest leading-none">{title}</h3>}
           {action}
         </div>
       )}
