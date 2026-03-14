@@ -58,16 +58,16 @@ export function Header() {
     <>
       <GlobalSearch isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
       
-      <header className="fixed top-0 left-0 right-0 z-50 h-16 bg-white border-b border-gray-200 shadow-sm">
-        <div className="flex items-center justify-between h-full px-4 lg:px-6">
+      <header className="fixed top-0 left-0 right-0 z-50 h-16 bg-white/80 backdrop-blur-md border-b border-gray-100 shadow-sm">
+        <div className="flex items-center justify-between h-full px-4 lg:px-8 max-w-[1920px] mx-auto">
           {/* Logo */}
-          <div className="flex items-center gap-2 lg:gap-3 shrink-0">
-            <div className="w-9 h-9 lg:w-10 lg:h-10 bg-primary flex items-center justify-center rounded-xl shadow-md">
+          <div className="flex items-center gap-3 shrink-0">
+            <div className="w-9 h-9 bg-primary flex items-center justify-center rounded-xl shadow-premium">
               <Zap className="w-5 h-5 text-white" fill="currentColor" />
             </div>
-            <div className="hidden xs:block">
-              <h1 className="text-base lg:text-lg font-black text-gray-900 tracking-tight">Lango</h1>
-              <p className="text-[10px] font-bold text-primary uppercase tracking-wider">Partner Portal</p>
+            <div className="hidden sm:block">
+              <h1 className="text-base font-black text-gray-900 tracking-tight leading-none">Lango</h1>
+              <p className="text-[9px] font-black text-primary uppercase tracking-[0.2em] mt-1">Partner Portal</p>
             </div>
           </div>
 

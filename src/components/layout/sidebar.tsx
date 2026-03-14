@@ -53,8 +53,10 @@ export function Sidebar({ collapsed, setCollapsed }: SidebarProps) {
   const pathname = usePathname();
   const supabase = createClient();
   const [userRole, setUserRole] = useState<string | null>(null);
-  
-  // Fetch user role on mount
+  const [isHovered, setIsHovered] = useState(false);
+
+  // Effectively expanded if either manually uncollapsed OR hovered
+  const isExpanded = !collapsed || isHovered;
   useEffect(() => {
     const fetchUserRole = async () => {
       const { data: { user } } = await supabase.auth.getUser();
@@ -96,10 +98,12 @@ export function Sidebar({ collapsed, setCollapsed }: SidebarProps) {
 
   return (
     <aside
+      onMouseEnter={() => collapsed && setIsHovered(true)}
+      onMouseLeave={() => collapsed && setIsHovered(false)}
       className={cn(
-        "fixed left-0 top-16 h-[calc(100vh-4rem)] bg-white border-r border-gray-200 transition-all duration-300 z-40 shadow-sm",
+        "fixed left-0 top-16 h-[calc(100vh-4rem)] bg-white border-r border-gray-200 transition-all duration-300 z-40 shadow-sm overflow-hidden",
         "hidden lg:block",
-        collapsed ? "w-20" : "w-64"
+        isExpanded ? "w-64" : "w-20"
       )}
     >
       <div className="flex flex-col h-full">
@@ -116,45 +120,58 @@ export function Sidebar({ collapsed, setCollapsed }: SidebarProps) {
         </button>
 
         {/* User Profile Card */}
-        {!collapsed && (
-          <div className="p-4 border-b border-gray-200">
-            <div className="flex gap-3 items-center p-3 bg-gray-50 border border-gray-200 rounded-xl">
-              <div className="bg-center bg-no-repeat aspect-square bg-cover size-12 rounded-xl" 
-                   style={{backgroundImage: 'url("https://ui-avatars.com/api/?name=Agent&background=ec5b13&color=fff")'}}>
-              </div>
-              <div className="flex flex-col truncate">
-                <h1 className="text-gray-900 text-sm font-black leading-tight">Agent</h1>
-                <p className="text-gray-500 text-xs font-bold uppercase tracking-wider">Partner</p>
-              </div>
+        <div className="p-4 border-b border-gray-100">
+          <div className={cn(
+            "flex gap-3 items-center p-2.5 bg-gray-50 border border-gray-200 rounded-xl transition-all duration-300",
+            !isExpanded && "p-1 bg-transparent border-transparent"
+          )}>
+            <div className={cn(
+              "bg-center bg-no-repeat aspect-square bg-cover rounded-xl transition-all duration-300 shrink-0 shadow-sm",
+              isExpanded ? "size-11" : "size-10"
+            )} 
+                 style={{backgroundImage: 'url("https://ui-avatars.com/api/?name=Agent&background=ec5b13&color=fff")'}}>
+            </div>
+            <div className={cn(
+              "flex flex-col truncate transition-all duration-300",
+              isExpanded ? "opacity-100 translate-x-0 w-auto" : "opacity-0 -translate-x-4 w-0 pointer-events-none"
+            )}>
+              <h1 className="text-gray-900 text-sm font-black leading-tight">Agent</h1>
+              <p className="text-gray-500 text-[10px] font-black uppercase tracking-widest">Partner</p>
             </div>
           </div>
-        )}
+        </div>
 
         {/* Navigation */}
-        <nav className="flex-1 py-4 px-3">
+        <nav className="flex-1 py-4 px-3 overflow-y-auto hide-scrollbar">
           <ul className="space-y-1">
             {menuItems.map((item) => (
               <li key={item.label}>
                 <a
                   href={item.href}
                   className={cn(
-                    "flex items-center gap-3 px-4 py-3 border transition-all duration-200 group font-bold rounded-lg",
+                    "flex items-center gap-3 px-3.5 py-3 border transition-all duration-300 group font-bold rounded-xl",
                     activeItem === item.label
-                      ? "bg-primary text-white border-primary shadow-sm"
+                      ? "bg-primary text-white border-primary shadow-premium"
                       : "text-gray-500 hover:bg-gray-100 hover:text-gray-900 border-transparent"
                   )}
                 >
                   <item.icon
                     className={cn(
-                      "w-5 h-5 flex-shrink-0",
-                      activeItem === item.label ? "text-white" : "text-gray-500"
+                      "w-5 h-5 flex-shrink-0 transition-colors",
+                      activeItem === item.label ? "text-white" : "text-gray-400 group-hover:text-gray-600"
                     )}
                   />
-                  {!collapsed && (
-                    <span className="text-sm">{item.label}</span>
-                  )}
-                  {!collapsed && item.badge && (
-                    <span className="ml-auto bg-primary text-white text-xs font-bold px-2 py-0.5 rounded-full">
+                  <span className={cn(
+                    "text-sm truncate transition-all duration-300",
+                    isExpanded ? "opacity-100 translate-x-0' w-auto" : "opacity-0 -translate-x-4 w-0 pointer-events-none"
+                  )}>
+                    {item.label}
+                  </span>
+                  {item.badge && (
+                    <span className={cn(
+                      "ml-auto bg-primary text-white text-[10px] font-black px-1.5 py-0.5 rounded-full transition-all duration-300",
+                      isExpanded ? "opacity-100 scale-100" : "opacity-0 scale-50 pointer-events-none"
+                    )}>
                       {item.badge}
                     </span>
                   )}
@@ -165,29 +182,42 @@ export function Sidebar({ collapsed, setCollapsed }: SidebarProps) {
         </nav>
 
         {/* Progress Goal */}
-        {!collapsed && (
-          <div className="p-4 border-t border-gray-200">
-            <div className="bg-primary/10 border border-primary/20 p-4 rounded-xl">
-              <p className="text-xs font-bold text-primary mb-2 uppercase tracking-wider">Target 2026</p>
-              <div className="h-2 w-full bg-gray-200 rounded-full overflow-hidden">
-                <div className="h-full bg-primary rounded-full" style={{width: "75%"}}></div>
-              </div>
-              <p className="text-[10px] text-gray-500 mt-2 font-bold">₹12.5L / ₹15L Goal</p>
+        <div className={cn(
+          "p-4 transition-all duration-300 border-t border-gray-100",
+          !isExpanded && "px-3"
+        )}>
+          <div className={cn(
+            "bg-primary/5 border border-primary/10 p-4 rounded-2xl transition-all duration-300",
+            !isExpanded && "p-2 border-transparent bg-transparent"
+          )}>
+            <p className={cn(
+              "text-[10px] font-black text-primary mb-2 uppercase tracking-widest transition-all duration-300",
+              isExpanded ? "opacity-100 h-auto" : "opacity-0 h-0 overflow-hidden"
+            )}>Target 2026</p>
+            <div className="h-2 w-full bg-gray-100 rounded-full overflow-hidden shadow-inner">
+              <div className="h-full bg-primary rounded-full shadow-sm" style={{width: "75%"}}></div>
             </div>
+            <p className={cn(
+              "text-[10px] text-gray-400 mt-2 font-black uppercase tracking-wider transition-all duration-300",
+              isExpanded ? "opacity-100 h-auto" : "opacity-0 h-0 overflow-hidden"
+            )}>₹12.5L / ₹15L</p>
           </div>
-        )}
+        </div>
 
         {/* Logout */}
-        <div className="p-3 border-t border-gray-200">
+        <div className="p-3 border-t border-gray-100">
           <button
             onClick={handleSignOut}
             className={cn(
-              "flex items-center gap-3 px-4 py-2 border border-transparent text-gray-500 hover:text-gray-900 hover:bg-gray-100 transition-all duration-200 w-full font-bold rounded-lg",
-              collapsed && "justify-center"
+              "flex items-center gap-3 px-4 py-2 text-gray-400 hover:text-red-600 hover:bg-red-50 transition-all duration-300 w-full font-bold rounded-xl group",
+              !isExpanded && "justify-center px-0"
             )}
           >
-            <LogOut className="w-5 h-5" />
-            {!collapsed && <span className="text-sm">Sign Out</span>}
+            <LogOut className="w-5 h-5 group-hover:rotate-12 transition-transform" />
+            <span className={cn(
+              "text-sm transition-all duration-300",
+              isExpanded ? "opacity-100 translate-x-0 w-auto" : "opacity-0 -translate-x-4 w-0 pointer-events-none"
+            )}>Sign Out</span>
           </button>
         </div>
       </div>

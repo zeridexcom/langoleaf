@@ -310,19 +310,24 @@ export default function CourseHubPage() {
 
   return (
     <DashboardPageLayout className="pb-24">
-      <div className={`space-y-8 transition-all duration-500 ${selectedCourse ? 'xl:pr-[400px] lg:pr-[320px] opacity-50 blur-[2px]' : ''}`}>
+      <div className={`space-y-6 transition-all duration-500 ${selectedCourse ? 'xl:pr-[400px] lg:pr-[320px] opacity-50 blur-[2px]' : ''}`}>
         {/* Header */}
-        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 bg-white p-6 border border-gray-200 rounded-xl shadow-sm">
+        <div className="bg-white p-6 border border-gray-100 rounded-2xl shadow-premium flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
-            <h1 className="text-2xl font-black text-gray-900">Course Hub</h1>
-            <p className="text-gray-500 text-sm mt-1">Explore courses and certification programs</p>
+            <h1 className="text-xl font-black text-gray-900 uppercase tracking-tight">Course Hub</h1>
+            <p className="text-gray-400 text-[10px] font-black uppercase tracking-widest mt-1">Explore courses & certifications</p>
+          </div>
+          <div className="flex items-center gap-3">
+            <div className="h-8 w-[1px] bg-gray-100 hidden md:block" />
+            <span className="text-[10px] font-black text-gray-300 uppercase tracking-widest">v2.1 optimized</span>
           </div>
         </div>
 
         {/* Section 1: Online Degree */}
-        <section className="space-y-4">
-          <div className="flex items-center justify-between">
-            <h2 className="text-xl font-bold text-gray-900">Online Degree</h2>
+        <section className="space-y-6">
+          <div className="flex items-center gap-3">
+            <h2 className="text-sm font-black text-gray-900 uppercase tracking-widest">Online Degree</h2>
+            <div className="h-[1px] bg-gray-100 flex-1" />
           </div>
           <div className="flex overflow-x-auto gap-6 pb-6 pt-2 snap-x snap-mandatory hide-scrollbar -mx-4 px-4 sm:mx-0 sm:px-0">
             {onlineDegreeCourses.map((course) => (
@@ -377,9 +382,10 @@ export default function CourseHubPage() {
         </section>
 
         {/* Section 2: Language Education */}
-        <section className="space-y-4">
-          <div className="flex items-center justify-between">
-            <h2 className="text-xl font-bold text-gray-900">Language Education</h2>
+        <section className="space-y-6">
+          <div className="flex items-center gap-3">
+            <h2 className="text-sm font-black text-gray-900 uppercase tracking-widest">Language Education</h2>
+            <div className="h-[1px] bg-gray-100 flex-1" />
           </div>
           <div className="flex overflow-x-auto gap-6 pb-6 pt-2 snap-x snap-mandatory hide-scrollbar -mx-4 px-4 sm:mx-0 sm:px-0">
             {languageCourses.map((course) => (
@@ -461,9 +467,10 @@ export default function CourseHubPage() {
         </section>
 
         {/* Section 3: Fast-Track Education */}
-        <section className="space-y-4">
-          <div className="flex items-center justify-between">
-            <h2 className="text-xl font-bold text-gray-900">Fast-Track Education</h2>
+        <section className="space-y-6">
+          <div className="flex items-center gap-3">
+            <h2 className="text-sm font-black text-gray-900 uppercase tracking-widest">Fast-Track Education</h2>
+            <div className="h-[1px] bg-gray-100 flex-1" />
           </div>
           <div className="flex overflow-x-auto gap-4 pb-4 snap-x snap-mandatory hide-scrollbar -mx-4 px-4 sm:mx-0 sm:px-0">
             <div className="min-w-[280px] md:min-w-[320px] lg:min-w-[350px] snap-start bg-gray-50 border-2 border-dashed border-gray-200 rounded-xl p-8 flex flex-col items-center justify-center text-center h-[200px]">
