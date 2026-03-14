@@ -1,6 +1,8 @@
 "use client";
 
 import { User, ChevronRight } from "lucide-react";
+import { SectionPanel } from "@/components/ui/design-system";
+import { cn } from "@/lib/utils/cn";
 
 interface Student {
   id: string;
@@ -38,17 +40,18 @@ export function RecentStudents({ students = [] }: RecentStudentsProps) {
   const displayStudents = students.slice(0, 5);
 
   return (
-    <div className="bg-white border border-gray-200 p-6 shadow-sm rounded-xl">
-      <div className="flex items-center justify-between mb-6">
-        <h3 className="text-base font-black text-gray-900 uppercase tracking-wide">Recent Students</h3>
+    <SectionPanel 
+      title="Recent Students" 
+      action={
         <a
           href="/students"
-          className="text-xs font-black text-primary hover:text-primary/80 flex items-center gap-1 transition-colors uppercase tracking-wider"
+          className="text-[10px] font-black text-primary hover:text-primary/80 flex items-center gap-1 transition-colors uppercase tracking-[0.2em]"
         >
           View All
-          <ChevronRight className="w-4 h-4" />
+          <ChevronRight className="w-3 h-3" />
         </a>
-      </div>
+      }
+    >
 
       {displayStudents.length === 0 ? (
         <div className="text-center py-8 text-gray-500 border border-dashed border-gray-300 rounded-lg">
@@ -89,7 +92,7 @@ export function RecentStudents({ students = [] }: RecentStudentsProps) {
           ))}
         </div>
       )}
-    </div>
+    </SectionPanel>
   );
 }
 

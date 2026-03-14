@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Sidebar } from "@/components/layout/sidebar";
 import { Header } from "@/components/layout/header";
 import { cn } from "@/lib/utils/cn";
+import { DashboardPageLayout } from "@/components/ui/design-system";
 import { useRealtimeNotifications } from "@/hooks/useRealtimeNotifications";
 
 export function DashboardLayoutClient({
@@ -17,15 +18,17 @@ export function DashboardLayoutClient({
   useRealtimeNotifications();
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-slate-50">
       <Header />
-      <div className="flex">
+      <div className="flex justify-center">
         <Sidebar collapsed={sidebarCollapsed} setCollapsed={setSidebarCollapsed} />
         <main className={cn(
-          "flex-1 pt-16 p-4 md:p-6 lg:p-8 transition-all duration-300",
+          "flex-1 pt-24 pb-12 transition-all duration-300",
           sidebarCollapsed ? "lg:ml-20" : "lg:ml-64"
         )}>
-          {children}
+          <DashboardPageLayout>
+            {children}
+          </DashboardPageLayout>
         </main>
       </div>
     </div>

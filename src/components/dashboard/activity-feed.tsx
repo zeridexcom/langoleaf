@@ -1,6 +1,8 @@
 "use client";
 
 import { UserPlus, FileCheck, Coins, Award, AlertCircle, CheckCircle } from "lucide-react";
+import { SectionPanel } from "@/components/ui/design-system";
+import { cn } from "@/lib/utils/cn";
 
 interface Application {
   id: string;
@@ -65,16 +67,17 @@ export function ActivityFeed({ applications = [] }: ActivityFeedProps) {
   });
 
   return (
-    <div className="bg-white border border-gray-200 p-6 shadow-sm rounded-xl">
-      <div className="flex items-center justify-between mb-6">
-        <h3 className="text-base font-black text-gray-900 uppercase tracking-wide">Activity Feed</h3>
+    <SectionPanel 
+      title="Activity Feed"
+      action={
         <a
           href="/applications"
-          className="text-xs font-black text-primary hover:text-primary/80 transition-colors uppercase tracking-wider"
+          className="text-[10px] font-black text-primary hover:text-primary/80 transition-colors uppercase tracking-[0.2em]"
         >
           View All
         </a>
-      </div>
+      }
+    >
 
       {activities.length === 0 ? (
         <div className="text-center py-8 border border-dashed border-gray-300 rounded-lg">
@@ -103,7 +106,7 @@ export function ActivityFeed({ applications = [] }: ActivityFeedProps) {
           ))}
         </div>
       )}
-    </div>
+    </SectionPanel>
   );
 }
 

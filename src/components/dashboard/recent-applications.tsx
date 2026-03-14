@@ -1,6 +1,8 @@
 "use client";
 
 import { FileText, ChevronRight } from "lucide-react";
+import { SectionPanel } from "@/components/ui/design-system";
+import { cn } from "@/lib/utils/cn";
 
 interface Application {
   id: string;
@@ -46,17 +48,18 @@ export function RecentApplications({ applications = [] }: RecentApplicationsProp
   const displayApplications = applications.slice(0, 5);
 
   return (
-    <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
-      <div className="flex items-center justify-between mb-6">
-        <h3 className="text-base font-black text-gray-900 uppercase tracking-wide">Recent Applications</h3>
+    <SectionPanel 
+      title="Recent Applications"
+      action={
         <a
           href="/applications"
-          className="text-xs font-black text-primary hover:text-primary/80 flex items-center gap-1 transition-colors uppercase tracking-wider"
+          className="text-[10px] font-black text-primary hover:text-primary/80 flex items-center gap-1 transition-colors uppercase tracking-[0.2em]"
         >
           View All
-          <ChevronRight className="w-4 h-4" />
+          <ChevronRight className="w-3 h-3" />
         </a>
-      </div>
+      }
+    >
 
       {displayApplications.length === 0 ? (
         <div className="text-center py-8 text-gray-500 border border-dashed border-gray-300 rounded-lg">
@@ -100,6 +103,6 @@ export function RecentApplications({ applications = [] }: RecentApplicationsProp
           ))}
         </div>
       )}
-    </div>
+    </SectionPanel>
   );
 }
