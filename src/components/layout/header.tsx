@@ -58,16 +58,16 @@ export function Header() {
     <>
       <GlobalSearch isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
       
-      <header className="fixed top-0 left-0 right-0 z-50 h-16 bg-white/80 backdrop-blur-md border-b border-gray-100 shadow-sm">
+      <header className="fixed top-0 left-0 right-0 z-50 h-14 bg-white/80 backdrop-blur-md border-b border-gray-100 shadow-sm">
         <div className="flex items-center justify-between h-full px-4 lg:px-8 max-w-[1920px] mx-auto">
           {/* Logo */}
           <div className="flex items-center gap-3 shrink-0">
-            <div className="w-9 h-9 bg-primary flex items-center justify-center rounded-xl shadow-premium">
-              <Zap className="w-5 h-5 text-white" fill="currentColor" />
+            <div className="w-8 h-8 bg-primary flex items-center justify-center rounded-xl shadow-premium">
+              <Zap className="w-4 h-4 text-white" fill="currentColor" />
             </div>
             <div className="hidden sm:block">
-              <h1 className="text-base font-black text-gray-900 tracking-tight leading-none">Lango</h1>
-              <p className="text-[9px] font-black text-primary uppercase tracking-[0.2em] mt-1">Partner Portal</p>
+              <h1 className="text-sm font-black text-gray-900 tracking-tight leading-none">Lango</h1>
+              <p className="text-[8px] font-black text-primary uppercase tracking-[0.2em] mt-0.5">Partner Portal</p>
             </div>
           </div>
 
@@ -102,14 +102,14 @@ export function Header() {
 
             {/* Profile */}
             <button className="flex items-center gap-2 lg:gap-3 p-1 hover:bg-gray-100 transition-colors rounded-lg border border-transparent hover:border-gray-200">
-              <div className="w-8 h-8 lg:w-9 lg:h-9 bg-primary/10 flex items-center justify-center rounded-lg border border-primary/20">
+              <div className="w-7 h-7 lg:w-8 lg:h-8 bg-primary/10 flex items-center justify-center rounded-lg border border-primary/20">
                 <User className="w-4 h-4 text-primary" />
               </div>
               <div className="hidden lg:block text-left">
                 <p className="text-sm font-bold text-gray-900 truncate max-w-[100px]">
                   {loading ? "..." : user?.full_name || "Agent"}
                 </p>
-                <p className="text-[10px] font-bold text-gray-500 uppercase">
+                <p className="text-[9px] font-bold text-gray-500 uppercase">
                   {user?.agent_code || "AGT-001"}
                 </p>
               </div>

@@ -103,7 +103,7 @@ export function Sidebar({
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       className={cn(
-        "fixed left-0 top-16 h-[calc(100vh-4rem)] bg-white border-r border-gray-100 transition-all duration-300 z-40 overflow-hidden",
+        "fixed left-0 top-14 h-[calc(100vh-3.5rem)] bg-white border-r border-gray-100 transition-all duration-300 z-40 overflow-hidden",
         "hidden lg:block",
         isExpanded ? "w-64" : "w-[72px]"
       )}
@@ -112,14 +112,14 @@ export function Sidebar({
         {/* Collapse button removed */}
 
         {/* User Profile Card */}
-        <div className="p-4 border-b border-gray-100 flex justify-center">
+        <div className="p-3 border-b border-gray-100 flex justify-center">
           <div className={cn(
-            "flex gap-3 items-center p-2 bg-gray-50 border border-gray-100 rounded-xl transition-all duration-300 w-full",
+            "flex gap-3 items-center p-1.5 bg-gray-50 border border-gray-100 rounded-xl transition-all duration-300 w-full",
             !isExpanded && "justify-center bg-transparent border-transparent px-0"
           )}>
             <div className={cn(
               "bg-center bg-no-repeat aspect-square bg-cover rounded-xl transition-all duration-300 shrink-0 shadow-sm flex items-center justify-center font-black text-white bg-primary",
-              isExpanded ? "w-10 h-10 text-sm" : "w-10 h-10 text-xs"
+              isExpanded ? "w-8 h-8 text-xs" : "w-8 h-8 text-xs"
             )}>
               AG
             </div>
@@ -128,7 +128,7 @@ export function Sidebar({
               isExpanded ? "opacity-100 translate-x-0 w-auto" : "opacity-0 -translate-x-4 w-0 pointer-events-none"
             )}>
               <h1 className="text-gray-900 text-sm font-black leading-tight">Agent</h1>
-              <p className="text-gray-500 text-[10px] font-black uppercase tracking-widest">Partner</p>
+              <p className="text-gray-500 text-[9px] font-black uppercase tracking-widest">Partner</p>
             </div>
           </div>
         </div>

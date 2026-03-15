@@ -29,7 +29,7 @@ export function DashboardLayoutClient({
           setIsHovered={setSidebarHovered}
         />
         <main className={cn(
-          "flex-1 pt-24 pb-12 transition-all duration-300 min-w-0",
+          "flex-1 pt-20 pb-12 transition-all duration-300 min-w-0",
           isExpanded ? "lg:pl-64" : "lg:pl-[72px]"
         )}>
           {children}
