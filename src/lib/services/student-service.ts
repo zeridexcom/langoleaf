@@ -270,7 +270,7 @@ export class StudentService {
     const { data: students, error, count } = await query
 
     if (error) {
-      throw new AppError('INTERNAL_ERROR', 'Failed to fetch students')
+      throw new AppError('INTERNAL_ERROR', `Supabase Error: ${error.message} (${error.code})`)
     }
 
     // Get filter options
