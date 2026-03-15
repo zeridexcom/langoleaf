@@ -30,7 +30,7 @@ export function DashboardLayoutClient({
         />
         <main className={cn(
           "flex-1 pt-24 pb-12 transition-all duration-300 min-w-0",
-          isExpanded ? "lg:pl-72" : "lg:pl-24"
+          isExpanded ? "lg:pl-64" : "lg:pl-[72px]"
         )}>
           {children}
         </main>

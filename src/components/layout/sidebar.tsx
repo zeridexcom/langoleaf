@@ -103,28 +103,28 @@ export function Sidebar({
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       className={cn(
-        "fixed left-4 top-20 h-[calc(100vh-6rem)] bg-white/80 backdrop-blur-xl border border-white/20 transition-all duration-300 z-40 shadow-2xl rounded-3xl overflow-hidden",
+        "fixed left-0 top-16 h-[calc(100vh-4rem)] bg-white border-r border-gray-100 transition-all duration-300 z-40 overflow-hidden",
         "hidden lg:block",
-        isExpanded ? "w-64" : "w-16"
+        isExpanded ? "w-64" : "w-[72px]"
       )}
     >
       <div className="flex flex-col h-full group/dock">
         {/* Collapse button removed */}
 
         {/* User Profile Card */}
-        <div className="p-4 border-b border-gray-100">
+        <div className="p-4 border-b border-gray-100 flex justify-center">
           <div className={cn(
-            "flex gap-3 items-center p-2.5 bg-gray-50 border border-gray-200 rounded-xl transition-all duration-300",
-            !isExpanded && "p-1 bg-transparent border-transparent"
+            "flex gap-3 items-center p-2 bg-gray-50 border border-gray-100 rounded-xl transition-all duration-300 w-full",
+            !isExpanded && "justify-center bg-transparent border-transparent px-0"
           )}>
             <div className={cn(
-              "bg-center bg-no-repeat aspect-square bg-cover rounded-xl transition-all duration-300 shrink-0 shadow-sm",
-              isExpanded ? "size-11" : "size-10"
-            )}
-                 style={{backgroundImage: 'url("https://ui-avatars.com/api/?name=Agent&background=ec5b13&color=fff")'}}>
+              "bg-center bg-no-repeat aspect-square bg-cover rounded-xl transition-all duration-300 shrink-0 shadow-sm flex items-center justify-center font-black text-white bg-primary",
+              isExpanded ? "w-10 h-10 text-sm" : "w-10 h-10 text-xs"
+            )}>
+              AG
             </div>
             <div className={cn(
-              "flex flex-col truncate transition-all duration-300",
+              "flex flex-col truncate transition-all duration-300 overflow-hidden",
               isExpanded ? "opacity-100 translate-x-0 w-auto" : "opacity-0 -translate-x-4 w-0 pointer-events-none"
             )}>
               <h1 className="text-gray-900 text-sm font-black leading-tight">Agent</h1>
@@ -134,7 +134,7 @@ export function Sidebar({
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 py-4 px-3 overflow-y-auto hide-scrollbar">
+        <nav className="flex-1 py-4 px-3 overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
           <ul className="space-y-1 relative" style={{ perspective: "1000px" }}>
             {menuItems.map((item, index) => (
               <li key={item.label} className="group/item relative">
@@ -143,11 +143,11 @@ export function Sidebar({
                   className={cn(
                     "flex items-center gap-3 px-3.5 py-3 transition-all duration-300 font-bold rounded-2xl relative",
                     "origin-left transform transition-transform duration-200 ease-out",
-                    "hover:scale-125 hover:mx-2 hover:shadow-2xl hover:z-50",
-                    "group-hover/dock:[&:not(:hover)]:scale-95 group-hover/dock:[&:not(:hover)]:opacity-60",
+                    "hover:scale-110 hover:mx-2 hover:shadow-xl hover:bg-gray-50 hover:z-50",
+                    "group-hover/dock:[&:not(:hover)]:scale-95 group-hover/dock:[&:not(:hover)]:opacity-70",
                     activeItem === item.label
-                      ? "bg-primary text-white shadow-lg shadow-primary/30 z-10"
-                      : "text-gray-500 hover:bg-white hover:text-gray-900"
+                      ? "bg-primary text-white shadow-lg shadow-primary/30 z-10 hover:bg-primary"
+                      : "text-gray-500 hover:text-gray-900"
                   )}
                 >
                   <item.icon
