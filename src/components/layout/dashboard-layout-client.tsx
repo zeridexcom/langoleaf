@@ -12,11 +12,10 @@ export function DashboardLayoutClient({
 }: {
   children: React.ReactNode;
 }) {
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [sidebarHovered, setSidebarHovered] = useState(false);
 
-  // Effectively expanded if either manually uncollapsed OR hovered
-  const isExpanded = !sidebarCollapsed || sidebarHovered;
+  // Expanded if hovered
+  const isExpanded = sidebarHovered;
 
   // Initialize realtime notifications
   useRealtimeNotifications();
@@ -26,8 +25,6 @@ export function DashboardLayoutClient({
       <Header />
       <div className="flex flex-1 relative">
         <Sidebar 
-          collapsed={sidebarCollapsed} 
-          setCollapsed={setSidebarCollapsed} 
           isHovered={sidebarHovered}
           setIsHovered={setSidebarHovered}
         />

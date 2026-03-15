@@ -45,15 +45,11 @@ const allMenuItems: MenuItem[] = [
 ];
 
 interface SidebarProps {
-  collapsed: boolean;
-  setCollapsed: (collapsed: boolean) => void;
   isHovered: boolean;
   setIsHovered: (hovered: boolean) => void;
 }
 
 export function Sidebar({ 
-  collapsed, 
-  setCollapsed, 
   isHovered, 
   setIsHovered 
 }: SidebarProps) {
@@ -61,8 +57,8 @@ export function Sidebar({
   const supabase = createClient();
   const [userRole, setUserRole] = useState<string | null>(null);
 
-  // Effectively expanded if either manually uncollapsed OR hovered
-  const isExpanded = !collapsed || isHovered;
+  // Effectively expanded if hovered
+  const isExpanded = isHovered;
   useEffect(() => {
     const fetchUserRole = async () => {
       const { data: { user } } = await supabase.auth.getUser();
@@ -104,26 +100,16 @@ export function Sidebar({
 
   return (
     <aside
-      onMouseEnter={() => collapsed && setIsHovered(true)}
-      onMouseLeave={() => collapsed && setIsHovered(false)}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
       className={cn(
         "fixed left-4 top-20 h-[calc(100vh-6rem)] bg-white/80 backdrop-blur-xl border border-white/20 transition-all duration-300 z-40 shadow-2xl rounded-3xl overflow-hidden",
         "hidden lg:block",
         isExpanded ? "w-64" : "w-16"
       )}
     >
-      <div className="flex flex-col h-full">
-        {/* Collapse Button */}
-        <button
-          onClick={() => setCollapsed(!collapsed)}
-          className="absolute -right-3 top-6 w-6 h-6 bg-primary flex items-center justify-center text-white rounded-full shadow-md hover:bg-primary/80 transition-colors"
-        >
-          {collapsed ? (
-            <ChevronRight className="w-4 h-4" />
-          ) : (
-            <ChevronLeft className="w-4 h-4" />
-          )}
-        </button>
+      <div className="flex flex-col h-full group/dock">
+        {/* Collapse button removed */}
 
         {/* User Profile Card */}
         <div className="p-4 border-b border-gray-100">
@@ -149,35 +135,38 @@ export function Sidebar({
 
         {/* Navigation */}
         <nav className="flex-1 py-4 px-3 overflow-y-auto hide-scrollbar">
-          <ul className="space-y-1">
-            {menuItems.map((item) => (
-              <li key={item.label}>
+          <ul className="space-y-1 relative" style={{ perspective: "1000px" }}>
+            {menuItems.map((item, index) => (
+              <li key={item.label} className="group/item relative">
                 <a
                   href={item.href}
                   className={cn(
-                    "flex items-center gap-3 px-3.5 py-3 transition-all duration-300 group font-bold rounded-2xl relative",
+                    "flex items-center gap-3 px-3.5 py-3 transition-all duration-300 font-bold rounded-2xl relative",
+                    "origin-left transform transition-transform duration-200 ease-out",
+                    "hover:scale-125 hover:mx-2 hover:shadow-2xl hover:z-50",
+                    "group-hover/dock:[&:not(:hover)]:scale-95 group-hover/dock:[&:not(:hover)]:opacity-60",
                     activeItem === item.label
-                      ? "bg-primary text-white shadow-lg shadow-primary/30 scale-[1.03] z-10"
-                      : "text-gray-500 hover:bg-white hover:text-gray-900 hover:shadow-xl hover:scale-105 active:scale-95"
+                      ? "bg-primary text-white shadow-lg shadow-primary/30 z-10"
+                      : "text-gray-500 hover:bg-white hover:text-gray-900"
                   )}
                 >
                   <item.icon
                     className={cn(
                       "w-5 h-5 flex-shrink-0 transition-all duration-300",
-                      activeItem === item.label ? "text-white scale-110" : "text-gray-400 group-hover:text-gray-600 group-hover:scale-110"
+                      activeItem === item.label ? "text-white" : "text-gray-400 group-hover/item:text-primary"
                     )}
                   />
                   <span className={cn(
-                "ml-3 font-medium truncate transition-all duration-300",
-                isExpanded ? "opacity-100 w-auto" : "opacity-0 w-0 pointer-events-none"
-              )}>
-                {item.label}
-              </span>
-              {item.badge && isExpanded && (
-                <span className="ml-auto bg-primary text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[18px] text-center animate-in fade-in duration-300">
-                  {item.badge}
-                </span>
-              )}
+                    "ml-3 font-medium truncate transition-all duration-300",
+                    isExpanded ? "opacity-100 w-auto" : "opacity-0 w-0 pointer-events-none text-[0px]"
+                  )}>
+                    {item.label}
+                  </span>
+                  {item.badge && isExpanded && (
+                    <span className="ml-auto bg-primary text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[18px] text-center animate-in fade-in duration-300 shadow-sm border border-white/20">
+                      {item.badge}
+                    </span>
+                  )}
                 </a>
               </li>
             ))}
