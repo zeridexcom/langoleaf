@@ -156,7 +156,8 @@ export async function GET(request: Request) {
         success: false, 
         error: { 
           code: "INTERNAL_ERROR", 
-          message: "Failed to fetch students" 
+          message: error instanceof Error ? error.message : "Failed to fetch students",
+          details: error instanceof Error ? error.stack : undefined
         } 
       },
       { status: 500 }

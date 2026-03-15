@@ -166,7 +166,6 @@ export class DocumentService {
         uploaded_by_user:profiles!uploaded_by(id, full_name, email)
       `)
       .eq('student_id', studentId)
-      .is('deleted_at', null)
       .order('created_at', { ascending: false })
 
     if (filters?.docType) {
@@ -359,13 +358,10 @@ export class DocumentService {
       throw Errors.forbidden('Access denied')
     }
 
-    // Soft delete
+    // Hard delete since table has no deleted_at column
     const { error } = await supabase
       .from('student_documents')
-      .update({
-        deleted_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-      })
+      .delete()
       .eq('id', id)
 
     if (error) {
@@ -446,7 +442,6 @@ export class DocumentService {
         uploaded_by_user:profiles!uploaded_by(id, full_name, email)
       `)
       .eq('student.freelancer_id', freelancerId)
-      .is('deleted_at', null)
       .or(`expiry_date.lte.${thresholdDate.toISOString()},status.eq.expired`)
 
     if (error) {
@@ -475,7 +470,6 @@ export class DocumentService {
         student:students!inner(freelancer_id)
       `)
       .eq('id', documentId)
-      .is('deleted_at', null)
       .single()
 
     if (docError || !document) {
