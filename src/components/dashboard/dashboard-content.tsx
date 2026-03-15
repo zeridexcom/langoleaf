@@ -188,24 +188,43 @@ export function DashboardContent() {
       {/* Quick Actions */}
       <QuickActions />
 
-      {/* Main Grid */}
-      <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
-        {/* Recent Students */}
-        <div className="xl:col-span-2">
-          <RecentStudents students={data.recentStudents} />
+      {/* Main Grid or Onboarding Empty State */}
+      {stats.totalStudents === 0 && stats.totalApplications === 0 ? (
+        <div className="bg-white border border-gray-200 rounded-2xl p-12 text-center max-w-3xl mx-auto mt-8">
+          <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-6">
+            <UserPlus className="w-8 h-8 text-primary" />
+          </div>
+          <h2 className="text-2xl font-black text-gray-900 tracking-tight mb-3">Welcome to Langoleaf!</h2>
+          <p className="text-gray-500 mb-8 max-w-lg mx-auto text-sm lg:text-base leading-relaxed">
+            Your dashboard is currently empty. Get started on your partner journey by adding your first student profile to begin tracking applications and earning commissions.
+          </p>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <Button onClick={() => window.location.href = "/students/add"} size="lg" className="px-8 w-full sm:w-auto font-bold h-12">
+              <UserPlus className="w-5 h-5 mr-2" />
+              Add Your First Student
+            </Button>
+            <Button variant="outline" onClick={() => window.location.href = "/course-hub"} size="lg" className="px-8 w-full sm:w-auto font-bold h-12 bg-white">
+              Explore Course Hub
+            </Button>
+          </div>
         </div>
+      ) : (
+        <>
+          <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
+            <div className="xl:col-span-2">
+              <RecentStudents students={data.recentStudents} />
+            </div>
+            <div className="h-full">
+              <EarningsSummary earnings={data.earnings} />
+            </div>
+          </div>
 
-        {/* Earnings Summary */}
-        <div className="h-full">
-          <EarningsSummary earnings={data.earnings} />
-        </div>
-      </div>
-
-      {/* Activity & Applications */}
-      <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
-        <RecentApplications applications={data.recentApplications} />
-        <ActivityFeed applications={data.recentApplications} />
-      </div>
+          <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
+            <RecentApplications applications={data.recentApplications} />
+            <ActivityFeed applications={data.recentApplications} />
+          </div>
+        </>
+      )}
     </div>
   );
 }

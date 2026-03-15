@@ -253,7 +253,7 @@ function StudentsContent() {
           {viewMode === "table" && (
             <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm">
               <div className="overflow-x-auto">
-                <table className="w-full">
+                <table className="w-full min-w-[800px]">
                   <thead>
                     <tr className="border-b border-gray-200 bg-gray-50/50">
                       <th className="text-left px-6 py-4 text-sm font-medium text-gray-500">

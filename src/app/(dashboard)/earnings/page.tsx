@@ -70,7 +70,10 @@ export default function EarningsPage() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Earnings</h1>
-          <p className="text-gray-500 dark:text-gray-400 mt-1">Track your commissions and payments</p>
+          <div className="flex items-center gap-3 mt-1">
+            <p className="text-gray-500 dark:text-gray-400">Track your commissions and payments</p>
+            <span className="px-2 py-0.5 bg-amber-100 text-amber-700 text-[10px] font-bold uppercase tracking-widest rounded text-center">Sample Data</span>
+          </div>
         </div>
         <div className="flex items-center gap-3">
           <button className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-white rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
@@ -127,7 +130,7 @@ export default function EarningsPage() {
           <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Recent Earnings</h3>
         </div>
         <div className="overflow-x-auto">
-          <table className="w-full">
+          <table className="w-full min-w-[800px]">
             <thead>
               <tr className="border-b border-gray-200 dark:border-gray-700">
                 <th className="text-left px-6 py-4 text-sm font-medium text-gray-500 dark:text-gray-400">Student</th>

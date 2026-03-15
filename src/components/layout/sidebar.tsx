@@ -16,6 +16,8 @@ import {
   Rocket,
   School,
   TrendingUp,
+  X,
+  Zap,
 } from "lucide-react";
 import { cn } from "@/lib/utils/cn";
 import { useState, useEffect } from "react";
@@ -47,18 +49,22 @@ const allMenuItems: MenuItem[] = [
 interface SidebarProps {
   isHovered: boolean;
   setIsHovered: (hovered: boolean) => void;
+  mobileMenuOpen?: boolean;
+  setMobileMenuOpen?: (open: boolean) => void;
 }
 
 export function Sidebar({ 
   isHovered, 
-  setIsHovered 
+  setIsHovered,
+  mobileMenuOpen,
+  setMobileMenuOpen
 }: SidebarProps) {
   const pathname = usePathname();
   const supabase = createClient();
   const [userRole, setUserRole] = useState<string | null>(null);
 
-  // Effectively expanded if hovered
-  const isExpanded = isHovered;
+  // Effectively expanded if hovered on desktop, or if mobile menu is open
+  const isExpanded = isHovered || mobileMenuOpen;
   useEffect(() => {
     const fetchUserRole = async () => {
       const { data: { user } } = await supabase.auth.getUser();
@@ -99,17 +105,42 @@ export function Sidebar({
   };
 
   return (
-    <aside
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      className={cn(
-        "fixed left-0 top-14 h-[calc(100vh-3.5rem)] bg-white border-r border-gray-100 transition-all duration-300 z-40 overflow-hidden",
-        "hidden lg:block",
-        isExpanded ? "w-64" : "w-[72px]"
+    <>
+      {/* Mobile Overlay */}
+      {mobileMenuOpen && (
+        <div 
+          className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 lg:hidden transition-opacity duration-300"
+          onClick={() => setMobileMenuOpen?.(false)}
+        />
       )}
-    >
-      <div className="flex flex-col h-full group/dock">
-        {/* Collapse button removed */}
+      
+      <aside
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+        className={cn(
+          "fixed top-0 lg:top-[52px] h-[100vh] lg:h-[calc(100vh-52px)] bg-white border-r border-gray-100 transition-all duration-300 z-50 overflow-hidden",
+          mobileMenuOpen ? "left-0 shadow-2xl" : "-left-[100%] lg:left-0",
+          isExpanded ? "w-64" : "w-64 lg:w-[72px]"
+        )}
+      >
+        <div className="flex flex-col h-full group/dock">
+          {/* Mobile Header logic with Close Button */}
+          <div className="flex items-center justify-between p-4 border-b border-gray-100 lg:hidden min-h-[52px]">
+            <div className="flex items-center gap-2.5">
+              <div className="w-7 h-7 bg-primary flex items-center justify-center rounded-lg shadow-sm">
+                <Zap className="w-3.5 h-3.5 text-white" fill="currentColor" />
+              </div>
+              <div>
+                <h1 className="text-[13px] font-black text-gray-900 tracking-tight leading-none">Lango</h1>
+              </div>
+            </div>
+            <button 
+              onClick={() => setMobileMenuOpen?.(false)}
+              className="p-1 -mr-2 text-gray-500 hover:bg-gray-100 rounded-lg flex items-center justify-center min-w-[44px] min-h-[44px]"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
 
         {/* User Profile Card */}
         <div className="p-3 border-b border-gray-100 flex justify-center">
@@ -214,6 +245,7 @@ export function Sidebar({
         </div>
       </div>
     </aside>
+    </>
   );
 }
 

@@ -1,13 +1,13 @@
 "use client";
 
-import { Search, User, Coins, Zap } from "lucide-react";
+import { Search, User, Coins, Zap, Menu } from "lucide-react";
 import { ThemeToggle } from "@/components/theme/theme-toggle";
 import { GlobalSearch } from "@/components/search/global-search";
 import { NotificationDropdown } from "@/components/notifications/notification-dropdown";
 import { useState, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
 
-export function Header() {
+export function Header({ onMenuClick }: { onMenuClick?: () => void }) {
   const [user, setUser] = useState<any>(null);
   const [coins, setCoins] = useState(0);
   const [searchOpen, setSearchOpen] = useState(false);
@@ -58,20 +58,28 @@ export function Header() {
     <>
       <GlobalSearch isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
       
-      <header className="fixed top-0 left-0 right-0 z-50 h-14 bg-white/80 backdrop-blur-md border-b border-gray-100 shadow-sm">
+      <header className="fixed top-0 left-0 right-0 z-50 h-[52px] bg-white/80 backdrop-blur-md border-b border-gray-100 shadow-sm">
         <div className="flex items-center justify-between h-full px-4 lg:px-8 max-w-[1920px] mx-auto">
-          {/* Logo */}
-          <div className="flex items-center gap-3 shrink-0">
-            <div className="w-8 h-8 bg-primary flex items-center justify-center rounded-xl shadow-premium">
-              <Zap className="w-4 h-4 text-white" fill="currentColor" />
-            </div>
-            <div className="hidden sm:block">
-              <h1 className="text-sm font-black text-gray-900 tracking-tight leading-none">Lango</h1>
-              <p className="text-[8px] font-black text-primary uppercase tracking-[0.2em] mt-0.5">Partner Portal</p>
+          {/* Mobile Menu & Logo */}
+          <div className="flex items-center lg:gap-3 shrink-0">
+            <button 
+              onClick={onMenuClick}
+              className="lg:hidden p-2 mr-1 -ml-2 text-gray-500 hover:bg-gray-100 rounded-lg transition-colors flex items-center justify-center min-w-[44px] min-h-[44px]"
+            >
+              <Menu className="w-5 h-5" />
+            </button>
+            <div className="flex items-center gap-2.5">
+              <div className="w-7 h-7 bg-primary flex items-center justify-center rounded-lg shadow-sm">
+                <Zap className="w-3.5 h-3.5 text-white" fill="currentColor" />
+              </div>
+              <div className="hidden sm:block">
+                <h1 className="text-[13px] font-black text-gray-900 tracking-tight leading-none">Lango</h1>
+                <p className="text-[7.5px] font-black text-primary uppercase tracking-[0.2em] mt-0.5 opacity-90">Partner Portal</p>
+              </div>
             </div>
           </div>
 
-          {/* Search Bar - Click to open global search */}
+          {/* Desktop Search Bar */}
           <button
             onClick={() => setSearchOpen(true)}
             className="hidden md:flex items-center flex-1 max-w-sm lg:max-w-md mx-4 lg:mx-8 px-4 py-2 bg-gray-50 border border-gray-200 rounded-xl text-left hover:bg-gray-100 transition-colors group"
@@ -82,6 +90,14 @@ export function Header() {
               <kbd className="px-1.5 py-0.5 bg-white border border-gray-200 rounded">⌘</kbd>
               <kbd className="px-1.5 py-0.5 bg-white border border-gray-200 rounded">K</kbd>
             </div>
+          </button>
+
+          {/* Mobile Search Icon */}
+          <button
+            onClick={() => setSearchOpen(true)}
+            className="md:hidden p-2 text-gray-500 hover:bg-gray-100 ml-auto mr-2 rounded-lg transition-colors flex items-center justify-center min-w-[44px] min-h-[44px]"
+          >
+            <Search className="w-5 h-5" />
           </button>
 
           {/* Right Section */}
