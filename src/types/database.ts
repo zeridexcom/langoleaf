@@ -89,7 +89,6 @@ export interface Database {
         Row: {
           id: string
           freelancer_id: string
-          full_name: string
           name: string
           email: string | null
           phone: string

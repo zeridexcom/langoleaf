@@ -446,7 +446,7 @@ export class DocumentService {
         *,
         student:students!inner(
           id,
-          full_name,
+          name,
           email,
           freelancer_id
         ),

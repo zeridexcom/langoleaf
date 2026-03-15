@@ -92,7 +92,7 @@ function CreateApplicationContent() {
         </button>
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Create Application</h1>
-          <p className="text-gray-500">Submit a new application for {selectedStudent?.full_name || "a student"}</p>
+          <p className="text-gray-500">Submit a new application for {selectedStudent?.name || "a student"}</p>
         </div>
       </div>
 
@@ -115,7 +115,7 @@ function CreateApplicationContent() {
               <option value="">Select a student</option>
               {students?.map((student) => (
                 <option key={student.id} value={student.id}>
-                  {student.full_name} ({student.email})
+                  {student.name} ({student.email})
                 </option>
               ))}
             </select>

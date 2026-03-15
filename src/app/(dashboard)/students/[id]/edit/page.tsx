@@ -223,8 +223,7 @@ export default function EditStudentPage() {
   // Validate field on blur
   const validateField = useCallback((field: keyof FormData, value: any) => {
     try {
-      const schemaField = field === "name" ? "fullName" : field;
-      const fieldSchema = (createStudentSchema.shape as any)[schemaField];
+      const fieldSchema = (createStudentSchema.shape as any)[field];
       if (fieldSchema) {
         fieldSchema.parse(value);
       }
@@ -453,7 +452,7 @@ export default function EditStudentPage() {
               {/* Name Field */}
               <div className="sm:col-span-2">
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Full Name *
+                  Name *
                 </label>
                 <div className="relative">
                   <input

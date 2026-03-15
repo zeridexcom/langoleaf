@@ -121,7 +121,7 @@ export async function ensureSheets() {
 // Add student to Google Sheets
 export async function addStudentToSheet(student: {
   id: string;
-  full_name: string;
+  name: string;
   email: string;
   phone: string;
   program: string;
@@ -142,7 +142,7 @@ export async function addStudentToSheet(student: {
       requestBody: {
         values: [[
           student.id,
-          student.full_name,
+          student.name,
           student.email,
           student.phone,
           student.program,
@@ -210,7 +210,7 @@ export async function addApplicationToSheet(application: {
 export async function updateStudentInSheet(
   studentId: string,
   updates: Partial<{
-    full_name: string;
+    name: string;
     email: string;
     phone: string;
     program: string;
@@ -239,7 +239,7 @@ export async function updateStudentInSheet(
 
     // Update specific columns
     const columnMap: Record<string, number> = {
-      full_name: 1,
+      name: 1,
       email: 2,
       phone: 3,
       program: 4,
@@ -283,7 +283,7 @@ export async function getStudentsFromSheet() {
     
     return rows.map((row) => ({
       id: row[0],
-      full_name: row[1],
+      name: row[1],
       email: row[2],
       phone: row[3],
       program: row[4],

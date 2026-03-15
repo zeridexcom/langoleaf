@@ -273,7 +273,7 @@ export type Profile = Database['public']['Tables']['profiles']['Row']
 
 // Wizard Types
 export interface WizardPersonalInfo {
-  fullName: string
+  name: string
   email: string
   phone: string
   dateOfBirth?: string

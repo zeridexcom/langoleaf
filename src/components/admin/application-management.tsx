@@ -31,7 +31,7 @@ export function ApplicationManagement() {
 
   const filteredApps = applications?.filter(app => {
     const searchLower = search.toLowerCase();
-    const studentName = (app.student as any)?.full_name || (app.student as any)?.name || "";
+    const studentName = app.student?.name || "";
     const freelancerName = (app.student as any)?.freelancer?.full_name || (app.student as any)?.freelancer?.email || "";
     
     return (
@@ -74,7 +74,7 @@ export function ApplicationManagement() {
       header: "Student",
       render: (app: ApplicationWithRelations) => (
         <div>
-          <p className="font-bold text-gray-900">{(app.student as any)?.full_name || (app.student as any)?.name}</p>
+          <p className="font-bold text-gray-900">{app.student?.name}</p>
           <p className="text-[10px] text-gray-500 uppercase tracking-tight">by {(app.student as any)?.freelancer?.full_name || "Agent"}</p>
         </div>
       ),
@@ -203,7 +203,7 @@ export function ApplicationManagement() {
             {selectedApp && (
               <div className="p-4 bg-gray-50 rounded-2xl border border-gray-100">
                 <p className="text-xs font-black text-gray-400 uppercase tracking-widest mb-1">Application Details</p>
-                <p className="text-sm font-bold text-gray-900">{(selectedApp.student as any)?.full_name || (selectedApp.student as any)?.name}</p>
+                <p className="text-sm font-bold text-gray-900">{selectedApp.student?.name}</p>
                 <p className="text-xs text-gray-600 font-medium">{selectedApp.program?.name} at {selectedApp.university?.name}</p>
               </div>
             )}

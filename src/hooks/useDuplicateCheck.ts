@@ -32,8 +32,7 @@ export function useDuplicateCheck() {
   const checkDuplicates = useCallback(async (
     email: string,
     phone: string,
-    firstName: string,
-    lastName: string,
+    name: string,
     excludeId?: string
   ): Promise<DuplicateCheckResult> => {
     // Cancel any ongoing check
@@ -76,7 +75,7 @@ export function useDuplicateCheck() {
       }) || null;
 
       // Fuzzy name matching using Fuse.js
-      const fullName = `${firstName} ${lastName}`.trim().toLowerCase();
+      const fullName = name.trim().toLowerCase();
       const fuseOptions = {
         keys: ["name"],
         threshold: 0.4, // 0 = exact match, 1 = match anything

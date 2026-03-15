@@ -35,7 +35,7 @@ interface Student {
   freelancer_id: string;
   freelancer_name: string | null;
   freelancer_email: string | null;
-  full_name: string;
+  name: string;
   email: string | null;
   phone: string | null;
   status: string;
@@ -142,8 +142,8 @@ export function StudentAssignment() {
   };
 
   const filteredStudents = students.filter(
-    (student) =>
-      student.full_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    (student: Student) =>
+      student.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       student.email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       student.freelancer_name?.toLowerCase().includes(searchQuery.toLowerCase())
   );
@@ -212,7 +212,7 @@ export function StudentAssignment() {
                         </div>
                         <div>
                           <p className="font-bold text-gray-900">
-                            {student.full_name}
+                            {student.name}
                           </p>
                           <p className="text-sm text-gray-500">{student.email}</p>
                         </div>
@@ -291,7 +291,7 @@ export function StudentAssignment() {
               Transfer Student
             </DialogTitle>
             <DialogDescription>
-              Transfer <strong>{selectedStudent?.full_name}</strong> to a different
+              Transfer <strong>{selectedStudent?.name}</strong> to a different
               freelancer.
             </DialogDescription>
           </DialogHeader>

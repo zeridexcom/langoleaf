@@ -23,7 +23,7 @@ export async function GET(request: NextRequest) {
       .from("student_documents")
       .select(`
         *,
-        student:students(id, full_name, email, freelancer_id)
+        student:students(id, name, email, freelancer_id)
       `)
       .order("created_at", { ascending: false });
 

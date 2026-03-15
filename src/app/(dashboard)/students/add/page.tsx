@@ -75,8 +75,7 @@ const indianStates = [
 
 interface FormData {
   // Personal
-  firstName: string;
-  lastName: string;
+  name: string;
   email: string;
   phone: string;
   dateOfBirth: Date | null;
@@ -106,8 +105,7 @@ interface FormData {
 }
 
 const initialFormData: FormData = {
-  firstName: "",
-  lastName: "",
+  name: "",
   email: "",
   phone: "",
   dateOfBirth: null,
@@ -202,8 +200,8 @@ export default function AddStudentPage() {
     const result = await checkDuplicates(
       formData.email,
       formData.phone,
-      formData.firstName,
-      formData.lastName
+      formData.name,
+      "" // Empty last name since we use a single field
     );
     return result;
   }, [checkDuplicates, formData]);
@@ -213,8 +211,7 @@ export default function AddStudentPage() {
     
     // Validate required fields
     const newErrors: Record<string, string> = {};
-    if (!formData.firstName.trim()) newErrors.firstName = "First name is required";
-    if (!formData.lastName.trim()) newErrors.lastName = "Last name is required";
+    if (!formData.name.trim()) newErrors.name = "Name is required";
     if (!formData.email.trim()) newErrors.email = "Email is required";
     if (!formData.phone.trim()) newErrors.phone = "Phone is required";
     if (!formData.program) newErrors.program = "Program is required";
@@ -234,7 +231,7 @@ export default function AddStudentPage() {
 
     // Submit using mutation hook
     createStudent.mutate({
-      name: `${formData.firstName} ${formData.lastName}`,
+      name: formData.name,
       email: formData.email,
       phone: formData.phone,
       program: formData.program,
@@ -315,7 +312,7 @@ export default function AddStudentPage() {
           </div>
           <div>
             <h1 className="text-2xl font-bold text-gray-900">Student Added Successfully!</h1>
-            <p className="text-gray-500">Now upload documents for {formData.firstName} {formData.lastName}</p>
+            <p className="text-gray-500">Now upload documents for {formData.name}</p>
           </div>
         </div>
 
@@ -414,44 +411,24 @@ export default function AddStudentPage() {
                   />
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      First Name *
+                      Full Name *
                     </label>
                     <input
                       type="text"
-                      value={formData.firstName}
-                      onChange={(e) => updateField("firstName", e.target.value)}
+                      value={formData.name}
+                      onChange={(e) => updateField("name", e.target.value)}
                       className={cn(
                         "w-full px-4 py-2 bg-white border rounded-xl text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/50",
-                        errors.firstName ? "border-red-300" : "border-gray-300"
+                        errors.name ? "border-red-300" : "border-gray-300"
                       )}
-                      placeholder="Enter first name"
+                      placeholder="Enter full name"
                     />
-                    {errors.firstName && (
-                      <p className="text-sm text-red-500 mt-1">{errors.firstName}</p>
+                    {errors.name && (
+                      <p className="text-sm text-red-500 mt-1">{errors.name}</p>
                     )}
                   </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Last Name *
-                    </label>
-                    <input
-                      type="text"
-                      value={formData.lastName}
-                      onChange={(e) => updateField("lastName", e.target.value)}
-                      className={cn(
-                        "w-full px-4 py-2 bg-white border rounded-xl text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/50",
-                        errors.lastName ? "border-red-300" : "border-gray-300"
-                      )}
-                      placeholder="Enter last name"
-                    />
-                    {errors.lastName && (
-                      <p className="text-sm text-red-500 mt-1">{errors.lastName}</p>
-                    )}
-                  </div>
-                </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
@@ -822,8 +799,7 @@ export default function AddStudentPage() {
             <FormProgress
               formData={{
                 ...formData,
-                firstName: formData.firstName,
-                lastName: formData.lastName,
+                name: formData.name,
                 email: formData.email,
                 phone: formData.phone,
                 dateOfBirth: formData.dateOfBirth,

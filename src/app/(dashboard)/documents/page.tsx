@@ -68,7 +68,7 @@ function DocumentsContent() {
   const filteredDocuments = documents?.filter((doc) => {
     if (!search) return true;
     const searchLower = search.toLowerCase();
-    const studentName = (doc.student as any)?.full_name || (doc.student as any)?.name || "";
+    const studentName = doc.student?.name || "";
     return (
       studentName.toLowerCase().includes(searchLower) ||
       (doc as any).doc_type?.toLowerCase().includes(searchLower) ||
@@ -85,11 +85,11 @@ function DocumentsContent() {
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
             <span className="text-primary font-medium">
-              {(doc.student as any)?.name?.charAt(0) || "?"}
+              {doc.student?.name?.charAt(0) || "?"}
             </span>
           </div>
           <div>
-            <p className="text-sm font-medium text-gray-900">{(doc.student as any)?.name}</p>
+            <p className="text-sm font-medium text-gray-900">{doc.student?.name}</p>
             <p className="text-xs text-gray-500">{doc.student?.email}</p>
           </div>
         </div>
@@ -250,7 +250,7 @@ function DocumentsContent() {
                 <div className="grid grid-cols-2 gap-4 text-sm">
                   <div>
                     <p className="text-gray-500">Student</p>
-                    <p className="font-medium">{(selectedDocument.student as any)?.name}</p>
+                    <p className="font-medium">{selectedDocument.student?.name}</p>
                   </div>
                   <div>
                     <p className="text-gray-500">Document Type</p>

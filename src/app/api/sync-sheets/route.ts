@@ -71,7 +71,7 @@ export async function POST(request: NextRequest) {
       // Add new student to sheet
       success = await addStudentToSheet({
         id: student.id,
-        full_name: student.full_name,
+        name: student.name,
         email: student.email,
         phone: student.phone,
         program: student.program,
@@ -89,7 +89,7 @@ export async function POST(request: NextRequest) {
           await addApplicationToSheet({
             id: app.id,
             student_id: student.id,
-            student_name: student.full_name,
+            student_name: student.name,
             program: app.program || student.program,
             university: app.university || student.university,
             status: app.status,
@@ -103,7 +103,7 @@ export async function POST(request: NextRequest) {
     } else if (action === "update") {
       // Update existing student
       success = await updateStudentInSheet(studentId, {
-        full_name: student.full_name,
+        name: student.name,
         email: student.email,
         phone: student.phone,
         program: student.program,
