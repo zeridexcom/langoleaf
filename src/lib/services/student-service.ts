@@ -188,7 +188,6 @@ export class StudentService {
         freelancer:profiles(id, full_name, email)
       `)
       .eq('id', id)
-      .is('deleted_at', null)
 
     // If freelancerId provided, ensure they own this student
     if (freelancerId) {
@@ -234,7 +233,6 @@ export class StudentService {
         )
       `, { count: 'exact' })
       .eq('freelancer_id', freelancerId)
-      .is('deleted_at', null)
 
     // Apply filters
     if (filters.search) {
@@ -280,7 +278,6 @@ export class StudentService {
       .from('students')
       .select('source, tags')
       .eq('freelancer_id', freelancerId)
-      .is('deleted_at', null)
 
     const sources = Array.from(new Set(filterOptions?.map(s => s.source).filter(Boolean)))
     const allTags = Array.from(new Set(filterOptions?.flatMap(s => s.tags || []).filter(Boolean)))
@@ -319,7 +316,6 @@ export class StudentService {
       .select('id')
       .eq('id', id)
       .eq('freelancer_id', freelancerId)
-      .is('deleted_at', null)
       .single()
 
     if (checkError || !existing) {
@@ -360,7 +356,6 @@ export class StudentService {
       .select('status')
       .eq('id', id)
       .eq('freelancer_id', freelancerId)
-      .is('deleted_at', null)
       .single()
 
     if (fetchError || !student) {
@@ -413,23 +408,10 @@ export class StudentService {
       .select('id')
       .eq('student_id', id)
       .not('status', 'in', '("enrolled","rejected","withdrawn","offer_declined")')
-      .is('deleted_at', null)
-
-    if (checkError) {
-      throw new AppError('INTERNAL_ERROR', 'Failed to check active applications')
-    }
-
-    if (activeApps && activeApps.length > 0) {
-      throw new AppError('CONFLICT', `Cannot delete student with ${activeApps.length} active application(s)`)
-    }
-
-    // Soft delete
+    // Hard delete since table has no deleted_at column
     const { error } = await supabase
       .from('students')
-      .update({
-        deleted_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-      })
+      .delete()
       .eq('id', id)
       .eq('freelancer_id', freelancerId)
 
@@ -452,7 +434,6 @@ export class StudentService {
       .from('students')
       .select()
       .eq('freelancer_id', freelancerId)
-      .is('deleted_at', null)
 
     if (excludeId) {
       query = query.neq('id', excludeId)
@@ -502,7 +483,6 @@ export class StudentService {
       .select('id')
       .in('id', ids)
       .eq('freelancer_id', freelancerId)
-      .is('deleted_at', null)
 
     if (checkError) {
       throw new AppError('INTERNAL_ERROR', 'Failed to verify students')
