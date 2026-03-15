@@ -186,7 +186,7 @@ export default function StudentDetailPage() {
     <div className="max-w-7xl mx-auto space-y-6">
       {/* Page Header */}
       <PageHeader
-        title={student.name}
+        title={student.full_name}
         description={student.email}
         backHref="/students"
         actions={
@@ -256,7 +256,7 @@ export default function StudentDetailPage() {
                   Personal Information
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <InfoItem icon={User} label="Full Name" value={student.name} />
+                  <InfoItem icon={User} label="Full Name" value={student.full_name} />
                   <InfoItem icon={Mail} label="Email" value={student.email} />
                   <InfoItem icon={Phone} label="Phone" value={student.phone || "Not provided"} />
                   <InfoItem icon={Calendar} label="Date of Birth" value={student.date_of_birth ? new Date(student.date_of_birth).toLocaleDateString() : "Not provided"} />
@@ -353,7 +353,7 @@ export default function StudentDetailPage() {
           <div className="bg-white rounded-2xl p-6 max-w-md w-full mx-4">
             <h3 className="text-lg font-semibold text-gray-900 mb-2">Delete Student?</h3>
             <p className="text-gray-500 mb-6">
-              Are you sure you want to delete <strong>{student.name}</strong>? This action cannot be undone.
+              Are you sure you want to delete <strong>{student.full_name}</strong>? This action cannot be undone.
             </p>
             <div className="flex gap-3 justify-end">
               <button
@@ -400,7 +400,7 @@ export default function StudentDetailPage() {
           <div className="bg-white rounded-2xl p-6 max-w-md w-full mx-4">
             <h3 className="text-lg font-semibold text-gray-900 mb-2">Schedule Reminder</h3>
             <p className="text-gray-500 mb-4">
-              Set a follow-up reminder for {student.name}.
+              Set a follow-up reminder for {student.full_name}.
             </p>
             <div className="space-y-4">
               <div>

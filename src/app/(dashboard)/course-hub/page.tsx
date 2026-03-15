@@ -1,7 +1,20 @@
 "use client";
 
-import { useState } from "react";
-import { CheckCircle2, Globe2, BookOpen, Clock, X, Info, GraduationCap, ArrowRight, Check, Phone } from "lucide-react";
+import { useState, Fragment, useRef } from "react";
+import { 
+  CheckCircle2, 
+  Globe2, 
+  BookOpen, 
+  Clock, 
+  X, 
+  Info, 
+  GraduationCap, 
+  ArrowRight, 
+  Check, 
+  Phone,
+  ChevronLeft,
+  ChevronRight
+} from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 export const dynamic = "force-dynamic";
@@ -439,17 +452,202 @@ const fastTrackCourses: Course[] = [
   }
 ];
 
+const CourseCard = ({ 
+  course, 
+  isExpanded, 
+  onToggle, 
+  index,
+  type = "default" 
+}: { 
+  course: Course; 
+  isExpanded: boolean; 
+  onToggle: (slug: string) => void;
+  index: number;
+  type?: "default" | "abroad" | "language" | "fast-track";
+}) => {
+  const iconMap = {
+    default: <GraduationCap className="w-8 h-8" />,
+    abroad: <Globe2 className="w-8 h-8" />,
+    language: <Globe2 className="w-8 h-8" />,
+    "fast-track": <Clock className="w-8 h-8" />
+  };
+
+  const themeColors = {
+    default: "bg-primary/10 text-primary border-primary/20 hover:border-primary/40",
+    abroad: "bg-blue-50 text-blue-600 border-blue-100 hover:border-blue-400",
+    language: "bg-purple-50 text-purple-600 border-purple-100 hover:border-purple-400",
+    "fast-track": "bg-amber-50 text-amber-600 border-amber-100 hover:border-amber-400"
+  };
+
+  const activeBadge = {
+    default: "Active Enrollment",
+    abroad: "Global Program",
+    language: "Language Certification",
+    "fast-track": "Direct Certification"
+  };
+
+  const activeBadgeColor = {
+    default: "bg-emerald-50 text-emerald-700 border-emerald-100",
+    abroad: "bg-blue-50 text-blue-700 border-blue-100",
+    language: "bg-purple-50 text-purple-700 border-purple-100",
+    "fast-track": "bg-amber-50 text-amber-700 border-amber-100"
+  };
+
+  const pulseDot = {
+    default: "bg-emerald-500",
+    abroad: "bg-blue-500",
+    language: "bg-purple-500",
+    "fast-track": "bg-amber-500 animate-pulse"
+  };
+
+  return (
+    <div className={`flex-shrink-0 w-[380px] snap-start bg-white border-2 rounded-[2.5rem] p-8 flex flex-col transition-all duration-500 relative overflow-hidden group/card ${
+      isExpanded ? 'border-primary ring-8 ring-primary/5 shadow-2xl translate-y-[-4px]' : 'border-gray-50 hover:border-primary/20 hover:shadow-premium hover:translate-y-[-4px]'
+    }`}>
+      <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full -mr-16 -mt-16 group-hover/card:scale-[2.5] transition-transform duration-1000" />
+      
+      <div className="flex items-start gap-6 mb-8 relative z-10">
+        <div className={`w-16 h-16 rounded-2xl flex items-center justify-center shrink-0 shadow-sm border transition-all duration-500 group-hover/card:scale-110 ${
+          isExpanded ? 'bg-primary text-white' : themeColors[type]
+        }`}>
+          {iconMap[type]}
+        </div>
+        <div>
+          <h3 className="font-black text-2xl text-gray-900 leading-[1.1] group-hover/card:text-primary transition-colors tracking-tight">{course.title}</h3>
+          <div className={`mt-2 inline-flex items-center gap-1.5 py-1 px-3 rounded-full border ${activeBadgeColor[type]}`}>
+            <div className={`w-1.5 h-1.5 rounded-full ${pulseDot[type]}`} />
+            <span className="text-[9px] font-black uppercase tracking-widest">{activeBadge[type]}</span>
+          </div>
+        </div>
+      </div>
+
+      <p className="text-sm text-gray-500 mb-8 font-bold leading-relaxed relative z-10 h-20 line-clamp-3 overflow-hidden">
+        {course.shortDescription}
+      </p>
+
+      {type === "language" && course.levels && (
+        <div className="flex gap-2 mb-8 flex-wrap relative z-10">
+          {course.levels.map(level => (
+            <span key={level} className="text-[9px] font-black px-2 py-0.5 bg-gray-50 border border-gray-200 text-gray-600 rounded-md uppercase tracking-tighter">
+              {level}
+            </span>
+          ))}
+        </div>
+      )}
+
+      <div className="mt-auto relative z-10">
+        <button 
+          onClick={() => onToggle(course.slug)}
+          className={`w-full font-black py-5 rounded-2xl transition-all duration-500 flex items-center justify-center gap-3 ${
+            isExpanded 
+              ? 'bg-primary text-white shadow-xl shadow-primary/20' 
+              : 'bg-gray-900 text-white hover:bg-black shadow-lg hover:shadow-xl'
+          }`}
+        >
+          <BookOpen className={`w-5 h-5 ${isExpanded ? 'rotate-180' : ''} transition-transform duration-500`} />
+          {isExpanded ? 'Close Details' : 'View Course Hub'}
+        </button>
+      </div>
+    </div>
+  );
+};
+
+const CourseCarousel = ({ 
+  title, 
+  courses, 
+  type, 
+  expandedCourseSlug, 
+  onToggle,
+  renderDetails 
+}: { 
+  title: string; 
+  courses: Course[]; 
+  type: "default" | "abroad" | "language" | "fast-track";
+  expandedCourseSlug: string | null;
+  onToggle: (slug: string) => void;
+  renderDetails: (course: Course) => React.ReactNode;
+}) => {
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  const scroll = (direction: 'left' | 'right') => {
+    if (scrollRef.current) {
+      const { scrollLeft, clientWidth } = scrollRef.current;
+      const scrollTo = direction === 'left' ? scrollLeft - 400 : scrollLeft + 400;
+      scrollRef.current.scrollTo({ left: scrollTo, behavior: 'smooth' });
+    }
+  };
+
+  const expandedInThisSection = courses.find(c => c.slug === expandedCourseSlug);
+
+  return (
+    <section className="space-y-8 relative group/section">
+      <div className="flex items-center justify-between gap-6 mr-12 sm:mr-0">
+        <div className="flex items-center gap-6 flex-1">
+          <h2 className="text-xs font-black text-gray-400 uppercase tracking-[0.3em] whitespace-nowrap">{title}</h2>
+          <div className="h-[1px] bg-gray-100 flex-1" />
+        </div>
+        <div className="flex items-center gap-2">
+          <button 
+            onClick={() => scroll('left')}
+            className="w-10 h-10 rounded-full border border-gray-100 bg-white flex items-center justify-center text-gray-400 hover:text-primary hover:border-primary/30 transition-all shadow-sm"
+          >
+            <ChevronLeft className="w-5 h-5" />
+          </button>
+          <button 
+            onClick={() => scroll('right')}
+            className="w-10 h-10 rounded-full border border-gray-100 bg-white flex items-center justify-center text-gray-400 hover:text-primary hover:border-primary/30 transition-all shadow-sm"
+          >
+            <ChevronRight className="w-5 h-5" />
+          </button>
+        </div>
+      </div>
+
+      <div 
+        ref={scrollRef}
+        className="flex gap-8 overflow-x-auto pb-8 snap-x no-scrollbar scroll-smooth"
+        style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+      >
+        <div className="flex gap-8 px-1">
+          {courses.map((course, index) => (
+            <CourseCard 
+              key={course.slug} 
+              course={course} 
+              isExpanded={expandedCourseSlug === course.slug}
+              onToggle={onToggle}
+              index={index}
+              type={type}
+            />
+          ))}
+        </div>
+      </div>
+
+      <AnimatePresence>
+        {expandedInThisSection && renderDetails(expandedInThisSection)}
+      </AnimatePresence>
+    </section>
+  );
+};
+
 import { DashboardPageLayout } from "@/components/ui/design-system";
 
 export default function CourseHubPage() {
-  const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
+  const [expandedCourseSlug, setExpandedCourseSlug] = useState<string | null>(null);
   const [showPriceForm, setShowPriceForm] = useState(false);
   const [phoneNumber, setPhoneNumber] = useState("");
   const [priceFormSubmitted, setPriceFormSubmitted] = useState(false);
 
+  const toggleExpand = (slug: string) => {
+    if (expandedCourseSlug === slug) {
+      setExpandedCourseSlug(null);
+    } else {
+      setExpandedCourseSlug(slug);
+    }
+    setShowPriceForm(false);
+  };
+
   const handlePriceSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (phoneNumber.length > 5) { // Basic validation
+    if (phoneNumber.length > 5) {
       setPriceFormSubmitted(true);
       setTimeout(() => {
         setPriceFormSubmitted(false);
@@ -459,446 +657,170 @@ export default function CourseHubPage() {
     }
   };
 
-  return (
-    <DashboardPageLayout className="pb-24">
-      <div className={`space-y-6 transition-all duration-500 ${selectedCourse ? 'xl:pr-[400px] lg:pr-[320px] opacity-50 blur-[2px]' : ''}`}>
-        {/* Header */}
-        <div className="bg-white p-6 border border-gray-100 rounded-2xl shadow-premium flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+  const renderExpandableDetails = (course: Course) => (
+    <motion.div
+      initial={{ height: 0, opacity: 0 }}
+      animate={{ height: "auto", opacity: 1 }}
+      exit={{ height: 0, opacity: 0 }}
+      className="col-span-1 md:col-span-2 lg:col-span-3 overflow-hidden bg-gray-50 border border-gray-200 rounded-3xl mb-8 -mt-4 shadow-inner"
+    >
+      <div className="p-8 grid grid-cols-1 lg:grid-cols-2 gap-12">
+        <div className="space-y-8">
           <div>
-            <h1 className="text-xl font-black text-gray-900 uppercase tracking-tight">Course Hub</h1>
-            <p className="text-gray-400 text-[10px] font-black uppercase tracking-widest mt-1">Explore courses & certifications</p>
+            <h4 className="text-xs font-black text-gray-400 uppercase tracking-widest mb-4 flex items-center gap-2">
+              <Info className="w-4 h-4" />
+              Comprehensive Curriculum
+            </h4>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {course.courseIncludes.map((item, i) => (
+                <div key={i} className="flex items-center gap-3 bg-white p-3 rounded-xl border border-gray-100 shadow-sm text-sm font-bold text-gray-700">
+                  <Check className="w-4 h-4 text-primary shrink-0" />
+                  {item}
+                </div>
+              ))}
+            </div>
           </div>
-          <div className="flex items-center gap-3">
-            <div className="h-8 w-[1px] bg-gray-100 hidden md:block" />
-            <span className="text-[10px] font-black text-gray-300 uppercase tracking-widest">v2.1 optimized</span>
+
+          <div>
+            <h4 className="text-xs font-black text-gray-400 uppercase tracking-widest mb-4 flex items-center gap-2">
+              <GraduationCap className="w-4 h-4" />
+              Strategic Benefits
+            </h4>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {course.benefits.map((benefit, i) => (
+                <div key={i} className="flex items-start gap-3 text-sm text-gray-600 font-bold leading-tight">
+                  <div className="w-5 h-5 rounded-full bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
+                    <div className="w-1.5 h-1.5 bg-primary rounded-full transition-transform group-hover:scale-150" />
+                  </div>
+                  {benefit}
+                </div>
+              ))}
+            </div>
           </div>
         </div>
 
-        {/* Section 1: Regular Degree (Indian) */}
-        <section className="space-y-6">
-          <div className="flex items-center gap-3">
-            <h2 className="text-sm font-black text-gray-900 uppercase tracking-widest">Regular Degree (Indian)</h2>
-            <div className="h-[1px] bg-gray-100 flex-1" />
-          </div>
-          <div className="flex overflow-x-auto gap-6 pb-6 pt-2 snap-x snap-mandatory hide-scrollbar -mx-4 px-4 sm:mx-0 sm:px-0">
-            {regularDegreeIndianCourses.map((course) => (
-              <div key={course.slug} className="min-w-[320px] md:min-w-[380px] lg:min-w-[420px] snap-center bg-white border border-gray-200 rounded-2xl p-6 flex flex-col hover:shadow-xl transition-all duration-300 hover:border-primary/50 relative overflow-hidden group">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full -mr-16 -mt-16 transition-transform group-hover:scale-150 duration-500 ease-out"></div>
-                
-                <div className="flex items-start gap-4 mb-4 relative z-10">
-                  <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center text-primary shrink-0 shadow-sm border border-primary/20 group-hover:bg-primary group-hover:text-white transition-colors duration-300">
-                    <GraduationCap className="w-6 h-6" />
-                  </div>
-                  <div>
-                    <h3 className="font-black text-xl text-gray-900 group-hover:text-primary transition-colors">{course.title}</h3>
-                  </div>
-                </div>
-
-                <p className="text-sm text-gray-600 mb-6 flex-grow leading-relaxed relative z-10">
-                  {course.shortDescription}
-                </p>
-
-                <div className="space-y-4 text-sm relative z-10">
-                  <div>
-                    <h4 className="font-bold text-gray-900 mb-2 flex items-center gap-1.5">
-                      <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full"></span>
-                      Ideal For
-                    </h4>
-                    <ul className="space-y-2 text-gray-600">
-                      {course.suitableFor.slice(0, 2).map((item, i) => (
-                        <li key={i} className="flex items-start gap-2">
-                          <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
-                          <span className="leading-tight">{item}</span>
-                        </li>
-                      ))}
-                      {course.suitableFor.length > 2 && (
-                        <li className="text-xs text-gray-400 italic pl-6">+ {course.suitableFor.length - 2} more</li>
-                      )}
-                    </ul>
-                  </div>
-                </div>
-
-                <div className="mt-8 relative z-10">
-                  <button 
-                    onClick={() => setSelectedCourse(course)}
-                    className="w-full bg-white hover:bg-primary hover:text-white text-gray-900 font-bold py-3 rounded-xl transition-all duration-300 border-2 border-gray-200 hover:border-primary shadow-sm hover:shadow-md flex items-center justify-center gap-2"
-                  >
-                    <BookOpen className="w-4 h-4" />
-                    View Details
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* Section 2: Regular Degree (Abroad) */}
-        <section className="space-y-6">
-          <div className="flex items-center gap-3">
-            <h2 className="text-sm font-black text-gray-900 uppercase tracking-widest">Regular Degree (Abroad)</h2>
-            <div className="h-[1px] bg-gray-100 flex-1" />
-          </div>
-          <div className="flex overflow-x-auto gap-6 pb-6 pt-2 snap-x snap-mandatory hide-scrollbar -mx-4 px-4 sm:mx-0 sm:px-0">
-            {regularDegreeAbroadCourses.map((course) => (
-              <div key={course.slug} className="min-w-[320px] md:min-w-[380px] lg:min-w-[420px] snap-center bg-white border border-gray-200 rounded-2xl p-6 flex flex-col hover:shadow-xl transition-all duration-300 hover:border-primary/50 relative overflow-hidden group">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full -mr-16 -mt-16 transition-transform group-hover:scale-150 duration-500 ease-out"></div>
-                
-                <div className="flex items-start gap-4 mb-4 relative z-10">
-                  <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center text-primary shrink-0 shadow-sm border border-primary/20 group-hover:bg-primary group-hover:text-white transition-colors duration-300">
-                    <GraduationCap className="w-6 h-6" />
-                  </div>
-                  <div>
-                    <h3 className="font-black text-xl text-gray-900 group-hover:text-primary transition-colors">{course.title}</h3>
-                  </div>
-                </div>
-
-                <p className="text-sm text-gray-600 mb-6 flex-grow leading-relaxed relative z-10">
-                  {course.shortDescription}
-                </p>
-
-                <div className="space-y-4 text-sm relative z-10">
-                  <div>
-                    <h4 className="font-bold text-gray-900 mb-2 flex items-center gap-1.5">
-                      <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full"></span>
-                      Ideal For
-                    </h4>
-                    <ul className="space-y-2 text-gray-600">
-                      {course.suitableFor.slice(0, 2).map((item, i) => (
-                        <li key={i} className="flex items-start gap-2">
-                          <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
-                          <span className="leading-tight">{item}</span>
-                        </li>
-                      ))}
-                      {course.suitableFor.length > 2 && (
-                        <li className="text-xs text-gray-400 italic pl-6">+ {course.suitableFor.length - 2} more</li>
-                      )}
-                    </ul>
-                  </div>
-                </div>
-
-                <div className="mt-8 relative z-10">
-                  <button 
-                    onClick={() => setSelectedCourse(course)}
-                    className="w-full bg-white hover:bg-primary hover:text-white text-gray-900 font-bold py-3 rounded-xl transition-all duration-300 border-2 border-gray-200 hover:border-primary shadow-sm hover:shadow-md flex items-center justify-center gap-2"
-                  >
-                    <BookOpen className="w-4 h-4" />
-                    View Details
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* Section 3: Language Education */}
-        <section className="space-y-6">
-          <div className="flex items-center gap-3">
-            <h2 className="text-sm font-black text-gray-900 uppercase tracking-widest">Language Education</h2>
-            <div className="h-[1px] bg-gray-100 flex-1" />
-          </div>
-          <div className="flex overflow-x-auto gap-6 pb-6 pt-2 snap-x snap-mandatory hide-scrollbar -mx-4 px-4 sm:mx-0 sm:px-0">
-            {languageCourses.map((course) => (
-              <div key={course.slug} className="min-w-[320px] md:min-w-[380px] lg:min-w-[420px] snap-center bg-white border border-gray-200 rounded-2xl p-6 flex flex-col hover:shadow-xl transition-all duration-300 hover:border-primary/50 relative overflow-hidden group">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full -mr-16 -mt-16 transition-transform group-hover:scale-150 duration-500 ease-out"></div>
-                
-                <div className="flex items-start gap-4 mb-4 relative z-10">
-                  <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center text-primary shrink-0 shadow-sm border border-primary/20 group-hover:bg-primary group-hover:text-white transition-colors duration-300">
-                    <Globe2 className="w-6 h-6" />
-                  </div>
-                  <div>
-                    <h3 className="font-black text-xl text-gray-900 group-hover:text-primary transition-colors">{course.title}</h3>
-                    {course.levels && (
-                      <div className="flex gap-1.5 mt-2 flex-wrap">
-                        {course.levels.map(level => (
-                          <span key={level} className="text-[10px] font-bold px-2 py-0.5 bg-gray-100 border border-gray-200 text-gray-600 rounded-md uppercase">
-                            {level}
-                          </span>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                <p className="text-sm text-gray-600 mb-6 flex-grow leading-relaxed relative z-10">
-                  {course.shortDescription}
-                </p>
-
-                <div className="space-y-4 text-sm relative z-10">
-                  <div>
-                    <h4 className="font-bold text-gray-900 mb-2 flex items-center gap-1.5">
-                      <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full"></span>
-                      Suitable For
-                    </h4>
-                    <ul className="space-y-2 text-gray-600">
-                      {course.suitableFor.slice(0, 2).map((item, i) => (
-                        <li key={i} className="flex items-start gap-2">
-                          <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
-                          <span className="leading-tight">{item}</span>
-                        </li>
-                      ))}
-                      {course.suitableFor.length > 2 && (
-                        <li className="text-xs text-gray-400 italic pl-6">+ {course.suitableFor.length - 2} more</li>
-                      )}
-                    </ul>
-                  </div>
-                  
-                  <div className="pt-4 border-t border-gray-100">
-                    <h4 className="font-bold text-gray-900 mb-2 flex items-center gap-1.5">
-                      <span className="w-1.5 h-1.5 bg-blue-500 rounded-full"></span>
-                      Key Benefits
-                    </h4>
-                    <ul className="space-y-2 text-gray-600">
-                      {course.benefits.slice(0, 2).map((item, i) => (
-                        <li key={i} className="flex items-start gap-2">
-                          <CheckCircle2 className="w-4 h-4 text-blue-500 shrink-0 mt-0.5" />
-                          <span className="leading-tight">{item}</span>
-                        </li>
-                      ))}
-                      {course.benefits.length > 2 && (
-                        <li className="text-xs text-gray-400 italic pl-6">+ {course.benefits.length - 2} more</li>
-                      )}
-                    </ul>
-                  </div>
-                </div>
-
-                <div className="mt-8 relative z-10">
-                  <button 
-                    onClick={() => setSelectedCourse(course)}
-                    className="w-full bg-white hover:bg-primary hover:text-white text-gray-900 font-bold py-3 rounded-xl transition-all duration-300 border-2 border-gray-200 hover:border-primary shadow-sm hover:shadow-md flex items-center justify-center gap-2"
-                  >
-                    <BookOpen className="w-4 h-4" />
-                    View Details
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* Section 4: Fast-Track Education */}
-        <section className="space-y-6">
-          <div className="flex items-center gap-3">
-            <h2 className="text-sm font-black text-gray-900 uppercase tracking-widest">Fast-Track Education</h2>
-            <div className="h-[1px] bg-gray-100 flex-1" />
-          </div>
-          <div className="flex overflow-x-auto gap-6 pb-6 pt-2 snap-x snap-mandatory hide-scrollbar -mx-4 px-4 sm:mx-0 sm:px-0">
-            {fastTrackCourses.map((course) => (
-              <div key={course.slug} className="min-w-[320px] md:min-w-[380px] lg:min-w-[420px] snap-center bg-white border border-gray-200 rounded-2xl p-6 flex flex-col hover:shadow-xl transition-all duration-300 hover:border-primary/50 relative overflow-hidden group">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full -mr-16 -mt-16 transition-transform group-hover:scale-150 duration-500 ease-out"></div>
-                
-                <div className="flex items-start gap-4 mb-4 relative z-10">
-                  <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center text-primary shrink-0 shadow-sm border border-primary/20 group-hover:bg-primary group-hover:text-white transition-colors duration-300">
-                    <Clock className="w-6 h-6" />
-                  </div>
-                  <div>
-                    <h3 className="font-black text-xl text-gray-900 group-hover:text-primary transition-colors">{course.title}</h3>
-                  </div>
-                </div>
-
-                <p className="text-sm text-gray-600 mb-6 flex-grow leading-relaxed relative z-10">
-                  {course.shortDescription}
-                </p>
-
-                <div className="space-y-4 text-sm relative z-10">
-                  <div>
-                    <h4 className="font-bold text-gray-900 mb-2 flex items-center gap-1.5">
-                      <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full"></span>
-                      Ideal For
-                    </h4>
-                    <ul className="space-y-2 text-gray-600">
-                      {course.suitableFor.slice(0, 2).map((item, i) => (
-                        <li key={i} className="flex items-start gap-2">
-                          <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
-                          <span className="leading-tight">{item}</span>
-                        </li>
-                      ))}
-                      {course.suitableFor.length > 2 && (
-                        <li className="text-xs text-gray-400 italic pl-6">+ {course.suitableFor.length - 2} more</li>
-                      )}
-                    </ul>
-                  </div>
-                </div>
-
-                <div className="mt-8 relative z-10">
-                  <button 
-                    onClick={() => setSelectedCourse(course)}
-                    className="w-full bg-white hover:bg-primary hover:text-white text-gray-900 font-bold py-3 rounded-xl transition-all duration-300 border-2 border-gray-200 hover:border-primary shadow-sm hover:shadow-md flex items-center justify-center gap-2"
-                  >
-                    <BookOpen className="w-4 h-4" />
-                    View Details
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-      </div>
-
-      {/* Detail View Sidebar */}
-      <AnimatePresence>
-        {selectedCourse && (
-          <motion.div
-            initial={{ x: "100%" }}
-            animate={{ x: 0 }}
-            exit={{ x: "100%" }}
-            transition={{ type: "spring", damping: 25, stiffness: 200 }}
-            className="fixed top-0 right-0 bottom-0 w-full max-w-[320px] xl:max-w-[400px] bg-white border-l border-gray-200 shadow-2xl z-[60] flex flex-col"
-          >
-            <div className="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
-              <h2 className="text-xl font-black text-gray-900 uppercase tracking-tight">Course Details</h2>
+        <div className="flex flex-col justify-start">
+          <div className="bg-white rounded-[2rem] p-8 border border-gray-100 shadow-premium relative overflow-hidden group/actions">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full -mr-16 -mt-16 transition-transform group-hover/actions:scale-[2] duration-1000" />
+            
+            <h4 className="text-xs font-black text-gray-400 uppercase tracking-widest mb-6 relative z-10">Instant Enrollment</h4>
+            <div className="space-y-4 relative z-10">
               <button 
-                onClick={() => setSelectedCourse(null)}
-                className="p-2 hover:bg-gray-200 rounded-full transition-colors"
+                onClick={() => window.location.href = `/students/add?program=${encodeURIComponent(course.title)}`}
+                className="w-full bg-primary text-white font-black py-5 rounded-2xl shadow-xl shadow-primary/20 hover:shadow-2xl hover:shadow-primary/30 hover:-translate-y-1 active:scale-95 transition-all flex items-center justify-center gap-3 group/btn"
               >
-                <X className="w-5 h-5 text-gray-500" />
-              </button>
-            </div>
-
-            <div className="flex-1 overflow-y-auto p-6 space-y-8">
-              {/* Basic Info */}
-              <div className="space-y-4">
-                <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 bg-primary text-white rounded-xl flex items-center justify-center shadow-lg">
-                    <GraduationCap className="w-6 h-6" />
-                  </div>
-                  <h3 className="text-2xl font-black text-gray-900 leading-tight">{selectedCourse.title}</h3>
-                </div>
-                <p className="text-gray-600 leading-relaxed font-medium">
-                  {selectedCourse.shortDescription}
-                </p>
-              </div>
-
-              {/* Course Includes */}
-              <div className="space-y-4">
-                <h4 className="text-sm font-black text-primary uppercase tracking-widest flex items-center gap-2">
-                  <Info className="w-4 h-4" />
-                  What you'll learn
-                </h4>
-                <div className="grid grid-cols-1 gap-2">
-                  {selectedCourse.courseIncludes.map((item, i) => (
-                    <div key={i} className="flex items-center gap-3 p-3 bg-gray-50 border border-gray-100 rounded-xl">
-                      <div className="w-1.5 h-1.5 bg-primary rounded-full"></div>
-                      <span className="text-sm font-bold text-gray-700">{item}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Full Suitable For */}
-              <div className="space-y-4">
-                <h4 className="text-sm font-black text-emerald-600 uppercase tracking-widest flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4" />
-                  Target Audience
-                </h4>
-                <ul className="space-y-3">
-                  {selectedCourse.suitableFor.map((item, i) => (
-                    <li key={i} className="flex items-start gap-3">
-                      <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
-                      <span className="text-sm font-medium text-gray-700">{item}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              {/* Full Benefits */}
-              <div className="space-y-4">
-                <h4 className="text-sm font-black text-blue-600 uppercase tracking-widest flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4" />
-                  Career Benefits
-                </h4>
-                <ul className="space-y-3">
-                  {selectedCourse.benefits.map((item, i) => (
-                    <li key={i} className="flex items-start gap-3">
-                      <CheckCircle2 className="w-4 h-4 text-blue-500 shrink-0 mt-0.5" />
-                      <span className="text-sm font-medium text-gray-700">{item}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-
-            {/* Action Section */}
-            <div className="p-6 border-t border-gray-100 bg-white space-y-4">
-              <button 
-                onClick={() => window.location.href = `/students/add?university=${encodeURIComponent(selectedCourse.title)}`}
-                className="w-full bg-primary hover:bg-primary/90 text-white font-black py-4 rounded-2xl shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all flex items-center justify-center gap-2 group"
-              >
-                Enroll a Student
-                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                Enroll Now
+                <ArrowRight className="w-5 h-5 group-hover/btn:translate-x-1 transition-transform" />
               </button>
               
-              <div className="text-center pt-2">
-                <button 
-                  onClick={() => setShowPriceForm(!showPriceForm)}
-                  className="text-[10px] font-bold text-gray-400 hover:text-gray-600 tracking-widest uppercase transition-colors"
-                >
-                  Prices?
-                </button>
-              </div>
-
-              <AnimatePresence>
-                {showPriceForm && (
-                  <motion.div
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: "auto", opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
-                    className="overflow-hidden"
+              <div className="pt-2">
+                {!showPriceForm ? (
+                  <button 
+                    onClick={() => setShowPriceForm(true)}
+                    className="w-full bg-gray-50 text-gray-500 font-black py-4 rounded-xl transition-all hover:text-primary hover:bg-primary/5 flex items-center justify-center gap-2 text-[10px] uppercase tracking-widest border border-dashed border-gray-200 hover:border-primary/20"
                   >
+                    Request Fee Details
+                  </button>
+                ) : (
+                  <motion.div 
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="p-6 bg-gray-50 rounded-2xl border border-primary/20"
+                  >
+                    <p className="text-[10px] font-black text-primary uppercase tracking-widest mb-4">Pricing Callback Request</p>
                     {priceFormSubmitted ? (
-                      <div className="bg-emerald-50 border border-emerald-100 rounded-xl p-4 flex items-start gap-3 mt-4">
-                        <Check className="w-5 h-5 text-emerald-500 shrink-0 mt-0.5" />
-                        <p className="text-sm font-medium text-emerald-800">
-                          Success! Our internal team will reach you in 5 minutes.
-                        </p>
+                      <div className="flex items-center gap-3 text-emerald-600 font-black text-xs py-4 bg-emerald-50 rounded-xl px-5 border border-emerald-100">
+                        <CheckCircle2 className="w-5 h-5" />
+                        We'll reach out in 5 minutes!
                       </div>
                     ) : (
-                      <form onSubmit={handlePriceSubmit} className="bg-gray-50 border border-gray-200 rounded-xl p-4 mt-4 space-y-3">
-                        <p className="text-xs text-gray-600 font-medium">
-                          Submit your phone number so our internal team can reach you in 5 mins for pricing details.
-                        </p>
+                      <form onSubmit={handlePriceSubmit} className="space-y-4">
                         <div className="relative">
-                          <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                          <input
+                          <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                          <input 
                             type="tel"
-                            required
+                            placeholder="Your Phone Number"
                             value={phoneNumber}
                             onChange={(e) => setPhoneNumber(e.target.value)}
-                            className="w-full pl-10 pr-4 py-2 bg-white border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/50"
-                            placeholder="+91 98765 43210"
+                            className="w-full pl-12 pr-4 py-4 bg-white border border-gray-200 rounded-xl text-sm font-bold focus:ring-4 focus:ring-primary/10 outline-none transition-all"
+                            required
                           />
                         </div>
-                        <button 
-                          type="submit"
-                          className="w-full bg-gray-900 hover:bg-black text-white text-sm font-bold py-2 rounded-lg transition-colors"
-                        >
-                          Request Pricing Callback
+                        <button type="submit" className="w-full bg-gray-900 text-white py-4 rounded-xl text-xs font-black hover:bg-black transition-all shadow-lg active:scale-95">
+                          Submit Details
                         </button>
                       </form>
                     )}
                   </motion.div>
                 )}
-              </AnimatePresence>
+              </div>
             </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+          </div>
+          <p className="text-[9px] text-gray-400 font-black uppercase tracking-[0.2em] text-center mt-8 opacity-60">
+            Certified by global accreditation boards
+          </p>
+        </div>
+      </div>
+    </motion.div>
+  );
 
-      {/* Overlay Backdrop */}
-      <AnimatePresence>
-        {selectedCourse && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={() => {
-              setSelectedCourse(null);
-              setShowPriceForm(false);
-              setPriceFormSubmitted(false);
-            }}
-            className="fixed inset-0 bg-black/5 backdrop-blur-[2px] z-50 cursor-pointer"
-          />
-        )}
-      </AnimatePresence>
+  return (
+    <DashboardPageLayout className="pb-24">
+      <div className="space-y-24">
+        {/* Header */}
+        <div className="bg-white p-8 md:p-12 border border-gray-100 rounded-[2.5rem] shadow-premium flex flex-col md:flex-row justify-between items-start md:items-center gap-8 overflow-hidden relative group">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full -mr-32 -mt-32 transition-transform group-hover:scale-150 duration-1000" />
+          <div className="relative z-10">
+            <h1 className="text-4xl font-black text-gray-900 uppercase tracking-tighter">Course Hub</h1>
+            <p className="text-gray-400 text-xs font-black uppercase tracking-widest mt-3 flex items-center gap-3">
+              <span className="w-8 h-[2px] bg-primary"></span>
+              Strategic Career Pathways
+            </p>
+          </div>
+          <div className="relative z-10">
+            <div className="bg-gray-900 text-white px-6 py-3 rounded-2xl flex items-center gap-3 shadow-2xl">
+              <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse" />
+              <span className="text-[10px] font-black uppercase tracking-[0.2em]">System v2.5 Online</span>
+            </div>
+          </div>
+        </div>
+
+        <CourseCarousel 
+          title="Regular Degree (Indian)"
+          courses={regularDegreeIndianCourses}
+          type="default"
+          expandedCourseSlug={expandedCourseSlug}
+          onToggle={toggleExpand}
+          renderDetails={renderExpandableDetails}
+        />
+
+        <CourseCarousel 
+          title="Regular Degree (Abroad)"
+          courses={regularDegreeAbroadCourses}
+          type="abroad"
+          expandedCourseSlug={expandedCourseSlug}
+          onToggle={toggleExpand}
+          renderDetails={renderExpandableDetails}
+        />
+
+        <CourseCarousel 
+          title="Language Education"
+          courses={languageCourses}
+          type="language"
+          expandedCourseSlug={expandedCourseSlug}
+          onToggle={toggleExpand}
+          renderDetails={renderExpandableDetails}
+        />
+
+        <CourseCarousel 
+          title="Fast-Track Education"
+          courses={fastTrackCourses}
+          type="fast-track"
+          expandedCourseSlug={expandedCourseSlug}
+          onToggle={toggleExpand}
+          renderDetails={renderExpandableDetails}
+        />
+      </div>
     </DashboardPageLayout>
   );
 }

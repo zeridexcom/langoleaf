@@ -52,7 +52,7 @@ export function StudentGrid({ student, isSelected, onSelect }: StudentGridProps)
           )}
           <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
             <span className="text-primary font-medium">
-              {student.name?.charAt(0).toUpperCase() || "?"}
+              {student.full_name?.charAt(0).toUpperCase() || "?"}
             </span>
           </div>
         </div>
@@ -64,7 +64,7 @@ export function StudentGrid({ student, isSelected, onSelect }: StudentGridProps)
       </div>
 
       {/* Name and Email */}
-      <h3 className="font-medium text-gray-900 mb-1 truncate">{student.name}</h3>
+      <h3 className="font-medium text-gray-900 mb-1 truncate">{student.full_name}</h3>
       <p className="text-sm text-gray-500 mb-3 truncate">{student.email}</p>
 
       {/* Quick Info */}

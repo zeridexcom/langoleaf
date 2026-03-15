@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils/cn";
  */
 export function DashboardPageLayout({ children, className }: { children: ReactNode; className?: string }) {
   return (
-    <div className={cn("max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 space-y-8", className)}>
+    <div className={cn("max-w-screen-2xl mx-auto w-full px-4 sm:px-6 lg:px-8 space-y-8", className)}>
       {children}
     </div>
   );

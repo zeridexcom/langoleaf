@@ -29,7 +29,7 @@ interface ProfileField {
 
 interface ProfileCompletionWidgetProps {
   student: {
-    name?: string;
+    full_name?: string;
     email?: string;
     phone?: string;
     program?: string;
@@ -55,7 +55,7 @@ export function ProfileCompletionWidget({
   const [showDetails, setShowDetails] = useState(false);
 
   const fields: ProfileField[] = [
-    { name: "name", label: "Full Name", icon: User, isComplete: !!student.name, isRequired: true },
+    { name: "name", label: "Full Name", icon: User, isComplete: !!student.full_name, isRequired: true },
     { name: "email", label: "Email", icon: Mail, isComplete: !!student.email, isRequired: true },
     { name: "phone", label: "Phone", icon: Phone, isComplete: !!student.phone, isRequired: true },
     { name: "program", label: "Program", icon: BookOpen, isComplete: !!student.program, isRequired: true },

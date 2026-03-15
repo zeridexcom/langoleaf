@@ -106,7 +106,7 @@ export function DuplicateWarningModal({
                         <User className="w-5 h-5 text-gray-500" />
                       </div>
                       <div>
-                        <h3 className="font-semibold text-gray-900">{student.name}</h3>
+                        <h3 className="font-semibold text-gray-900">{student.full_name}</h3>
                         <div className="flex items-center gap-2 mt-1">
                           <span className={`text-xs px-2 py-1 rounded-full font-medium ${
                             student.matchType === "Email" 

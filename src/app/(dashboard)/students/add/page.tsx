@@ -234,7 +234,7 @@ export default function AddStudentPage() {
 
     // Submit using mutation hook
     createStudent.mutate({
-      name: `${formData.firstName} ${formData.lastName}`,
+      full_name: `${formData.firstName} ${formData.lastName}`,
       email: formData.email,
       phone: formData.phone,
       program: formData.program,

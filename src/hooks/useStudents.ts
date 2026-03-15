@@ -5,7 +5,7 @@ import { UserRole } from "@/types/permissions";
 // Types
 export interface Student {
   id: string;
-  name: string;
+  full_name: string;
   email: string;
   phone: string | null;
   program: string | null;
@@ -124,6 +124,7 @@ async function fetchStudents(includeAll?: boolean): Promise<Student[]> {
     .from("students")
     .select("*, applications(*)")
     .eq("freelancer_id", userId)
+    .is("deleted_at", null)
     .order("created_at", { ascending: false });
 
   if (error) throw error;
@@ -165,6 +166,7 @@ async function fetchStudent(id: string): Promise<Student> {
     .from("students")
     .select("*, applications(*)")
     .eq("id", id)
+    .is("deleted_at", null)
     .single();
 
   if (error) throw error;
@@ -220,7 +222,8 @@ async function checkDuplicateEmail(email: string, excludeId?: string): Promise<b
     .from("students")
     .select("id")
     .eq("email", email)
-    .eq("freelancer_id", user.id);
+    .eq("freelancer_id", user.id)
+    .is("deleted_at", null);
 
   if (excludeId) {
     query = query.neq("id", excludeId);
@@ -243,7 +246,8 @@ async function checkDuplicatePhone(phone: string, excludeId?: string): Promise<b
     .from("students")
     .select("id")
     .eq("phone", phone)
-    .eq("freelancer_id", user.id);
+    .eq("freelancer_id", user.id)
+    .is("deleted_at", null);
 
   if (excludeId) {
     query = query.neq("id", excludeId);
