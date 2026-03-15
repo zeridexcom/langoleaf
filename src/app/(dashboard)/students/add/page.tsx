@@ -43,11 +43,16 @@ import { toast } from "react-hot-toast";
 
 const programs = [
   "MBA", "B.Tech", "M.Tech", "BCA", "MCA", "BBA", "B.Com", "B.Sc", "M.Sc", "BA", "MA", "LLB", "MBBS", "BDS", "Pharmacy",
+  "B.A.Sc", "B.Sc Nursing", "BA(LLB)", "B.Pharmacy", "BPT", "Diploma", "12th", "SSLC"
 ];
 
 const universities = [
   "IIM Bangalore", "IIT Delhi", "IIT Bombay", "IIT Madras", "NIT Trichy", "Christ University",
   "XLRI Jamshedpur", "BITS Pilani", "VIT Vellore", "SRM University", "Amity University", "Manipal University",
+  "Rosy Royal Institutions", "Yenepoya University", "Chinmaya Vishwa Vidyapeeth", "Vidya College of Nursing", 
+  "ELIMS College", "MET's Group of Institutions", "MES Group of Institutions", "Udupi Group of Institutions",
+  "Arni University", "OPJS", "YBN", "MEWAR UNIVERSITY", "NEFTU UNIVERSITY", "Glocal University", "Himalayan University", "Sangai International University",
+  "University of Toronto", "University of Melbourne", "University of Manchester"
 ];
 
 const genders = [
@@ -161,6 +166,23 @@ export default function AddStudentPage() {
     const stopAutoSave = startAutoSave(() => formData);
     return () => stopAutoSave();
   }, [startAutoSave]);
+
+  // Pre-fill from URL params (e.g., from Course Hub)
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const urlParams = new URLSearchParams(window.location.search);
+      const programParam = urlParams.get("program");
+      const universityParam = urlParams.get("university");
+      
+      if (programParam || universityParam) {
+        setFormData(prev => ({
+          ...prev,
+          program: programParam || prev.program,
+          university: universityParam || prev.university
+        }));
+      }
+    }
+  }, []);
 
   // Check for duplicates on blur
   const handleEmailBlur = useCallback(() => {
