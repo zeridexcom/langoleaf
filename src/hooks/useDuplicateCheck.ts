@@ -52,8 +52,7 @@ export function useDuplicateCheck() {
       const { data: existingStudents, error } = await supabase
         .from("students")
         .select("id, name, email, phone, program, university, status, created_at")
-        .eq("freelancer_id", user.id)
-        .is("deleted_at", null);
+        .eq("freelancer_id", user.id);
 
       if (error) throw error;
 
@@ -185,7 +184,6 @@ export function useRealtimeDuplicateCheck() {
           .select("id, name, email, phone, program, university, status, created_at")
           .eq("email", email.toLowerCase())
           .eq("freelancer_id", user.id)
-          .is("deleted_at", null)
           .maybeSingle();
 
         if (error || !duplicate) {
@@ -229,8 +227,7 @@ export function useRealtimeDuplicateCheck() {
         const { data, error } = await supabase
           .from("students")
           .select("id, name, email, phone, program, university, status, created_at")
-          .eq("freelancer_id", user.id)
-          .is("deleted_at", null);
+          .eq("freelancer_id", user.id);
 
         if (error) {
           setPhoneStatus("idle");

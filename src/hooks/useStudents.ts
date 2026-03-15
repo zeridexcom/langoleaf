@@ -124,7 +124,6 @@ async function fetchStudents(includeAll?: boolean): Promise<Student[]> {
     .from("students")
     .select("*, applications(*)")
     .eq("freelancer_id", userId)
-    .is("deleted_at", null)
     .order("created_at", { ascending: false });
 
   if (error) throw error;
@@ -166,7 +165,6 @@ async function fetchStudent(id: string): Promise<Student> {
     .from("students")
     .select("*, applications(*)")
     .eq("id", id)
-    .is("deleted_at", null)
     .single();
 
   if (error) throw error;
@@ -176,9 +174,15 @@ async function fetchStudent(id: string): Promise<Student> {
 // Create student
 async function createStudent(student: Omit<Student, "id" | "created_at" | "updated_at">): Promise<Student> {
   const supabase = createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) throw new Error("Not authenticated");
+
+  // Ensure freelancer_id is set from auth
+  const studentData = { ...student, freelancer_id: user.id };
+
   const { data, error } = await supabase
     .from("students")
-    .insert(student)
+    .insert(studentData)
     .select()
     .single();
 
@@ -222,8 +226,7 @@ async function checkDuplicateEmail(email: string, excludeId?: string): Promise<b
     .from("students")
     .select("id")
     .eq("email", email)
-    .eq("freelancer_id", user.id)
-    .is("deleted_at", null);
+    .eq("freelancer_id", user.id);
 
   if (excludeId) {
     query = query.neq("id", excludeId);
@@ -246,8 +249,7 @@ async function checkDuplicatePhone(phone: string, excludeId?: string): Promise<b
     .from("students")
     .select("id")
     .eq("phone", phone)
-    .eq("freelancer_id", user.id)
-    .is("deleted_at", null);
+    .eq("freelancer_id", user.id);
 
   if (excludeId) {
     query = query.neq("id", excludeId);

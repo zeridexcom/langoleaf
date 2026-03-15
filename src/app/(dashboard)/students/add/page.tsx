@@ -236,8 +236,8 @@ export default function AddStudentPage() {
       phone: formData.phone,
       program: formData.program,
       university: formData.university,
-      status: "application_submitted", // Match user's previous hardcoded status
-      freelancer_id: "", // Hook will handle this
+      status: "application_submitted",
+      freelancer_id: "", // Auto-set by hook from auth
       date_of_birth: formData.dateOfBirth?.toISOString().split("T")[0] || undefined,
       gender: formData.gender || undefined,
       nationality: formData.nationality || undefined,
