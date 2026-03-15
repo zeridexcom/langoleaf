@@ -181,8 +181,8 @@ export class StudentService {
         *,
         applications:applications(
           *,
-          university:universities(id, name, country),
-          program:programs(id, name, degree_type)
+          university_id,
+          program_id
         ),
         documents:student_documents(*),
         freelancer:profiles(id, full_name, email)
@@ -228,8 +228,8 @@ export class StudentService {
         applications:applications(
           id,
           status,
-          university:universities(id, name),
-          program:programs(id, name)
+          university_id,
+          program_id
         )
       `, { count: 'exact' })
       .eq('freelancer_id', freelancerId)

@@ -423,8 +423,7 @@ export class ReportingService {
           const { count: studentCount } = await this.supabase
             .from("students")
             .select("*", { count: "exact", head: true })
-            .eq("freelancer_id", freelancer.id)
-            .is("deleted_at", null);
+            .eq("freelancer_id", freelancer.id);
 
           // Get applications
           const { data: applications } = await this.supabase

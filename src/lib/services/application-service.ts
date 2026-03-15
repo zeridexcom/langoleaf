@@ -58,7 +58,6 @@ export class ApplicationService {
         .select('id, status')
         .eq('id', data.studentId)
         .eq('freelancer_id', freelancerId)
-        .is('deleted_at', null)
         .single()
 
       if (studentError || !student) {
@@ -196,7 +195,6 @@ export class ApplicationService {
         status_history:status_history(*)
       `)
       .eq('id', id)
-      .is('deleted_at', null)
 
     // If freelancerId provided, ensure they own this application
     if (freelancerId) {
@@ -241,10 +239,9 @@ export class ApplicationService {
           phone,
           freelancer_id
         ),
-        university:universities(id, name, country),
-        program:programs(id, name, degree_type)
+        university_id,
+        program_id
       `, { count: 'exact' })
-      .is('deleted_at', null)
 
     // If freelancerId provided, ensure they own this application
     if (freelancerId) {
@@ -329,7 +326,6 @@ export class ApplicationService {
         student:students!inner(freelancer_id)
       `)
       .eq('id', id)
-      .is('deleted_at', null)
       .single()
 
     if (fetchError || !application) {
@@ -419,7 +415,6 @@ export class ApplicationService {
         student:students!inner(freelancer_id)
       `)
       .eq('id', id)
-      .is('deleted_at', null)
       .single()
 
     if (checkError || !application) {
@@ -467,7 +462,6 @@ export class ApplicationService {
         student:students!inner(freelancer_id)
       `)
       .eq('id', id)
-      .is('deleted_at', null)
       .single()
 
     if (checkError || !application) {
@@ -483,13 +477,10 @@ export class ApplicationService {
       throw new AppError('CONFLICT', 'Cannot delete enrolled application')
     }
 
-    // Soft delete
+    // Hard delete since table has no deleted_at column
     const { error } = await supabase
       .from('applications')
-      .update({
-        deleted_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-      })
+      .delete()
       .eq('id', id)
 
     if (error) {
@@ -510,8 +501,8 @@ export class ApplicationService {
       .from('applications')
       .select(`
         *,
-        university:universities(id, name, country),
-        program:programs(id, name, degree_type),
+        university_id,
+        program_id,
         documents:application_documents(
           *,
           document:student_documents(*)
@@ -519,7 +510,6 @@ export class ApplicationService {
       `)
       .eq('student_id', studentId)
       .eq('student.freelancer_id', freelancerId)
-      .is('deleted_at', null)
       .order('created_at', { ascending: false })
 
     if (error) {
@@ -543,7 +533,6 @@ export class ApplicationService {
       .from('applications')
       .select('status, created_at')
       .eq('student.freelancer_id', freelancerId)
-      .is('deleted_at', null)
 
     if (error) {
       throw new AppError('INTERNAL_ERROR', 'Failed to fetch application stats')

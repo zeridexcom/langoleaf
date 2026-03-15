@@ -40,7 +40,6 @@ export class DocumentService {
         .select('id')
         .eq('id', data.studentId)
         .eq('freelancer_id', freelancerId)
-        .is('deleted_at', null)
         .single()
 
       if (studentError || !student) {
@@ -121,7 +120,6 @@ export class DocumentService {
         uploaded_by_user:profiles!uploaded_by(id, full_name, email)
       `)
       .eq('id', id)
-      .is('deleted_at', null)
 
     if (freelancerId) {
       query = query.eq('student.freelancer_id', freelancerId)
@@ -155,7 +153,6 @@ export class DocumentService {
       .select('id')
       .eq('id', studentId)
       .eq('freelancer_id', freelancerId)
-      .is('deleted_at', null)
       .single()
 
     if (studentError || !student) {
@@ -211,7 +208,6 @@ export class DocumentService {
         student:students!inner(freelancer_id)
       `)
       .eq('id', id)
-      .is('deleted_at', null)
       .single()
 
     if (fetchError || !document) {
@@ -274,7 +270,6 @@ export class DocumentService {
         student:students!inner(freelancer_id)
       `)
       .eq('id', id)
-      .is('deleted_at', null)
       .single()
 
     if (fetchError || !existing) {
@@ -353,7 +348,6 @@ export class DocumentService {
         student:students!inner(freelancer_id)
       `)
       .eq('id', id)
-      .is('deleted_at', null)
       .single()
 
     if (fetchError || !document) {
@@ -400,7 +394,6 @@ export class DocumentService {
         student:students!inner(freelancer_id)
       `)
       .eq('id', id)
-      .is('deleted_at', null)
       .single()
 
     if (fetchError || !document) {
