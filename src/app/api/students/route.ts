@@ -215,7 +215,7 @@ export async function POST(request: Request) {
       profile.id,
       {
         student: {
-          full_name: validationResult.data.name,
+          name: validationResult.data.name,
           email: validationResult.data.email,
           phone: validationResult.data.phone || "",
           date_of_birth: validationResult.data.date_of_birth || null,

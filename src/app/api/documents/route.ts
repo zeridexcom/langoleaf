@@ -19,19 +19,19 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const studentId = searchParams.get("studentId");
 
-    if (!studentId) {
-      return NextResponse.json(
-        { error: "Student ID is required" },
-        { status: 400 }
-      );
+    let query = supabase
+      .from("student_documents")
+      .select(`
+        *,
+        student:students(id, full_name, email, freelancer_id)
+      `)
+      .order("created_at", { ascending: false });
+
+    if (studentId) {
+      query = query.eq("student_id", studentId);
     }
 
-    // Get documents from database
-    const { data: dbDocuments, error: dbError } = await supabase
-      .from("student_documents")
-      .select("*")
-      .eq("student_id", studentId)
-      .order("created_at", { ascending: false });
+    const { data: dbDocuments, error: dbError } = await query;
 
     if (dbError) {
       console.error("Error fetching documents from database:", dbError);
@@ -41,30 +41,29 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // Also get from Cloudinary to ensure we have latest
-    const cloudinaryResult = await getStudentDocuments(studentId);
+    // Filter by freelancer_id manually if student_id was't provided to ensure security 
+    // (Supabase RLS should also handle this if configured correctly, but extra safety is good)
+    const filteredDocs = dbDocuments?.filter(doc => (doc.student as any)?.freelancer_id === user.id) || [];
 
-    // Merge database records with Cloudinary data
-    const documents = dbDocuments?.map((dbDoc) => {
-      const cloudDoc = cloudinaryResult.documents?.find(
-        (d: { id: string; typeLabel?: string; thumbnail?: string }) => d.id === dbDoc.public_id
-      );
+    // Map to expected frontend format
+    const documents = filteredDocs.map((dbDoc) => {
       return {
         id: dbDoc.id,
         url: dbDoc.url,
         type: dbDoc.type,
-        typeLabel: cloudDoc?.typeLabel || dbDoc.type,
+        doc_type: dbDoc.type, // Alias for compatibility
         format: dbDoc.format,
         size: dbDoc.size,
-        createdAt: dbDoc.created_at,
-        thumbnail: cloudDoc?.thumbnail || dbDoc.url,
-        publicId: dbDoc.public_id,
+        created_at: dbDoc.created_at,
+        public_id: dbDoc.public_id,
+        file_name: dbDoc.public_id.split("/").pop() || "document",
+        student: dbDoc.student,
       };
-    }) || [];
+    });
 
     return NextResponse.json({
       success: true,
-      documents,
+      data: { documents }
     });
   } catch (error) {
     console.error("Error in documents API:", error);

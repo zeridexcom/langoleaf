@@ -234,7 +234,7 @@ export default function AddStudentPage() {
 
     // Submit using mutation hook
     createStudent.mutate({
-      full_name: `${formData.firstName} ${formData.lastName}`,
+      name: `${formData.firstName} ${formData.lastName}`,
       email: formData.email,
       phone: formData.phone,
       program: formData.program,
@@ -340,9 +340,12 @@ export default function AddStudentPage() {
             <a href="/students/add" className="px-6 py-2 border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 transition-colors">
               Add Another Student
             </a>
-            <a href="/students" className="px-6 py-2 bg-primary text-white rounded-xl hover:bg-primary/90 transition-colors font-medium">
-              Finish
-            </a>
+            <Button
+              onClick={() => router.push(`/applications/create?studentId=${studentId}&program=${formData.program}&university=${formData.university}`)}
+              className="px-6 py-2 bg-primary text-white rounded-xl hover:bg-primary/90 transition-colors font-bold shadow-lg shadow-primary/20"
+            >
+              Proceed to Application
+            </Button>
           </div>
         </div>
       </div>

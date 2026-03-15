@@ -46,7 +46,7 @@ const statuses = [
 ];
 
 interface FormData {
-  full_name: string;
+  name: string;
   email: string;
   phone: string;
   program: string;
@@ -88,7 +88,7 @@ export default function EditStudentPage() {
     getChangesSummary,
     modifiedFields,
   } = useChangeTracking<FormData>(originalData || {
-    full_name: "",
+    name: "",
     email: "",
     phone: "",
     program: "",
@@ -138,7 +138,7 @@ export default function EditStudentPage() {
       if (error) throw error;
       
       const formData: FormData = {
-        full_name: data.full_name || "",
+        name: data.name || "",
         email: data.email || "",
         phone: data.phone || "",
         program: data.program || "",
@@ -223,7 +223,7 @@ export default function EditStudentPage() {
   // Validate field on blur
   const validateField = useCallback((field: keyof FormData, value: any) => {
     try {
-      const schemaField = field === "full_name" ? "fullName" : field;
+      const schemaField = field === "name" ? "fullName" : field;
       const fieldSchema = (createStudentSchema.shape as any)[schemaField];
       if (fieldSchema) {
         fieldSchema.parse(value);
@@ -289,7 +289,7 @@ export default function EditStudentPage() {
       const { error } = await supabase
         .from("students")
         .update({
-          full_name: currentData.full_name,
+          name: currentData.name,
           email: currentData.email,
           phone: currentData.phone,
           program: currentData.program,
@@ -458,27 +458,27 @@ export default function EditStudentPage() {
                 <div className="relative">
                   <input
                     type="text"
-                    value={currentData.full_name}
-                    onChange={(e) => handleFieldChange("full_name", e.target.value)}
-                    onBlur={() => handleFieldBlur("full_name")}
+                    value={currentData.name}
+                    onChange={(e) => handleFieldChange("name", e.target.value)}
+                    onBlur={() => handleFieldBlur("name")}
                     className={`w-full px-4 py-2 bg-white border rounded-xl text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-colors ${
-                      isFieldModified("full_name")
+                      isFieldModified("name")
                         ? "border-amber-400 bg-amber-50/30"
-                        : errors.full_name
+                        : errors.name
                         ? "border-red-300"
                         : "border-gray-300"
                     }`}
                     placeholder="Enter full name"
                   />
-                  {isFieldModified("full_name") && (
+                  {isFieldModified("name") && (
                     <div className="absolute right-3 top-1/2 -translate-y-1/2 group">
                       <div className="w-2 h-2 bg-amber-400 rounded-full"></div>
                       {/* Tooltip */}
                       <div className="absolute right-0 top-8 w-48 p-2 bg-gray-900 text-white text-xs rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-10">
                         <p className="font-medium mb-1">Previous value:</p>
-                        <p className="text-gray-300 line-through">{getOldValue("full_name") || "Empty"}</p>
+                        <p className="text-gray-300 line-through">{getOldValue("name") || "Empty"}</p>
                         <button
-                          onClick={() => undoField("full_name")}
+                          onClick={() => undoField("name")}
                           className="mt-2 text-amber-400 hover:text-amber-300 flex items-center gap-1"
                         >
                           <RotateCcw className="w-3 h-3" />
@@ -488,10 +488,10 @@ export default function EditStudentPage() {
                     </div>
                   )}
                 </div>
-                {errors.full_name && (
+                {errors.name && (
                   <p className="mt-1 text-sm text-red-600 flex items-center gap-1">
                     <AlertCircle className="w-3 h-3" />
-                    {errors.full_name}
+                    {errors.name}
                   </p>
                 )}
               </div>
@@ -823,7 +823,7 @@ export default function EditStudentPage() {
         onConfirm={handleConfirmSave}
         onCancel={() => setShowChangeSummary(false)}
         changes={changesSummary}
-        studentName={currentData.full_name}
+        studentName={currentData.name}
         isSaving={saving}
       />
 

@@ -67,7 +67,7 @@ export interface StudentWithRelations extends Student {
   documents?: Document[]
   freelancer?: {
     id: string
-    full_name: string
+    name: string
     email: string
   }
 }
@@ -234,7 +234,7 @@ export interface AdminDashboardStats {
   recentApplications: ApplicationWithRelations[]
   topFreelancers: {
     freelancer_id: string
-    full_name: string
+    name: string
     total_students: number
     total_applications: number
     total_earnings: number

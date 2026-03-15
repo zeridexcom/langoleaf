@@ -6,7 +6,7 @@ import Fuse from "fuse.js";
 
 export interface DuplicateStudent {
   id: string;
-  full_name: string;
+  name: string;
   email: string;
   phone: string | null;
   program: string | null;
@@ -52,7 +52,7 @@ export function useDuplicateCheck() {
       // Fetch all existing students for this freelancer
       const { data: existingStudents, error } = await supabase
         .from("students")
-        .select("id, full_name, email, phone, program, university, status, created_at")
+        .select("id, name, email, phone, program, university, status, created_at")
         .eq("freelancer_id", user.id)
         .is("deleted_at", null);
 
@@ -78,7 +78,7 @@ export function useDuplicateCheck() {
       // Fuzzy name matching using Fuse.js
       const fullName = `${firstName} ${lastName}`.trim().toLowerCase();
       const fuseOptions = {
-        keys: ["full_name"],
+        keys: ["name"],
         threshold: 0.4, // 0 = exact match, 1 = match anything
         includeScore: true,
       };
@@ -181,25 +181,23 @@ export function useRealtimeDuplicateCheck() {
         
         if (!user) return;
 
-        let query = supabase
+        const { data: duplicate, error } = await supabase
           .from("students")
-          .select("id, full_name, email, phone, program, university, status, created_at")
+          .select("id, name, email, phone, program, university, status, created_at")
           .eq("email", email.toLowerCase())
           .eq("freelancer_id", user.id)
-          .is("deleted_at", null);
+          .is("deleted_at", null)
+          .maybeSingle();
 
-        if (excludeId) {
-          query = query.neq("id", excludeId);
-        }
-
-        const { data, error } = await query.single();
-
-        if (error || !data) {
+        if (error || !duplicate) {
+          setEmailStatus("available");
+          setDuplicateStudent(null);
+        } else if (excludeId && duplicate.id === excludeId) {
           setEmailStatus("available");
           setDuplicateStudent(null);
         } else {
           setEmailStatus("duplicate");
-          setDuplicateStudent(data);
+          setDuplicateStudent(duplicate as any);
         }
       } catch (error) {
         setEmailStatus("idle");
@@ -231,7 +229,7 @@ export function useRealtimeDuplicateCheck() {
         // Fetch all students and check phone match
         const { data, error } = await supabase
           .from("students")
-          .select("id, full_name, email, phone, program, university, status, created_at")
+          .select("id, name, email, phone, program, university, status, created_at")
           .eq("freelancer_id", user.id)
           .is("deleted_at", null);
 

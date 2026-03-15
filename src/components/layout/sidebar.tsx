@@ -23,6 +23,7 @@ import { cn } from "@/lib/utils/cn";
 import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import type { AdminDashboardStats, FreelancerDashboardStats } from "@/types/api";
 
 interface MenuItem {
   icon: React.ElementType;
@@ -53,6 +54,8 @@ interface SidebarProps {
   setMobileMenuOpen?: (open: boolean) => void;
 }
 
+import { useDashboard } from "@/hooks/useDashboard";
+
 export function Sidebar({ 
   isHovered, 
   setIsHovered,
@@ -62,6 +65,21 @@ export function Sidebar({
   const pathname = usePathname();
   const supabase = createClient();
   const [userRole, setUserRole] = useState<string | null>(null);
+  const { data: dashboardData } = useDashboard();
+
+  const totalEarnings = dashboardData && 'totalEarnings' in dashboardData 
+    ? (dashboardData as FreelancerDashboardStats).totalEarnings 
+    : dashboardData && 'totalRevenue' in dashboardData 
+      ? (dashboardData as AdminDashboardStats).totalRevenue 
+      : 0;
+      
+  const targetEarnings = 1500000; // 15L target
+  const progressPercentage = Math.min((totalEarnings / targetEarnings) * 100, 100);
+
+  // Function to format currency in Lakhs
+  const formatLakhs = (amount: number) => {
+    return (amount / 100000).toFixed(1) + "L";
+  };
 
   // Effectively expanded if hovered on desktop, or if mobile menu is open
   const isExpanded = isHovered || mobileMenuOpen;
@@ -213,17 +231,16 @@ export function Sidebar({
             "bg-primary/10 backdrop-blur-md border border-primary/20 p-4 rounded-3xl transition-all duration-300",
             !isExpanded && "p-2 border-transparent bg-transparent shadow-none"
           )}>
-            <p className={cn(
-              "text-[10px] font-black text-primary mb-2 uppercase tracking-widest transition-all duration-300",
-              isExpanded ? "opacity-100 h-auto" : "opacity-0 h-0 overflow-hidden"
-            )}>Target 2026</p>
-            <div className="h-2 w-full bg-black/5 rounded-full overflow-hidden shadow-inner">
-              <div className="h-full bg-primary rounded-full shadow-sm" style={{width: "75%"}}></div>
-            </div>
-            <p className={cn(
-              "text-[10px] text-gray-400 mt-2 font-black uppercase tracking-wider transition-all duration-300",
-              isExpanded ? "opacity-100 h-auto" : "opacity-0 h-0 overflow-hidden"
-            )}>₹12.5L / ₹15L</p>
+                <div className="flex justify-between items-end mb-1">
+                  <span className="text-[10px] font-black uppercase tracking-wider text-gray-500">Target 2026</span>
+                  <span className="text-[10px] font-black text-primary">₹{formatLakhs(totalEarnings)} / ₹{formatLakhs(targetEarnings)}</span>
+                </div>
+                <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden border border-gray-200">
+                  <div 
+                    className="h-full bg-primary transition-all duration-1000 ease-out"
+                    style={{ width: `${progressPercentage}%` }}
+                  />
+                </div>
           </div>
         </div>
 

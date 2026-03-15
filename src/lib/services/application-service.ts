@@ -219,9 +219,9 @@ export class ApplicationService {
    * List applications with pagination, filtering, and sorting
    */
   static async listApplications(
-    freelancerId: string,
-    filters: ApplicationFilters,
-    sort: ApplicationSort,
+    freelancerId?: string,
+    filters: ApplicationFilters = {},
+    sort: ApplicationSort = { sortBy: 'created_at', sortOrder: 'desc' },
     page: number = 1,
     limit: number = 20
   ): Promise<PaginatedApplicationsResponse> {
@@ -236,7 +236,7 @@ export class ApplicationService {
         *,
         student:students!inner(
           id,
-          full_name,
+          name,
           email,
           phone,
           freelancer_id
@@ -244,12 +244,16 @@ export class ApplicationService {
         university:universities(id, name, country),
         program:programs(id, name, degree_type)
       `, { count: 'exact' })
-      .eq('student.freelancer_id', freelancerId)
       .is('deleted_at', null)
+
+    // If freelancerId provided, ensure they own this application
+    if (freelancerId) {
+      query = query.eq('student.freelancer_id', freelancerId)
+    }
 
     // Apply filters
     if (filters.search) {
-      query = query.or(`student.full_name.ilike.%${filters.search}%,university.name.ilike.%${filters.search}%`)
+      query = query.or(`student.name.ilike.%${filters.search}%,university.name.ilike.%${filters.search}%`)
     }
 
     if (filters.status && filters.status.length > 0) {

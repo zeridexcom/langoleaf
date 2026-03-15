@@ -70,11 +70,11 @@ function ApplicationsContent() {
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
             <span className="text-primary font-medium">
-              {(app.student as any)?.full_name?.charAt(0) || "?"}
+              {(app.student as any)?.name?.charAt(0) || "?"}
             </span>
           </div>
           <div>
-            <p className="text-sm font-medium text-gray-900">{(app.student as any)?.full_name}</p>
+            <p className="text-sm font-medium text-gray-900">{(app.student as any)?.name}</p>
             <p className="text-xs text-gray-500">{app.student?.email}</p>
           </div>
         </div>

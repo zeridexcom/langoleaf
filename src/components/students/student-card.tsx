@@ -46,7 +46,7 @@ export function StudentCard({ student, isSelected, onSelect, onDelete }: Student
           )}
           <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
             <span className="text-primary font-semibold text-lg">
-              {student.full_name?.charAt(0).toUpperCase() || "?"}
+              {student.name?.charAt(0).toUpperCase() || "?"}
             </span>
           </div>
         </div>
@@ -59,7 +59,7 @@ export function StudentCard({ student, isSelected, onSelect, onDelete }: Student
 
       {/* Student Info */}
       <div className="mb-4">
-        <h3 className="font-semibold text-gray-900 mb-1">{student.full_name}</h3>
+        <h3 className="font-semibold text-gray-900 mb-1">{student.name}</h3>
         <div className="flex items-center gap-2 text-sm text-gray-500 mb-2">
           <Mail className="w-3.5 h-3.5" />
           {student.email}

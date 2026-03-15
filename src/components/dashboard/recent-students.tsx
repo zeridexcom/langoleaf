@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils/cn";
 
 interface Student {
   id: string;
-  full_name: string;
+  name: string;
   email: string;
   status: string;
   created_at: string;
@@ -72,7 +72,7 @@ export function RecentStudents({ students = [] }: RecentStudentsProps) {
               </div>
               <div className="flex-1 min-w-0">
                 <h4 className="text-sm font-black text-gray-900 truncate">
-                  {student.full_name}
+                  {student.name}
                 </h4>
                 <p className="text-xs text-gray-500 truncate font-medium">
                   {student.email}

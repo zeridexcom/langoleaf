@@ -90,8 +90,11 @@ export interface Database {
           id: string
           freelancer_id: string
           full_name: string
+          name: string
           email: string | null
           phone: string
+          program: string | null
+          university: string | null
           date_of_birth: string | null
           gender: string | null
           nationality: string | null
@@ -118,9 +121,11 @@ export interface Database {
         Insert: {
           id?: string
           freelancer_id: string
-          full_name: string
+          name: string
           email?: string | null
           phone: string
+          program?: string | null
+          university?: string | null
           date_of_birth?: string | null
           gender?: string | null
           nationality?: string | null
@@ -147,9 +152,11 @@ export interface Database {
         Update: {
           id?: string
           freelancer_id?: string
-          full_name?: string
+          name?: string
           email?: string | null
           phone?: string
+          program?: string | null
+          university?: string | null
           date_of_birth?: string | null
           gender?: string | null
           nationality?: string | null

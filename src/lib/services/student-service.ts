@@ -238,7 +238,7 @@ export class StudentService {
 
     // Apply filters
     if (filters.search) {
-      query = query.or(`full_name.ilike.%${filters.search}%,email.ilike.%${filters.search}%,phone.ilike.%${filters.search}%`)
+      query = query.or(`name.ilike.%${filters.search}%,email.ilike.%${filters.search}%,phone.ilike.%${filters.search}%`)
     }
 
     if (filters.status && filters.status.length > 0) {
@@ -263,7 +263,7 @@ export class StudentService {
     }
 
     // Apply sorting
-    const orderColumn = sort.sortBy === 'full_name' ? 'full_name' : sort.sortBy
+    const orderColumn = sort.sortBy === 'name' ? 'name' : sort.sortBy
     query = query.order(orderColumn, { ascending: sort.sortOrder === 'asc' })
 
     // Apply pagination

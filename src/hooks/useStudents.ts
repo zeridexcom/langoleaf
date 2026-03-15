@@ -5,7 +5,7 @@ import { UserRole } from "@/types/permissions";
 // Types
 export interface Student {
   id: string;
-  full_name: string;
+  name: string;
   email: string;
   phone: string | null;
   program: string | null;

@@ -298,7 +298,7 @@ export const studentFiltersSchema = z.object({
   freelancerId: z.string().uuid().optional(),
   page: z.number().int().min(1).default(1),
   limit: z.number().int().min(1).max(100).default(20),
-  sortBy: z.enum(["created_at", "updated_at", "full_name", "status"]).default("created_at"),
+  sortBy: z.enum(["created_at", "updated_at", "name", "status"]).default("created_at"),
   sortOrder: z.enum(["asc", "desc"]).default("desc"),
 })
 

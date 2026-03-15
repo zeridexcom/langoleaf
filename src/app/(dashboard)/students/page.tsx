@@ -294,11 +294,11 @@ function StudentsContent() {
                             >
                               <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
                                 <span className="text-primary font-medium">
-                                  {student.full_name?.charAt(0) || "?"}
+                                  {student.name?.charAt(0) || "?"}
                                 </span>
                               </div>
                               <div>
-                                <p className="text-sm font-medium text-gray-900">{student.full_name}</p>
+                                <p className="text-sm font-medium text-gray-900">{student.name}</p>
                                 <p className="text-xs text-gray-500">{student.email}</p>
                               </div>
                             </a>
@@ -319,7 +319,7 @@ function StudentsContent() {
                         <td className="px-6 py-4 text-right">
                           <StudentActions 
                             studentId={student.id} 
-                            studentName={student.full_name}
+                            studentName={student.name}
                             onDelete={() => refetch()}
                             isSelected={selectedIds.includes(student.id)}
                             onSelect={(selected) => toggleSelection(student.id, selected)}
