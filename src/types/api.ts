@@ -241,9 +241,36 @@ export interface AdminDashboardStats {
   }[]
 }
 
-// Commission API Types
+// Commission & Payout API Types
 export type Commission = Database['public']['Tables']['commissions']['Row']
 export type CommissionInsert = Database['public']['Tables']['commissions']['Insert']
+export type CommissionUpdate = Database['public']['Tables']['commissions']['Update']
+
+export type Payout = Database['public']['Tables']['payouts']['Row']
+export type PayoutInsert = Database['public']['Tables']['payouts']['Insert']
+export type PayoutUpdate = Database['public']['Tables']['payouts']['Update']
+
+export interface PayoutWithCommissions extends Payout {
+  commissions?: Commission[]
+  freelancer?: {
+    id: string
+    full_name: string
+    email: string
+  }
+}
+
+export interface CommissionFilters {
+  status?: string[]
+  freelancerId?: string
+  applicationId?: string
+  dateFrom?: string
+  dateTo?: string
+}
+
+export interface PaginatedCommissionsResponse {
+  commissions: Commission[]
+  pagination: ApiMeta
+}
 
 // Activity Log Types
 export type ActivityLog = Database['public']['Tables']['activity_log']['Row']

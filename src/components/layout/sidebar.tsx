@@ -18,6 +18,7 @@ import {
   TrendingUp,
   X,
   Zap,
+  BarChart3,
 } from "lucide-react";
 import { cn } from "@/lib/utils/cn";
 import { useState, useEffect } from "react";
@@ -35,6 +36,7 @@ interface MenuItem {
 
 const allMenuItems: MenuItem[] = [
   { icon: LayoutDashboard, label: "Dashboard", href: "/dashboard" },
+  { icon: BarChart3, label: "Analytics", href: "/analytics" },
   { icon: Rocket, label: "Campaigns", href: "/campaigns" },
   { icon: School, label: "Course Hub", href: "/course-hub" },
   { icon: Users, label: "Students", href: "/students" },

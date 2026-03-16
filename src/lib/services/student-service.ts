@@ -232,7 +232,11 @@ export class StudentService {
           program_id
         )
       `, { count: 'exact' })
-      .eq('freelancer_id', freelancerId)
+
+    // Apply freelancer filter if provided
+    if (freelancerId) {
+      query = query.eq('freelancer_id', freelancerId)
+    }
 
     // Apply filters
     if (filters.search) {
@@ -274,10 +278,15 @@ export class StudentService {
     }
 
     // Get filter options
-    const { data: filterOptions } = await supabase
+    let optionsQuery = supabase
       .from('students')
       .select('source, tags')
-      .eq('freelancer_id', freelancerId)
+    
+    if (freelancerId) {
+      optionsQuery = optionsQuery.eq('freelancer_id', freelancerId)
+    }
+
+    const { data: filterOptions } = await optionsQuery
 
     const sources = Array.from(new Set(filterOptions?.map(s => s.source).filter(Boolean)))
     const allTags = Array.from(new Set(filterOptions?.flatMap(s => s.tags || []).filter(Boolean)))

@@ -61,6 +61,7 @@ export interface Database {
           role: UserRole
           phone: string | null
           avatar_url: string | null
+          team_id: string | null
           created_at: string
           updated_at: string
         }
@@ -71,6 +72,7 @@ export interface Database {
           role?: UserRole
           phone?: string | null
           avatar_url?: string | null
+          team_id?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -81,6 +83,7 @@ export interface Database {
           role?: UserRole
           phone?: string | null
           avatar_url?: string | null
+          team_id?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -525,6 +528,7 @@ export interface Database {
           amount: number
           status: CommissionStatus
           invoice_number: string | null
+          payout_id: string | null
           paid_at: string | null
           notes: string | null
           created_at: string
@@ -537,6 +541,7 @@ export interface Database {
           amount: number
           status?: CommissionStatus
           invoice_number?: string | null
+          payout_id?: string | null
           paid_at?: string | null
           notes?: string | null
           created_at?: string
@@ -549,8 +554,76 @@ export interface Database {
           amount?: number
           status?: CommissionStatus
           invoice_number?: string | null
+          payout_id?: string | null
           paid_at?: string | null
           notes?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+      }
+      payouts: {
+        Row: {
+          id: string
+          freelancer_id: string
+          amount: number
+          status: 'pending' | 'processing' | 'paid' | 'failed'
+          reference_number: string | null
+          notes: string | null
+          processed_at: string | null
+          paid_at: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          freelancer_id: string
+          amount: number
+          status: 'pending' | 'processing' | 'paid' | 'failed'
+          reference_number?: string | null
+          notes?: string | null
+          processed_at?: string | null
+          paid_at?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          freelancer_id?: string
+          amount?: number
+          status?: 'pending' | 'processing' | 'paid' | 'failed'
+          reference_number?: string | null
+          notes?: string | null
+          processed_at?: string | null
+          paid_at?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+      }
+      teams: {
+        Row: {
+          id: string
+          name: string
+          manager_id: string
+          description: string | null
+          is_active: boolean
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          name: string
+          manager_id: string
+          description?: string | null
+          is_active?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          name?: string
+          manager_id?: string
+          description?: string | null
+          is_active?: boolean
           created_at?: string
           updated_at?: string
         }

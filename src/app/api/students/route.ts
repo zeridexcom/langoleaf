@@ -109,12 +109,12 @@ export async function GET(request: Request) {
 
     const { page, limit, sortBy, sortOrder, search, status, program, university, source, tags, dateFrom, dateTo, freelancerId } = queryResult.data;
 
-    // Check if user is admin
-    const isAdmin = profile.role === "admin" || profile.role === "super_admin";
-
+    // Check if user is admin or manager
+    const isElevated = ["admin", "super_admin", "manager"].includes(profile.role);
+    
     // Use StudentService for fetching students
     const result = await StudentService.listStudents(
-      isAdmin ? (freelancerId || undefined) : profile.id,
+      isElevated ? (freelancerId || undefined) : profile.id,
       {
         search,
         status,
