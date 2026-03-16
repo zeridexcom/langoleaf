@@ -1,83 +1,95 @@
 "use client";
 
-import { useState } from "react";
-import { Bell, Check, Trash2, UserPlus, FileCheck, Coins, Award, AlertCircle, CheckCircle } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Bell, Check, Trash2, UserPlus, FileCheck, Coins, Award, AlertCircle, CheckCircle, Loader2 } from "lucide-react";
+import { createClient } from "@/lib/supabase/client";
+import { toast } from "sonner";
+import { formatDistanceToNow } from "date-fns";
 
-const notifications = [
-  {
-    id: 1,
-    type: "student_added",
-    title: "New Student Added",
-    message: "Rahul Sharma has been successfully added to your leads.",
-    time: "2 hours ago",
-    read: false,
-    icon: UserPlus,
-    color: "text-primary",
-    bgColor: "bg-primary/10",
-  },
-  {
-    id: 2,
-    type: "application_submitted",
-    title: "Application Submitted",
-    message: "Application for Priya Patel has been submitted to IIT Delhi.",
-    time: "5 hours ago",
-    read: false,
-    icon: FileCheck,
-    color: "text-cyan-600 dark:text-cyan-400",
-    bgColor: "bg-cyan-100 dark:bg-cyan-500/10",
-  },
-  {
-    id: 3,
-    type: "coins_earned",
-    title: "Coins Earned!",
-    message: "You earned 500 coins for successful enrollment of Amit Kumar.",
-    time: "1 day ago",
-    read: true,
-    icon: Coins,
-    color: "text-amber-600 dark:text-amber-400",
-    bgColor: "bg-amber-100 dark:bg-amber-500/10",
-  },
-  {
-    id: 4,
-    type: "badge_earned",
-    title: "New Badge Unlocked",
-    message: "Congratulations! You've earned the 'Rising Star' badge.",
-    time: "2 days ago",
-    read: true,
-    icon: Award,
-    color: "text-emerald-600 dark:text-emerald-400",
-    bgColor: "bg-emerald-100 dark:bg-emerald-500/10",
-  },
-  {
-    id: 5,
-    type: "action_required",
-    title: "Action Required",
-    message: "Documents are pending for Sneha Gupta. Please follow up.",
-    time: "3 days ago",
-    read: true,
-    icon: AlertCircle,
-    color: "text-amber-600 dark:text-amber-400",
-    bgColor: "bg-amber-100 dark:bg-amber-500/10",
-  },
-  {
-    id: 6,
-    type: "application_approved",
-    title: "Application Approved",
-    message: "Great news! Application for Vikram Singh has been approved.",
-    time: "4 days ago",
-    read: true,
-    icon: CheckCircle,
-    color: "text-emerald-600 dark:text-emerald-400",
-    bgColor: "bg-emerald-100 dark:bg-emerald-500/10",
-  },
-];
+const iconMap: Record<string, any> = {
+  student_added: { icon: UserPlus, color: "text-primary", bgColor: "bg-primary/10" },
+  application_submitted: { icon: FileCheck, color: "text-cyan-600", bgColor: "bg-cyan-100" },
+  coins_earned: { icon: Coins, color: "text-amber-600", bgColor: "bg-amber-100" },
+  badge_earned: { icon: Award, color: "text-emerald-600", bgColor: "bg-emerald-100" },
+  action_required: { icon: AlertCircle, color: "text-amber-600", bgColor: "bg-amber-100" },
+  application_approved: { icon: CheckCircle, color: "text-emerald-600", bgColor: "bg-emerald-100" },
+  default: { icon: Bell, color: "text-gray-600", bgColor: "bg-gray-100" }
+};
 
 export default function NotificationsPage() {
   const [filter, setFilter] = useState<"all" | "unread">("all");
+  const [loading, setLoading] = useState(true);
+  const [notifications, setNotifications] = useState<any[]>([]);
+  const supabase = createClient();
 
-  const filteredNotifications = filter === "unread" 
-    ? notifications.filter(n => !n.read) 
-    : notifications;
+  useEffect(() => {
+    fetchNotifications();
+  }, [filter]);
+
+  const fetchNotifications = async () => {
+    setLoading(true);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      let query = supabase
+        .from("notifications")
+        .select("*")
+        .eq("freelancer_id", user.id)
+        .order("created_at", { ascending: false });
+
+      if (filter === "unread") {
+        query = query.eq("read", false);
+      }
+
+      const { data, error } = await query;
+
+      if (error) throw error;
+      setNotifications(data || []);
+    } catch (error) {
+      console.error("Error fetching notifications:", error);
+      toast.error("Failed to load notifications");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const markAllRead = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const { error } = await supabase
+        .from("notifications")
+        .update({ read: true })
+        .eq("freelancer_id", user.id)
+        .eq("read", false);
+
+      if (error) throw error;
+      toast.success("All notifications marked as read");
+      fetchNotifications();
+    } catch (error) {
+      toast.error("Failed to update notifications");
+    }
+  };
+
+  const clearAll = async () => {
+    try {
+       const { data: { user } } = await supabase.auth.getUser();
+       if (!user) return;
+
+       const { error } = await supabase
+         .from("notifications")
+         .delete()
+         .eq("freelancer_id", user.id);
+
+       if (error) throw error;
+       toast.success("All notifications cleared");
+       setNotifications([]);
+    } catch (error) {
+      toast.error("Failed to clear notifications");
+    }
+  };
 
   const unreadCount = notifications.filter(n => !n.read).length;
 
@@ -86,46 +98,52 @@ export default function NotificationsPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Notifications</h1>
-          <p className="text-gray-500 dark:text-gray-400 mt-1">
-            You have {unreadCount} unread notification{unreadCount !== 1 ? 's' : ''}
+          <h1 className="text-2xl font-black text-gray-900 dark:text-white uppercase tracking-tight">Intelligence Log</h1>
+          <p className="text-gray-500 dark:text-gray-400 mt-1 font-medium text-sm">
+            You have {unreadCount} unread signal{unreadCount !== 1 ? 's' : ''} detected
           </p>
         </div>
         <div className="flex items-center gap-3">
-          <button className="flex items-center gap-2 px-4 py-2 text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors">
+          <button 
+            onClick={markAllRead}
+            className="flex items-center gap-2 px-4 py-2 text-xs text-gray-500 font-black uppercase tracking-widest hover:text-primary transition-colors hover:bg-primary/5 rounded-xl border border-transparent hover:border-primary/10"
+          >
             <Check className="w-4 h-4" />
-            Mark all as read
+            Clear Pending
           </button>
-          <button className="flex items-center gap-2 px-4 py-2 text-sm text-red-500 hover:text-red-600 dark:hover:text-red-400 transition-colors">
+          <button 
+            onClick={clearAll}
+            className="flex items-center gap-2 px-4 py-2 text-xs text-red-500 font-black uppercase tracking-widest hover:bg-red-50 rounded-xl transition-colors"
+          >
             <Trash2 className="w-4 h-4" />
-            Clear all
+            Wipe Stream
           </button>
         </div>
       </div>
 
       {/* Filter Tabs */}
-      <div className="flex items-center gap-2 border-b border-gray-200 dark:border-gray-700">
+      <div className="flex items-center gap-2 border-b border-gray-100 dark:border-gray-800">
         <button
           onClick={() => setFilter("all")}
-          className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors ${
+          className={`px-6 py-3 text-xs font-black uppercase tracking-[0.2em] border-b-2 transition-all ${
             filter === "all"
               ? "text-primary border-primary"
-              : "text-gray-500 dark:text-gray-400 border-transparent hover:text-gray-700 dark:hover:text-gray-200"
+              : "text-gray-400 border-transparent hover:text-gray-600"
           }`}
         >
-          All
+          All Activity
         </button>
         <button
           onClick={() => setFilter("unread")}
-          className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors ${
+          className={`px-6 py-3 text-xs font-black uppercase tracking-[0.2em] border-b-2 transition-all flex items-center gap-2 ${
             filter === "unread"
               ? "text-primary border-primary"
-              : "text-gray-500 dark:text-gray-400 border-transparent hover:text-gray-700 dark:hover:text-gray-200"
+              : "text-gray-400 border-transparent hover:text-gray-600"
           }`}
         >
-          Unread
+          Live Signals
           {unreadCount > 0 && (
-            <span className="ml-2 px-2 py-0.5 bg-primary text-white text-xs rounded-full">
+            <span className="bg-primary text-white px-1.5 py-0.5 rounded-full text-[8px] font-black">
               {unreadCount}
             </span>
           )}
@@ -134,37 +152,46 @@ export default function NotificationsPage() {
 
       {/* Notifications List */}
       <div className="space-y-3">
-        {filteredNotifications.map((notification) => (
-          <div
-            key={notification.id}
-            className={`flex items-start gap-4 p-4 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors ${
-              !notification.read ? "border-l-4 border-l-primary" : ""
-            }`}
-          >
-            <div className={`p-3 rounded-xl ${notification.bgColor} flex-shrink-0`}>
-              <notification.icon className={`w-5 h-5 ${notification.color}`} />
-            </div>
-            <div className="flex-1 min-w-0">
-              <div className="flex items-start justify-between gap-4">
-                <div>
-                  <h3 className={`text-sm font-medium ${!notification.read ? "text-gray-900 dark:text-white" : "text-gray-600 dark:text-gray-300"}`}>
-                    {notification.title}
-                  </h3>
-                  <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{notification.message}</p>
-                  <p className="text-xs text-gray-400 dark:text-gray-500 mt-2">{notification.time}</p>
+        {loading ? (
+             <div className="flex justify-center py-20">
+                <Loader2 className="w-8 h-8 text-primary animate-spin" />
+             </div>
+        ) : notifications.length > 0 ? (
+          notifications.map((n) => {
+            const config = iconMap[n.type] || iconMap.default;
+            return (
+              <div
+                key={n.id}
+                className={`flex items-start gap-4 p-5 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl hover:bg-gray-50/50 transition-all group ${
+                  !n.read ? "border-l-4 border-l-primary shadow-sm" : "opacity-80"
+                }`}
+              >
+                <div className={`p-3 rounded-xl ${config.bgColor} flex-shrink-0 transition-transform group-hover:scale-110`}>
+                  <config.icon className={`w-5 h-5 ${config.color}`} />
                 </div>
-                {!notification.read && (
-                  <span className="w-2 h-2 bg-primary rounded-full flex-shrink-0 mt-1" />
-                )}
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-start justify-between gap-4">
+                    <div>
+                      <h3 className={`text-sm font-black ${!n.read ? "text-gray-900 dark:text-white" : "text-gray-600 dark:text-gray-400"}`}>
+                        {n.title}
+                      </h3>
+                      <p className="text-sm text-gray-500 font-medium mt-1 leading-relaxed">{n.message}</p>
+                      <p className="text-[10px] text-gray-400 font-black uppercase tracking-wider mt-3">
+                        {formatDistanceToNow(new Date(n.created_at), { addSuffix: true })}
+                      </p>
+                    </div>
+                    {!n.read && (
+                      <span className="w-2 h-2 bg-primary rounded-full flex-shrink-0 mt-1.5 animate-pulse" />
+                    )}
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
-        ))}
-
-        {filteredNotifications.length === 0 && (
-          <div className="text-center py-12">
-            <Bell className="w-12 h-12 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
-            <p className="text-gray-500 dark:text-gray-400">No notifications found</p>
+            );
+          })
+        ) : (
+          <div className="text-center py-20">
+            <Bell className="w-12 h-12 text-gray-200 dark:text-gray-700 mx-auto mb-4" />
+            <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.3em]">No activity signals found</p>
           </div>
         )}
       </div>
