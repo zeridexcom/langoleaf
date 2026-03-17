@@ -12,7 +12,8 @@ import { RecentApplications } from "@/components/dashboard/recent-applications";
 import { EarningsSummary } from "@/components/dashboard/earnings-summary";
 import { ActivityFeed } from "@/components/dashboard/activity-feed";
 import { QuickActions } from "@/components/dashboard/quick-actions";
-import { LayoutDashboard, Users, FileText, Wallet, TrendingUp, UserPlus } from "lucide-react";
+import { LayoutDashboard, Users, FileText, Wallet, TrendingUp, UserPlus, ClipboardList, Star } from "lucide-react";
+import Link from "next/link";
 
 interface DashboardData {
   stats: {
@@ -43,10 +44,29 @@ const EMPTY_DASHBOARD_DATA: DashboardData = {
 export function DashboardContent() {
   const [data, setData] = useState<DashboardData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [pendingTasksCount, setPendingTasksCount] = useState(0);
 
   useEffect(() => {
     loadDashboardData();
+    loadPendingTasks();
   }, []);
+
+  const loadPendingTasks = async () => {
+    try {
+      const response = await fetch("/api/tasks", {
+        method: "GET",
+        credentials: "include",
+        cache: "no-store",
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        setPendingTasksCount(result.pendingCount || 0);
+      }
+    } catch (error) {
+      console.error("Error loading pending tasks:", error);
+    }
+  };
 
   const loadDashboardData = async () => {
     try {
@@ -151,6 +171,31 @@ export function DashboardContent() {
           />
         </div>
       </div>
+
+      {/* Pending Tasks Alert */}
+      {pendingTasksCount > 0 && (
+        <Link href="/tasks/push-review">
+          <div className="flex items-center justify-between p-4 bg-gradient-to-r from-amber-500/10 to-orange-500/10 border border-amber-500/20 rounded-xl hover:from-amber-500/20 hover:to-orange-500/20 transition-colors cursor-pointer">
+            <div className="flex items-center gap-4">
+              <div className="p-3 bg-amber-500/20 rounded-xl">
+                <Star className="w-6 h-6 text-amber-500" />
+              </div>
+              <div>
+                <p className="font-semibold text-gray-900 dark:text-white">
+                  {pendingTasksCount} Task{pendingTasksCount > 1 ? "s" : ""} Pending
+                </p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">
+                  Complete tasks to earn rewards! Push Review task available.
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2 text-amber-600 dark:text-amber-400">
+              <span className="text-sm font-medium">Earn ₹20</span>
+              <ClipboardList className="w-5 h-5" />
+            </div>
+          </div>
+        </Link>
+      )}
 
       {/* Stats Overview */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">

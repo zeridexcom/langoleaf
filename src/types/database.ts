@@ -549,6 +549,88 @@ export interface Database {
           updated_at?: string
         }
       }
+      tasks: {
+        Row: {
+          id: string
+          type: string
+          title: string
+          description: string | null
+          reward_amount: number
+          reward_currency: string
+          is_active: boolean
+          auto_assign: boolean
+          target_url: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          type: string
+          title: string
+          description?: string | null
+          reward_amount?: number
+          reward_currency?: string
+          is_active?: boolean
+          auto_assign?: boolean
+          target_url?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          type?: string
+          title?: string
+          description?: string | null
+          reward_amount?: number
+          reward_currency?: string
+          is_active?: boolean
+          auto_assign?: boolean
+          target_url?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+      }
+      task_submissions: {
+        Row: {
+          id: string
+          task_id: string
+          freelancer_id: string
+          submission_data: Json
+          status: string
+          reviewed_by: string | null
+          reviewed_at: string | null
+          review_notes: string | null
+          reward_credited: boolean
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          task_id: string
+          freelancer_id: string
+          submission_data?: Json
+          status?: string
+          reviewed_by?: string | null
+          reviewed_at?: string | null
+          review_notes?: string | null
+          reward_credited?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          task_id?: string
+          freelancer_id?: string
+          submission_data?: Json
+          status?: string
+          reviewed_by?: string | null
+          reviewed_at?: string | null
+          review_notes?: string | null
+          reward_credited?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+      }
     }
     Functions: {
       get_freelancer_stats: {

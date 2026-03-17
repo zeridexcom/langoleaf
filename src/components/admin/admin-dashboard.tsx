@@ -5,7 +5,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { SystemAnalytics } from "./system-analytics";
 import { FreelancerList } from "./freelancer-list";
 import { StudentAssignment } from "./student-assignment";
-import { Shield, Users, BarChart3, UserCog } from "lucide-react";
+import { TaskVerification } from "./task-verification";
+import { Shield, Users, BarChart3, UserCog, ClipboardList } from "lucide-react";
 import { useAdminAccess } from "@/hooks/usePermissions";
 
 export function AdminDashboard() {
@@ -68,6 +69,13 @@ export function AdminDashboard() {
             <UserCog className="w-4 h-4 mr-2" />
             Student Assignment
           </TabsTrigger>
+          <TabsTrigger 
+            value="tasks"
+            className="data-[state=active]:bg-primary data-[state=active]:text-white rounded-lg px-4 py-2 text-sm font-bold"
+          >
+            <ClipboardList className="w-4 h-4 mr-2" />
+            Task Verification
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="overview" className="mt-6">
@@ -80,6 +88,10 @@ export function AdminDashboard() {
 
         <TabsContent value="students" className="mt-6">
           <StudentAssignment />
+        </TabsContent>
+
+        <TabsContent value="tasks" className="mt-6">
+          <TaskVerification />
         </TabsContent>
       </Tabs>
     </div>
