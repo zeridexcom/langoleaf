@@ -1,12 +1,7 @@
 export const dynamic = "force-dynamic";
 
-import { AdminDashboard } from "@/components/admin/admin-dashboard";
-import { AdminRedirect } from "@/components/auth/role-redirect";
+import { AdminDashboard } from "@/components/admin/admin-dashboard-new";
 
 export default function AdminPage() {
-  return (
-    <AdminRedirect>
-      <AdminDashboard />
-    </AdminRedirect>
-  );
+  return <AdminDashboard />;
 }

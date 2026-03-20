@@ -102,3 +102,81 @@ export async function PATCH(request: Request) {
     );
   }
 }
+// Send notification (Admin Only)
+export async function POST(request: Request) {
+  try {
+    const supabase = createRouteHandlerClient({ cookies });
+
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+
+    if (!session) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    // Check if user is admin
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("role")
+      .eq("id", session.user.id)
+      .single();
+
+    if (!profile || (profile.role !== "admin" && profile.role !== "super_admin")) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
+
+    const { title, message, type = "system", data = {} } = await request.json();
+
+    if (!title || !message) {
+      return NextResponse.json(
+        { error: "Title and message are required" },
+        { status: 400 }
+      );
+    }
+
+    // Get all freelancers
+    const { data: freelancers, error: freelancersError } = await supabase
+      .from("profiles")
+      .select("id")
+      .eq("role", "freelancer");
+
+    if (freelancersError) {
+      console.error("Error fetching freelancers:", freelancersError);
+      return NextResponse.json(
+        { error: "Failed to fetch freelancers" },
+        { status: 500 }
+      );
+    }
+
+    // Create notifications for all freelancers
+    const newNotifications = freelancers.map(f => ({
+      freelancer_id: f.id,
+      title,
+      message,
+      type,
+      data,
+      is_read: false
+    }));
+
+    const { error: insertError } = await supabase
+      .from("notifications")
+      .insert(newNotifications);
+
+    if (insertError) {
+      console.error("Error inserting notifications:", insertError);
+      return NextResponse.json(
+        { error: "Failed to send notifications" },
+        { status: 500 }
+      );
+    }
+
+    return NextResponse.json({ success: true, count: newNotifications.length });
+  } catch (error) {
+    console.error("Notifications POST error:", error);
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    );
+  }
+}

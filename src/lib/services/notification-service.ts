@@ -4,13 +4,13 @@ import { AppError, handleSupabaseError } from "@/lib/utils/error";
 // Types
 export interface Notification {
   id: string;
-  user_id: string;
+  freelancer_id: string;
   title: string;
   message: string;
   type: NotificationType;
-  read: boolean;
+  is_read: boolean;
   link?: string;
-  metadata?: Record<string, any>;
+  data?: Record<string, any>;
   created_at: string;
   updated_at: string;
 }
@@ -26,15 +26,18 @@ export type NotificationType =
   | "coins_earned"
   | "welcome"
   | "system"
-  | "general";
+  | "general"
+  | "task_assigned"
+  | "task_approved"
+  | "task_rejected";
 
 export interface CreateNotificationInput {
-  user_id: string;
+  freelancer_id: string;
   title: string;
   message: string;
   type: NotificationType;
   link?: string;
-  metadata?: Record<string, any>;
+  data?: Record<string, any>;
 }
 
 export interface NotificationPreferences {
@@ -64,13 +67,13 @@ export async function createNotification(
     const { data, error } = await supabase
       .from("notifications")
       .insert({
-        user_id: input.user_id,
+        freelancer_id: input.freelancer_id,
         title: input.title,
         message: input.message,
         type: input.type,
         link: input.link,
-        metadata: input.metadata,
-        read: false,
+        data: input.data,
+        is_read: false,
       })
       .select()
       .single();
@@ -102,11 +105,11 @@ export async function getNotifications(
     let query = supabase
       .from("notifications")
       .select("*", { count: "exact" })
-      .eq("user_id", userId)
+      .eq("freelancer_id", userId)
       .order("created_at", { ascending: false });
 
     if (unreadOnly) {
-      query = query.eq("read", false);
+      query = query.eq("is_read", false);
     }
 
     // Apply pagination
@@ -122,8 +125,8 @@ export async function getNotifications(
     const { count: unreadCount, error: unreadError } = await supabase
       .from("notifications")
       .select("*", { count: "exact", head: true })
-      .eq("user_id", userId)
-      .eq("read", false);
+      .eq("freelancer_id", userId)
+      .eq("is_read", false);
 
     if (unreadError) {
       console.error("Error fetching unread count:", unreadError);
@@ -149,9 +152,9 @@ export async function markAsRead(
 
     const { error } = await supabase
       .from("notifications")
-      .update({ read: true })
+      .update({ is_read: true })
       .eq("id", notificationId)
-      .eq("user_id", userId);
+      .eq("freelancer_id", userId);
 
     if (error) {
       throw new AppError("INTERNAL_ERROR", "Failed to mark notification as read");
@@ -168,9 +171,9 @@ export async function markAllAsRead(userId: string): Promise<void> {
 
     const { error } = await supabase
       .from("notifications")
-      .update({ read: true })
-      .eq("user_id", userId)
-      .eq("read", false);
+      .update({ is_read: true })
+      .eq("freelancer_id", userId)
+      .eq("is_read", false);
 
     if (error) {
       throw new AppError("INTERNAL_ERROR", "Failed to mark all notifications as read");
@@ -192,7 +195,7 @@ export async function deleteNotification(
       .from("notifications")
       .delete()
       .eq("id", notificationId)
-      .eq("user_id", userId);
+      .eq("freelancer_id", userId);
 
     if (error) {
       throw new AppError("INTERNAL_ERROR", "Failed to delete notification");
@@ -261,12 +264,12 @@ export async function notifyStudentAssigned(
   studentId: string
 ): Promise<Notification> {
   return createNotification({
-    user_id: freelancerId,
+    freelancer_id: freelancerId,
     title: "New Student Assigned",
     message: `${studentName} has been assigned to you.`,
     type: "student_assigned",
     link: `/students/${studentId}`,
-    metadata: { student_id: studentId, student_name: studentName },
+    data: { student_id: studentId, student_name: studentName },
   });
 }
 
@@ -276,12 +279,12 @@ export async function notifyStudentCreated(
   studentId: string
 ): Promise<Notification> {
   return createNotification({
-    user_id: freelancerId,
+    freelancer_id: freelancerId,
     title: "Student Created",
     message: `${studentName} has been successfully added to your leads.`,
     type: "student_created",
     link: `/students/${studentId}`,
-    metadata: { student_id: studentId, student_name: studentName },
+    data: { student_id: studentId, student_name: studentName },
   });
 }
 
@@ -293,12 +296,12 @@ export async function notifyApplicationStatusChanged(
   newStatus: string
 ): Promise<Notification> {
   return createNotification({
-    user_id: freelancerId,
+    freelancer_id: freelancerId,
     title: "Application Status Updated",
     message: `${studentName}'s application status changed from ${oldStatus} to ${newStatus}.`,
     type: "application_status_changed",
     link: `/applications/${applicationId}`,
-    metadata: {
+    data: {
       application_id: applicationId,
       student_name: studentName,
       old_status: oldStatus,
@@ -314,12 +317,12 @@ export async function notifyDocumentUploaded(
   documentId: string
 ): Promise<Notification> {
   return createNotification({
-    user_id: freelancerId,
+    freelancer_id: freelancerId,
     title: "Document Uploaded",
     message: `${documentName} has been uploaded for ${studentName}.`,
     type: "document_uploaded",
     link: `/documents/${documentId}`,
-    metadata: {
+    data: {
       document_id: documentId,
       document_name: documentName,
       student_name: studentName,
@@ -334,12 +337,12 @@ export async function notifyDocumentVerified(
   documentId: string
 ): Promise<Notification> {
   return createNotification({
-    user_id: freelancerId,
+    freelancer_id: freelancerId,
     title: "Document Verified",
     message: `${documentName} for ${studentName} has been verified.`,
     type: "document_verified",
     link: `/documents/${documentId}`,
-    metadata: {
+    data: {
       document_id: documentId,
       document_name: documentName,
       student_name: studentName,
@@ -354,12 +357,12 @@ export async function notifyNoteAdded(
   studentId: string
 ): Promise<Notification> {
   return createNotification({
-    user_id: freelancerId,
+    freelancer_id: freelancerId,
     title: "New Note Added",
     message: `A new note was added for ${studentName}: "${notePreview.substring(0, 50)}${notePreview.length > 50 ? "..." : ""}"`,
     type: "note_added",
     link: `/students/${studentId}?tab=notes`,
-    metadata: {
+    data: {
       student_id: studentId,
       student_name: studentName,
       note_preview: notePreview.substring(0, 100),
@@ -374,12 +377,12 @@ export async function notifyReminderDue(
   studentId: string
 ): Promise<Notification> {
   return createNotification({
-    user_id: freelancerId,
+    freelancer_id: freelancerId,
     title: "Reminder Due",
     message: `Reminder: ${reminderTitle} for ${studentName}`,
     type: "reminder_due",
     link: `/students/${studentId}`,
-    metadata: {
+    data: {
       student_id: studentId,
       student_name: studentName,
       reminder_title: reminderTitle,
@@ -393,12 +396,12 @@ export async function notifyCoinsEarned(
   reason: string
 ): Promise<Notification> {
   return createNotification({
-    user_id: freelancerId,
+    freelancer_id: freelancerId,
     title: "Coins Earned! 🎉",
     message: `You earned ${amount} coins for ${reason}.`,
     type: "coins_earned",
     link: "/dashboard",
-    metadata: {
+    data: {
       amount,
       reason,
     },
@@ -407,7 +410,7 @@ export async function notifyCoinsEarned(
 
 export async function notifyWelcome(freelancerId: string): Promise<Notification> {
   return createNotification({
-    user_id: freelancerId,
+    freelancer_id: freelancerId,
     title: "Welcome to Lango!",
     message: "Thanks for joining our partner portal. Start adding students to earn coins and grow your business.",
     type: "welcome",

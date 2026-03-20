@@ -67,7 +67,7 @@ export interface StudentWithRelations extends Student {
   documents?: Document[]
   freelancer?: {
     id: string
-    full_name: string
+    name: string
     email: string
   }
 }
@@ -234,16 +234,43 @@ export interface AdminDashboardStats {
   recentApplications: ApplicationWithRelations[]
   topFreelancers: {
     freelancer_id: string
-    full_name: string
+    name: string
     total_students: number
     total_applications: number
     total_earnings: number
   }[]
 }
 
-// Commission API Types
+// Commission & Payout API Types
 export type Commission = Database['public']['Tables']['commissions']['Row']
 export type CommissionInsert = Database['public']['Tables']['commissions']['Insert']
+export type CommissionUpdate = Database['public']['Tables']['commissions']['Update']
+
+export type Payout = Database['public']['Tables']['payouts']['Row']
+export type PayoutInsert = Database['public']['Tables']['payouts']['Insert']
+export type PayoutUpdate = Database['public']['Tables']['payouts']['Update']
+
+export interface PayoutWithCommissions extends Payout {
+  commissions?: Commission[]
+  freelancer?: {
+    id: string
+    full_name: string
+    email: string
+  }
+}
+
+export interface CommissionFilters {
+  status?: string[]
+  freelancerId?: string
+  applicationId?: string
+  dateFrom?: string
+  dateTo?: string
+}
+
+export interface PaginatedCommissionsResponse {
+  commissions: Commission[]
+  pagination: ApiMeta
+}
 
 // Activity Log Types
 export type ActivityLog = Database['public']['Tables']['activity_log']['Row']
@@ -273,7 +300,7 @@ export type Profile = Database['public']['Tables']['profiles']['Row']
 
 // Wizard Types
 export interface WizardPersonalInfo {
-  fullName: string
+  name: string
   email: string
   phone: string
   dateOfBirth?: string

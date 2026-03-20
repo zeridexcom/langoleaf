@@ -130,10 +130,12 @@ export default function SignupPage() {
 
       if (error) {
         console.error('Signup error:', error);
+        setErrorMessage(error.message || 'Failed to create account. Please try again.');
         setLoading(false);
         return;
       }
 
+      // Success - redirect to home
       window.location.href = "/";
     }
   };

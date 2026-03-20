@@ -28,11 +28,11 @@ async function fetchNotifications(options: {
   let query = supabase
     .from("notifications")
     .select("*", { count: "exact" })
-    .eq("user_id", user.id)
+    .eq("freelancer_id", user.id)
     .order("created_at", { ascending: false });
 
   if (unreadOnly) {
-    query = query.eq("read", false);
+    query = query.eq("is_read", false);
   }
 
   // Apply pagination
@@ -46,8 +46,8 @@ async function fetchNotifications(options: {
   const { count: unreadCount, error: unreadError } = await supabase
     .from("notifications")
     .select("*", { count: "exact", head: true })
-    .eq("user_id", user.id)
-    .eq("read", false);
+    .eq("freelancer_id", user.id)
+    .eq("is_read", false);
 
   if (unreadError) {
     console.error("Error fetching unread count:", unreadError);
@@ -69,9 +69,9 @@ async function markAsRead(notificationId: string): Promise<void> {
 
   const { error } = await supabase
     .from("notifications")
-    .update({ read: true })
+    .update({ is_read: true })
     .eq("id", notificationId)
-    .eq("user_id", user.id);
+    .eq("freelancer_id", user.id);
 
   if (error) throw error;
 }
@@ -85,9 +85,9 @@ async function markAllAsRead(): Promise<void> {
 
   const { error } = await supabase
     .from("notifications")
-    .update({ read: true })
-    .eq("user_id", user.id)
-    .eq("read", false);
+    .update({ is_read: true })
+    .eq("freelancer_id", user.id)
+    .eq("is_read", false);
 
   if (error) throw error;
 }
@@ -103,7 +103,7 @@ async function deleteNotification(notificationId: string): Promise<void> {
     .from("notifications")
     .delete()
     .eq("id", notificationId)
-    .eq("user_id", user.id);
+    .eq("freelancer_id", user.id);
 
   if (error) throw error;
 }
@@ -172,8 +172,8 @@ export function useUnreadNotificationsCount() {
       const { count, error } = await supabase
         .from("notifications")
         .select("*", { count: "exact", head: true })
-        .eq("user_id", user.id)
-        .eq("read", false);
+        .eq("freelancer_id", user.id)
+        .eq("is_read", false);
 
       if (error) throw error;
       return count || 0;

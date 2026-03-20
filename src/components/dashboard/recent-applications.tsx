@@ -1,6 +1,8 @@
 "use client";
 
 import { FileText, ChevronRight } from "lucide-react";
+import { SectionPanel } from "@/components/ui/design-system";
+import { cn } from "@/lib/utils/cn";
 
 interface Application {
   id: string;
@@ -46,17 +48,18 @@ export function RecentApplications({ applications = [] }: RecentApplicationsProp
   const displayApplications = applications.slice(0, 5);
 
   return (
-    <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
-      <div className="flex items-center justify-between mb-6">
-        <h3 className="text-lg font-semibold text-gray-900">Recent Applications</h3>
+    <SectionPanel 
+      title="Recent Applications"
+      action={
         <a
           href="/applications"
-          className="text-sm text-primary hover:text-primary/80 flex items-center gap-1 transition-colors"
+          className="text-[10px] font-black text-primary hover:text-primary/80 flex items-center gap-1 transition-colors uppercase tracking-[0.2em]"
         >
           View All
-          <ChevronRight className="w-4 h-4" />
+          <ChevronRight className="w-3 h-3" />
         </a>
-      </div>
+      }
+    >
 
       {displayApplications.length === 0 ? (
         <div className="text-center py-8 text-gray-500 border border-dashed border-gray-300 rounded-lg">
@@ -66,41 +69,40 @@ export function RecentApplications({ applications = [] }: RecentApplicationsProp
           </a>
         </div>
       ) : (
-        <div className="space-y-4">
+        <div className="space-y-3">
           {displayApplications.map((app) => (
             <div
               key={app.id}
-              className="flex items-center gap-4 p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors border border-gray-200"
+              className="flex items-center gap-4 p-4 bg-gray-50 border border-gray-200 hover:border-primary/30 transition-all rounded-lg"
             >
-              <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0 border border-primary/20">
+              <div className="w-10 h-10 bg-primary/10 border border-primary/30 flex items-center justify-center flex-shrink-0 rounded-lg">
                 <FileText className="w-5 h-5 text-primary" />
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2">
-                  <h4 className="text-sm font-medium text-gray-900">
+                  <h4 className="text-sm font-black text-gray-900 truncate">
                     {app.student?.name || "Student"}
                   </h4>
-                  <span className="text-xs text-gray-400">•</span>
-                  <span className="text-xs text-gray-500">{app.id.slice(0, 8)}</span>
+                  <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">• {app.id.slice(0, 8)}</span>
                 </div>
-                <p className="text-xs text-gray-500 truncate">
+                <p className="text-xs text-gray-500 truncate font-medium">
                   {app.program} • {app.university}
                 </p>
               </div>
               <div className="text-right">
                 <span
-                  className={`inline-flex px-2.5 py-1 rounded-md text-xs font-medium ${statusStyles[app.status] || statusStyles.draft}`}
+                  className={`inline-flex px-2.5 py-1 text-[10px] font-black uppercase tracking-wider rounded-md ${statusStyles[app.status] || statusStyles.draft}`}
                 >
                   {statusLabels[app.status] || "Draft"}
                 </span>
                 {app.commission_amount && (
-                  <p className="text-xs text-primary mt-1 font-medium">₹{app.commission_amount.toLocaleString()}</p>
+                  <p className="text-[10px] text-primary mt-1 font-black">₹{app.commission_amount.toLocaleString()}</p>
                 )}
               </div>
             </div>
           ))}
         </div>
       )}
-    </div>
+    </SectionPanel>
   );
 }

@@ -110,7 +110,14 @@ export interface StatusTransitionReport {
 }
 
 export class ReportingService {
-  private supabase = createClient();
+  private supabaseInstance: ReturnType<typeof createClient> | null = null;
+
+  private get supabase() {
+    if (!this.supabaseInstance) {
+      this.supabaseInstance = createClient();
+    }
+    return this.supabaseInstance;
+  }
 
   async generateStudentSummaryReport(filters?: ReportFilters): Promise<StudentSummaryReport> {
     try {
@@ -423,8 +430,7 @@ export class ReportingService {
           const { count: studentCount } = await this.supabase
             .from("students")
             .select("*", { count: "exact", head: true })
-            .eq("freelancer_id", freelancer.id)
-            .is("deleted_at", null);
+            .eq("freelancer_id", freelancer.id);
 
           // Get applications
           const { data: applications } = await this.supabase

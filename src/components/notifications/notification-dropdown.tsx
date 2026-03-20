@@ -9,7 +9,7 @@ interface Notification {
   title: string;
   message: string;
   type: string;
-  read: boolean;
+  is_read: boolean;
   created_at: string;
 }
 
@@ -27,7 +27,7 @@ export function NotificationDropdown() {
       const { data } = await supabase
         .from("notifications")
         .select("*")
-        .eq("read", false)
+        .eq("is_read", false)
         .order("created_at", { ascending: false })
         .limit(5);
       
@@ -51,7 +51,7 @@ export function NotificationDropdown() {
 
   // Mark as read
   const markAsRead = async (id: string) => {
-    await supabase.from("notifications").update({ read: true }).eq("id", id);
+    await supabase.from("notifications").update({ is_read: true }).eq("id", id);
     setNotifications(prev => prev.filter(n => n.id !== id));
   };
 
@@ -59,7 +59,7 @@ export function NotificationDropdown() {
   const markAllAsRead = async () => {
     const ids = notifications.map(n => n.id);
     if (ids.length > 0) {
-      await supabase.from("notifications").update({ read: true }).in("id", ids);
+      await supabase.from("notifications").update({ is_read: true }).in("id", ids);
       setNotifications([]);
     }
   };

@@ -86,12 +86,12 @@ export async function GET(request: Request) {
 
     const { page, limit, sortBy, sortOrder, search, status, universityId, programId, studentId } = queryResult.data;
 
-    // Check if user is admin
-    const isAdmin = profile.role === "admin" || profile.role === "super_admin";
+    // Check if user is admin or manager
+    const isElevated = ["admin", "super_admin", "manager"].includes(profile.role);
 
     // Use ApplicationService for fetching applications
     const result = await ApplicationService.listApplications(
-      isAdmin ? undefined : profile.id,
+      isElevated ? undefined : profile.id,
       {
         search,
         status,

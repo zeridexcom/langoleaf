@@ -58,7 +58,7 @@ export default function ProfilePage() {
                   </div>
                   <span className="text-sm text-gray-500 dark:text-gray-400">Students Added</span>
                 </div>
-                <span className="text-sm font-medium text-gray-900 dark:text-white">156</span>
+                <span className="text-sm font-medium text-gray-900 dark:text-white">0</span>
               </div>
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
@@ -67,7 +67,7 @@ export default function ProfilePage() {
                   </div>
                   <span className="text-sm text-gray-500 dark:text-gray-400">Enrollments</span>
                 </div>
-                <span className="text-sm font-medium text-gray-900 dark:text-white">89</span>
+                <span className="text-sm font-medium text-gray-900 dark:text-white">0</span>
               </div>
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
@@ -76,7 +76,7 @@ export default function ProfilePage() {
                   </div>
                   <span className="text-sm text-gray-500 dark:text-gray-400">Total Earnings</span>
                 </div>
-                <span className="text-sm font-medium text-gray-900 dark:text-white">₹2,45,000</span>
+                <span className="text-sm font-medium text-gray-900 dark:text-white">₹0</span>
               </div>
             </div>
           </div>

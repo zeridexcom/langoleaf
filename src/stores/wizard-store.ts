@@ -38,7 +38,7 @@ interface WizardState {
 const initialState = {
   step: 1,
   personalInfo: {
-    fullName: '',
+    name: '',
     email: '',
     phone: '',
     dateOfBirth: '',

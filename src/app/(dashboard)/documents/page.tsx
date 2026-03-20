@@ -5,6 +5,7 @@ import { useSearchParams } from "next/navigation";
 import { Plus, FileText, Loader2, Upload, Download, Eye } from "lucide-react";
 import { 
   useDocuments, 
+  useStudentDocuments,
   useUploadDocument,
   useDeleteDocument,
   useDocumentDownloadUrl,
@@ -44,6 +45,8 @@ const statusOptions = [
 function DocumentsContent() {
   const searchParams = useSearchParams();
   
+  const studentId = searchParams.get("studentId");
+  
   // State
   const [search, setSearch] = useState(searchParams.get("search") || "");
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
@@ -52,7 +55,12 @@ function DocumentsContent() {
   const [showPreviewDialog, setShowPreviewDialog] = useState(false);
 
   // Queries and Mutations
-  const { data: documents, isLoading } = useDocuments();
+  const { data: allDocuments, isLoading: isLoadingAll } = useDocuments();
+  const { data: studentDocuments, isLoading: isLoadingStudent } = useStudentDocuments(studentId || "");
+  
+  const documents = studentId ? studentDocuments : allDocuments;
+  const isLoading = studentId ? isLoadingStudent : isLoadingAll;
+  
   const uploadDocument = useUploadDocument();
   const deleteDocument = useDeleteDocument();
 
@@ -60,9 +68,10 @@ function DocumentsContent() {
   const filteredDocuments = documents?.filter((doc) => {
     if (!search) return true;
     const searchLower = search.toLowerCase();
+    const studentName = doc.student?.name || "";
     return (
-      (doc.student as any)?.full_name?.toLowerCase().includes(searchLower) ||
-      doc.doc_type?.toLowerCase().includes(searchLower) ||
+      studentName.toLowerCase().includes(searchLower) ||
+      (doc as any).doc_type?.toLowerCase().includes(searchLower) ||
       doc.file_name?.toLowerCase().includes(searchLower)
     );
   }) || [];
@@ -76,11 +85,11 @@ function DocumentsContent() {
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
             <span className="text-primary font-medium">
-              {(doc.student as any)?.full_name?.charAt(0) || "?"}
+              {doc.student?.name?.charAt(0) || "?"}
             </span>
           </div>
           <div>
-            <p className="text-sm font-medium text-gray-900">{(doc.student as any)?.full_name}</p>
+            <p className="text-sm font-medium text-gray-900">{doc.student?.name}</p>
             <p className="text-xs text-gray-500">{doc.student?.email}</p>
           </div>
         </div>
@@ -241,7 +250,7 @@ function DocumentsContent() {
                 <div className="grid grid-cols-2 gap-4 text-sm">
                   <div>
                     <p className="text-gray-500">Student</p>
-                    <p className="font-medium">{(selectedDocument.student as any)?.full_name}</p>
+                    <p className="font-medium">{selectedDocument.student?.name}</p>
                   </div>
                   <div>
                     <p className="text-gray-500">Document Type</p>

@@ -12,7 +12,7 @@ import { RecentApplications } from "@/components/dashboard/recent-applications";
 import { EarningsSummary } from "@/components/dashboard/earnings-summary";
 import { ActivityFeed } from "@/components/dashboard/activity-feed";
 import { QuickActions } from "@/components/dashboard/quick-actions";
-import { LayoutDashboard, Users, FileText, Wallet, TrendingUp, UserPlus, ClipboardList, Star } from "lucide-react";
+import { LayoutDashboard, Users, FileText, Wallet, TrendingUp, UserPlus, ClipboardList, Star, ChevronRight } from "lucide-react";
 import Link from "next/link";
 
 interface DashboardData {
@@ -143,20 +143,20 @@ export function DashboardContent() {
       />
 
       {/* Hero Banner */}
-      <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-6 bg-gradient-to-br from-primary/5 to-primary/10 p-8 border border-primary/20 rounded-2xl">
-        <div className="space-y-2">
-          <div className="flex items-center gap-2 text-primary">
-            <TrendingUp className="w-5 h-5" />
-            <span className="text-xs font-black uppercase tracking-[0.2em]">Global Career Partner</span>
+      <div className="flex flex-col xl:flex-row justify-between items-start xl:items-end gap-6 bg-gradient-to-br from-primary/5 to-primary/10 p-6 lg:p-8 border border-primary/20 rounded-2xl relative overflow-hidden">
+        <div className="space-y-2 relative z-10">
+          <div className="flex items-center gap-2 text-primary font-black uppercase tracking-widest text-[10px]">
+            <TrendingUp className="w-4 h-4" />
+            <span>Global Career Partner</span>
           </div>
-          <h1 className="text-3xl lg:text-4xl font-black text-gray-900 tracking-tight">
+          <h1 className="text-2xl lg:text-3xl xl:text-4xl font-black text-gray-900 tracking-tight">
             Level Up Your Earning Potential
           </h1>
-          <p className="text-gray-600 max-w-xl text-base font-medium">
-            The study abroad market is exploding! Over <span className="text-gray-900 font-black">10 Lakh students</span> in India plan to go abroad yearly. Are you ready to lead?
+          <p className="text-gray-600 max-w-xl text-sm lg:text-base font-medium">
+            The study abroad market is exploding! Over <span className="text-gray-900 font-bold">10 Lakh students</span> in India plan to go abroad yearly.
           </p>
         </div>
-        <div className="flex gap-4">
+        <div className="flex flex-wrap gap-4 w-full xl:w-auto relative z-10">
           <MiniStatsCard
             label="Commission"
             value={`₹${(stats.totalEarnings || 0).toLocaleString()}`}
@@ -174,24 +174,24 @@ export function DashboardContent() {
 
       {/* Pending Tasks Alert */}
       {pendingTasksCount > 0 && (
-        <Link href="/tasks/push-review">
-          <div className="flex items-center justify-between p-4 bg-gradient-to-r from-amber-500/10 to-orange-500/10 border border-amber-500/20 rounded-xl hover:from-amber-500/20 hover:to-orange-500/20 transition-colors cursor-pointer">
+        <Link href="/tasks">
+          <div className="flex items-center justify-between p-4 bg-gradient-to-r from-blue-500/10 to-indigo-500/10 border border-blue-500/20 rounded-xl hover:from-blue-500/20 hover:to-indigo-500/20 transition-colors cursor-pointer mt-6">
             <div className="flex items-center gap-4">
-              <div className="p-3 bg-amber-500/20 rounded-xl">
-                <Star className="w-6 h-6 text-amber-500" />
+              <div className="p-3 bg-blue-500/20 rounded-xl">
+                <ClipboardList className="w-6 h-6 text-blue-600 dark:text-blue-400" />
               </div>
               <div>
                 <p className="font-semibold text-gray-900 dark:text-white">
-                  {pendingTasksCount} Task{pendingTasksCount > 1 ? "s" : ""} Pending
+                  {pendingTasksCount} Action{pendingTasksCount > 1 ? "s" : ""} Required
                 </p>
                 <p className="text-sm text-gray-500 dark:text-gray-400">
-                  Complete tasks to earn rewards! Push Review task available.
+                  You have assigned tasks that need your attention. Complete them to earn rewards!
                 </p>
               </div>
             </div>
-            <div className="flex items-center gap-2 text-amber-600 dark:text-amber-400">
-              <span className="text-sm font-medium">Earn ₹20</span>
-              <ClipboardList className="w-5 h-5" />
+            <div className="flex items-center gap-2 text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/40 px-3 py-1.5 rounded-lg">
+              <span className="text-sm font-medium">View Tasks</span>
+              <ChevronRight className="w-4 h-4" />
             </div>
           </div>
         </Link>
@@ -232,24 +232,43 @@ export function DashboardContent() {
       {/* Quick Actions */}
       <QuickActions />
 
-      {/* Main Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Recent Students */}
-        <div className="lg:col-span-2">
-          <RecentStudents students={data.recentStudents} />
+      {/* Main Grid or Onboarding Empty State */}
+      {stats.totalStudents === 0 && stats.totalApplications === 0 ? (
+        <div className="bg-white border border-gray-200 rounded-2xl p-12 text-center max-w-3xl mx-auto mt-8">
+          <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-6">
+            <UserPlus className="w-8 h-8 text-primary" />
+          </div>
+          <h2 className="text-2xl font-black text-gray-900 tracking-tight mb-3">Welcome to Langoleaf!</h2>
+          <p className="text-gray-500 mb-8 max-w-lg mx-auto text-sm lg:text-base leading-relaxed">
+            Your dashboard is currently empty. Get started on your partner journey by adding your first student profile to begin tracking applications and earning commissions.
+          </p>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <Button onClick={() => window.location.href = "/students/add"} size="lg" className="px-8 w-full sm:w-auto font-bold h-12">
+              <UserPlus className="w-5 h-5 mr-2" />
+              Add Your First Student
+            </Button>
+            <Button variant="outline" onClick={() => window.location.href = "/course-hub"} size="lg" className="px-8 w-full sm:w-auto font-bold h-12 bg-white">
+              Explore Course Hub
+            </Button>
+          </div>
         </div>
+      ) : (
+        <>
+          <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
+            <div className="xl:col-span-2">
+              <RecentStudents students={data.recentStudents} />
+            </div>
+            <div className="h-full">
+              <EarningsSummary earnings={data.earnings} />
+            </div>
+          </div>
 
-        {/* Earnings Summary */}
-        <div>
-          <EarningsSummary earnings={data.earnings} />
-        </div>
-      </div>
-
-      {/* Activity & Applications */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <RecentApplications applications={data.recentApplications} />
-        <ActivityFeed applications={data.recentApplications} />
-      </div>
+          <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
+            <RecentApplications applications={data.recentApplications} />
+            <ActivityFeed applications={data.recentApplications} />
+          </div>
+        </>
+      )}
     </div>
   );
 }

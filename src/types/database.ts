@@ -49,6 +49,9 @@ export type ApplicationStatus =
 
 export type DegreeType = 'bachelor' | 'master' | 'phd' | 'diploma' | 'certificate'
 export type CommissionStatus = 'not_applicable' | 'pending' | 'approved' | 'invoiced' | 'paid' | 'disputed'
+export type TaskStatus = 'pending' | 'in_progress' | 'submitted' | 'approved' | 'rejected'
+export type TaskPriority = 'urgent' | 'normal' | 'low'
+export type TaskAssignmentStatus = 'assigned' | 'accepted' | 'in_progress' | 'completed' | 'cancelled'
 
 export interface Database {
   public: {
@@ -61,6 +64,7 @@ export interface Database {
           role: UserRole
           phone: string | null
           avatar_url: string | null
+          team_id: string | null
           created_at: string
           updated_at: string
         }
@@ -71,6 +75,7 @@ export interface Database {
           role?: UserRole
           phone?: string | null
           avatar_url?: string | null
+          team_id?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -81,6 +86,7 @@ export interface Database {
           role?: UserRole
           phone?: string | null
           avatar_url?: string | null
+          team_id?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -89,9 +95,11 @@ export interface Database {
         Row: {
           id: string
           freelancer_id: string
-          full_name: string
+          name: string
           email: string | null
           phone: string
+          program: string | null
+          university: string | null
           date_of_birth: string | null
           gender: string | null
           nationality: string | null
@@ -118,9 +126,11 @@ export interface Database {
         Insert: {
           id?: string
           freelancer_id: string
-          full_name: string
+          name: string
           email?: string | null
           phone: string
+          program?: string | null
+          university?: string | null
           date_of_birth?: string | null
           gender?: string | null
           nationality?: string | null
@@ -147,9 +157,11 @@ export interface Database {
         Update: {
           id?: string
           freelancer_id?: string
-          full_name?: string
+          name?: string
           email?: string | null
           phone?: string
+          program?: string | null
+          university?: string | null
           date_of_birth?: string | null
           gender?: string | null
           nationality?: string | null
@@ -383,102 +395,6 @@ export interface Database {
           created_at?: string
         }
       }
-      application_documents: {
-        Row: {
-          id: string
-          application_id: string
-          document_id: string | null
-          doc_type: DocumentType
-          is_required: boolean
-          is_uploaded: boolean
-          uploaded_at: string | null
-        }
-        Insert: {
-          id?: string
-          application_id: string
-          document_id?: string | null
-          doc_type: DocumentType
-          is_required?: boolean
-          is_uploaded?: boolean
-          uploaded_at?: string | null
-        }
-        Update: {
-          id?: string
-          application_id?: string
-          document_id?: string | null
-          doc_type?: DocumentType
-          is_required?: boolean
-          is_uploaded?: boolean
-          uploaded_at?: string | null
-        }
-      }
-      status_history: {
-        Row: {
-          id: string
-          entity_type: 'student' | 'application' | 'document'
-          entity_id: string
-          old_status: string | null
-          new_status: string
-          changed_by: string | null
-          reason: string | null
-          metadata: Json | null
-          created_at: string
-        }
-        Insert: {
-          id?: string
-          entity_type: 'student' | 'application' | 'document'
-          entity_id: string
-          old_status?: string | null
-          new_status: string
-          changed_by?: string | null
-          reason?: string | null
-          metadata?: Json | null
-          created_at?: string
-        }
-        Update: {
-          id?: string
-          entity_type?: 'student' | 'application' | 'document'
-          entity_id?: string
-          old_status?: string | null
-          new_status?: string
-          changed_by?: string | null
-          reason?: string | null
-          metadata?: Json | null
-          created_at?: string
-        }
-      }
-      activity_log: {
-        Row: {
-          id: string
-          user_id: string | null
-          action: string
-          entity_type: string | null
-          entity_id: string | null
-          details: Json | null
-          ip_address: string | null
-          created_at: string
-        }
-        Insert: {
-          id?: string
-          user_id?: string | null
-          action: string
-          entity_type?: string | null
-          entity_id?: string | null
-          details?: Json | null
-          ip_address?: string | null
-          created_at?: string
-        }
-        Update: {
-          id?: string
-          user_id?: string | null
-          action?: string
-          entity_type?: string | null
-          entity_id?: string | null
-          details?: Json | null
-          ip_address?: string | null
-          created_at?: string
-        }
-      }
       notifications: {
         Row: {
           id: string
@@ -519,6 +435,7 @@ export interface Database {
           amount: number
           status: CommissionStatus
           invoice_number: string | null
+          payout_id: string | null
           paid_at: string | null
           notes: string | null
           created_at: string
@@ -531,6 +448,7 @@ export interface Database {
           amount: number
           status?: CommissionStatus
           invoice_number?: string | null
+          payout_id?: string | null
           paid_at?: string | null
           notes?: string | null
           created_at?: string
@@ -543,6 +461,7 @@ export interface Database {
           amount?: number
           status?: CommissionStatus
           invoice_number?: string | null
+          payout_id?: string | null
           paid_at?: string | null
           notes?: string | null
           created_at?: string
@@ -560,6 +479,11 @@ export interface Database {
           is_active: boolean
           auto_assign: boolean
           target_url: string | null
+          deadline: string | null
+          priority: TaskPriority
+          category: string | null
+          attachments: Json
+          admin_question: string | null
           created_at: string
           updated_at: string
         }
@@ -573,6 +497,11 @@ export interface Database {
           is_active?: boolean
           auto_assign?: boolean
           target_url?: string | null
+          deadline?: string | null
+          priority?: TaskPriority
+          category?: string | null
+          attachments?: Json
+          admin_question?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -586,8 +515,112 @@ export interface Database {
           is_active?: boolean
           auto_assign?: boolean
           target_url?: string | null
+          deadline?: string | null
+          priority?: TaskPriority
+          category?: string | null
+          attachments?: Json
+          admin_question?: string | null
           created_at?: string
           updated_at?: string
+        }
+      }
+      payouts: {
+        Row: {
+          id: string
+          freelancer_id: string
+          amount: number
+          currency: string
+          status: string
+          payment_method: string | null
+          payment_reference: string | null
+          paid_at: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          freelancer_id: string
+          amount: number
+          currency?: string
+          status?: string
+          payment_method?: string | null
+          payment_reference?: string | null
+          paid_at?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          freelancer_id?: string
+          amount?: number
+          currency?: string
+          status?: string
+          payment_method?: string | null
+          payment_reference?: string | null
+          paid_at?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+      }
+      activity_log: {
+        Row: {
+          id: string
+          user_id: string
+          action: string
+          entity_type: string
+          entity_id: string
+          details: Json
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          action: string
+          entity_type: string
+          entity_id: string
+          details?: Json
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          action?: string
+          entity_type?: string
+          entity_id?: string
+          details?: Json
+          created_at?: string
+        }
+      }
+      status_history: {
+        Row: {
+          id: string
+          entity_type: string
+          entity_id: string
+          old_status: string
+          new_status: string
+          changed_by: string
+          reason: string | null
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          entity_type: string
+          entity_id: string
+          old_status: string
+          new_status: string
+          changed_by: string
+          reason?: string | null
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          entity_type?: string
+          entity_id?: string
+          old_status?: string
+          new_status?: string
+          changed_by?: string
+          reason?: string | null
+          created_at?: string
         }
       }
       task_submissions: {
@@ -601,6 +634,12 @@ export interface Database {
           reviewed_at: string | null
           review_notes: string | null
           reward_credited: boolean
+          accepted_at: string | null
+          deadline_extension_requested: boolean
+          deadline_extension_reason: string | null
+          deadline_extension_approved: boolean | null
+          proof_files: Json
+          new_deadline: string | null
           created_at: string
           updated_at: string
         }
@@ -614,6 +653,12 @@ export interface Database {
           reviewed_at?: string | null
           review_notes?: string | null
           reward_credited?: boolean
+          accepted_at?: string | null
+          deadline_extension_requested?: boolean
+          deadline_extension_reason?: string | null
+          deadline_extension_approved?: boolean | null
+          proof_files?: Json
+          new_deadline?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -627,8 +672,75 @@ export interface Database {
           reviewed_at?: string | null
           review_notes?: string | null
           reward_credited?: boolean
+          accepted_at?: string | null
+          deadline_extension_requested?: boolean
+          deadline_extension_reason?: string | null
+          deadline_extension_approved?: boolean | null
+          proof_files?: Json
+          new_deadline?: string | null
           created_at?: string
           updated_at?: string
+        }
+      }
+      task_assignments: {
+        Row: {
+          id: string
+          task_id: string
+          freelancer_id: string
+          assigned_by: string | null
+          assigned_at: string
+          status: TaskAssignmentStatus
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          task_id: string
+          freelancer_id: string
+          assigned_by?: string | null
+          assigned_at?: string
+          status?: TaskAssignmentStatus
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          task_id?: string
+          freelancer_id?: string
+          assigned_by?: string | null
+          assigned_at?: string
+          status?: TaskAssignmentStatus
+          created_at?: string
+        }
+      }
+      task_chats: {
+        Row: {
+          id: string
+          task_id: string
+          submission_id: string | null
+          sender_id: string | null
+          message: string
+          attachments: Json
+          is_read: boolean
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          task_id: string
+          submission_id?: string | null
+          sender_id?: string | null
+          message: string
+          attachments?: Json
+          is_read?: boolean
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          task_id?: string
+          submission_id?: string | null
+          sender_id?: string | null
+          message?: string
+          attachments?: Json
+          is_read?: boolean
+          created_at?: string
         }
       }
     }

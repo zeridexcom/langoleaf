@@ -181,14 +181,13 @@ export class StudentService {
         *,
         applications:applications(
           *,
-          university:universities(id, name, country),
-          program:programs(id, name, degree_type)
+          university_id,
+          program_id
         ),
         documents:student_documents(*),
         freelancer:profiles(id, full_name, email)
       `)
       .eq('id', id)
-      .is('deleted_at', null)
 
     // If freelancerId provided, ensure they own this student
     if (freelancerId) {
@@ -229,16 +228,19 @@ export class StudentService {
         applications:applications(
           id,
           status,
-          university:universities(id, name),
-          program:programs(id, name)
+          university_id,
+          program_id
         )
       `, { count: 'exact' })
-      .eq('freelancer_id', freelancerId)
-      .is('deleted_at', null)
+
+    // Apply freelancer filter if provided
+    if (freelancerId) {
+      query = query.eq('freelancer_id', freelancerId)
+    }
 
     // Apply filters
     if (filters.search) {
-      query = query.or(`full_name.ilike.%${filters.search}%,email.ilike.%${filters.search}%,phone.ilike.%${filters.search}%`)
+      query = query.or(`name.ilike.%${filters.search}%,email.ilike.%${filters.search}%,phone.ilike.%${filters.search}%`)
     }
 
     if (filters.status && filters.status.length > 0) {
@@ -263,7 +265,7 @@ export class StudentService {
     }
 
     // Apply sorting
-    const orderColumn = sort.sortBy === 'full_name' ? 'full_name' : sort.sortBy
+    const orderColumn = sort.sortBy === 'name' ? 'name' : sort.sortBy
     query = query.order(orderColumn, { ascending: sort.sortOrder === 'asc' })
 
     // Apply pagination
@@ -272,15 +274,19 @@ export class StudentService {
     const { data: students, error, count } = await query
 
     if (error) {
-      throw new AppError('INTERNAL_ERROR', 'Failed to fetch students')
+      throw new AppError('INTERNAL_ERROR', `Supabase Error: ${error.message} (${error.code})`)
     }
 
     // Get filter options
-    const { data: filterOptions } = await supabase
+    let optionsQuery = supabase
       .from('students')
       .select('source, tags')
-      .eq('freelancer_id', freelancerId)
-      .is('deleted_at', null)
+    
+    if (freelancerId) {
+      optionsQuery = optionsQuery.eq('freelancer_id', freelancerId)
+    }
+
+    const { data: filterOptions } = await optionsQuery
 
     const sources = Array.from(new Set(filterOptions?.map(s => s.source).filter(Boolean)))
     const allTags = Array.from(new Set(filterOptions?.flatMap(s => s.tags || []).filter(Boolean)))
@@ -319,7 +325,6 @@ export class StudentService {
       .select('id')
       .eq('id', id)
       .eq('freelancer_id', freelancerId)
-      .is('deleted_at', null)
       .single()
 
     if (checkError || !existing) {
@@ -360,7 +365,6 @@ export class StudentService {
       .select('status')
       .eq('id', id)
       .eq('freelancer_id', freelancerId)
-      .is('deleted_at', null)
       .single()
 
     if (fetchError || !student) {
@@ -413,23 +417,10 @@ export class StudentService {
       .select('id')
       .eq('student_id', id)
       .not('status', 'in', '("enrolled","rejected","withdrawn","offer_declined")')
-      .is('deleted_at', null)
-
-    if (checkError) {
-      throw new AppError('INTERNAL_ERROR', 'Failed to check active applications')
-    }
-
-    if (activeApps && activeApps.length > 0) {
-      throw new AppError('CONFLICT', `Cannot delete student with ${activeApps.length} active application(s)`)
-    }
-
-    // Soft delete
+    // Hard delete since table has no deleted_at column
     const { error } = await supabase
       .from('students')
-      .update({
-        deleted_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-      })
+      .delete()
       .eq('id', id)
       .eq('freelancer_id', freelancerId)
 
@@ -452,7 +443,6 @@ export class StudentService {
       .from('students')
       .select()
       .eq('freelancer_id', freelancerId)
-      .is('deleted_at', null)
 
     if (excludeId) {
       query = query.neq('id', excludeId)
@@ -502,7 +492,6 @@ export class StudentService {
       .select('id')
       .in('id', ids)
       .eq('freelancer_id', freelancerId)
-      .is('deleted_at', null)
 
     if (checkError) {
       throw new AppError('INTERNAL_ERROR', 'Failed to verify students')

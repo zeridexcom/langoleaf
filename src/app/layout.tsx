@@ -4,6 +4,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/theme/theme-provider";
 import { PageTransition } from "@/components/page-transition";
 import { QueryProvider } from "@/providers/QueryProvider";
+import { PermissionsProvider } from "@/providers/PermissionsProvider";
 import { Toaster } from "sonner";
 
 const publicSans = Public_Sans({
@@ -26,21 +27,23 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={`${publicSans.variable} font-sans antialiased bg-background-light dark:bg-dark-bg text-slate-900 dark:text-white`}>
         <QueryProvider>
-          <ThemeProvider defaultTheme="light">
-            <PageTransition>
-              {children}
-            </PageTransition>
-            <Toaster 
-              position="top-right"
-              richColors
-              closeButton
-              toastOptions={{
-                style: {
-                  fontFamily: 'var(--font-public-sans)',
-                },
-              }}
-            />
-          </ThemeProvider>
+          <PermissionsProvider>
+            <ThemeProvider defaultTheme="light">
+              <PageTransition>
+                {children}
+              </PageTransition>
+              <Toaster 
+                position="top-right"
+                richColors
+                closeButton
+                toastOptions={{
+                  style: {
+                    fontFamily: 'var(--font-public-sans)',
+                  },
+                }}
+              />
+            </ThemeProvider>
+          </PermissionsProvider>
         </QueryProvider>
       </body>
     </html>

@@ -40,7 +40,6 @@ export class DocumentService {
         .select('id')
         .eq('id', data.studentId)
         .eq('freelancer_id', freelancerId)
-        .is('deleted_at', null)
         .single()
 
       if (studentError || !student) {
@@ -121,7 +120,6 @@ export class DocumentService {
         uploaded_by_user:profiles!uploaded_by(id, full_name, email)
       `)
       .eq('id', id)
-      .is('deleted_at', null)
 
     if (freelancerId) {
       query = query.eq('student.freelancer_id', freelancerId)
@@ -155,7 +153,6 @@ export class DocumentService {
       .select('id')
       .eq('id', studentId)
       .eq('freelancer_id', freelancerId)
-      .is('deleted_at', null)
       .single()
 
     if (studentError || !student) {
@@ -169,7 +166,6 @@ export class DocumentService {
         uploaded_by_user:profiles!uploaded_by(id, full_name, email)
       `)
       .eq('student_id', studentId)
-      .is('deleted_at', null)
       .order('created_at', { ascending: false })
 
     if (filters?.docType) {
@@ -211,7 +207,6 @@ export class DocumentService {
         student:students!inner(freelancer_id)
       `)
       .eq('id', id)
-      .is('deleted_at', null)
       .single()
 
     if (fetchError || !document) {
@@ -274,7 +269,6 @@ export class DocumentService {
         student:students!inner(freelancer_id)
       `)
       .eq('id', id)
-      .is('deleted_at', null)
       .single()
 
     if (fetchError || !existing) {
@@ -353,7 +347,6 @@ export class DocumentService {
         student:students!inner(freelancer_id)
       `)
       .eq('id', id)
-      .is('deleted_at', null)
       .single()
 
     if (fetchError || !document) {
@@ -365,13 +358,10 @@ export class DocumentService {
       throw Errors.forbidden('Access denied')
     }
 
-    // Soft delete
+    // Hard delete since table has no deleted_at column
     const { error } = await supabase
       .from('student_documents')
-      .update({
-        deleted_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-      })
+      .delete()
       .eq('id', id)
 
     if (error) {
@@ -400,7 +390,6 @@ export class DocumentService {
         student:students!inner(freelancer_id)
       `)
       .eq('id', id)
-      .is('deleted_at', null)
       .single()
 
     if (fetchError || !document) {
@@ -446,14 +435,13 @@ export class DocumentService {
         *,
         student:students!inner(
           id,
-          full_name,
+          name,
           email,
           freelancer_id
         ),
         uploaded_by_user:profiles!uploaded_by(id, full_name, email)
       `)
       .eq('student.freelancer_id', freelancerId)
-      .is('deleted_at', null)
       .or(`expiry_date.lte.${thresholdDate.toISOString()},status.eq.expired`)
 
     if (error) {
@@ -482,7 +470,6 @@ export class DocumentService {
         student:students!inner(freelancer_id)
       `)
       .eq('id', documentId)
-      .is('deleted_at', null)
       .single()
 
     if (docError || !document) {

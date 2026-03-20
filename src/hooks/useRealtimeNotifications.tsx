@@ -46,23 +46,72 @@ export function useRealtimeNotifications() {
     // Invalidate notifications query to refresh the list
     queryClient.invalidateQueries({ queryKey: notificationKeys.all });
 
-    // Show toast notification
-    const icon = notificationIcons[notification.type] || <Bell className="w-4 h-4" />;
-    const colorClass = notificationColors[notification.type] || "bg-gray-500";
+    // Play sound notification
+    try {
+      const audio = new Audio("https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3");
+      audio.volume = 0.5;
+      audio.play().catch(e => console.log("Audio auto-play blocked by browser:", e));
+    } catch (err) {
+      console.error("Audio error:", err);
+    }
 
-    toast(notification.title, {
-      description: notification.message,
-      icon: <span className={`${colorClass} text-white p-1 rounded-full`}>{icon}</span>,
-      action: notification.link
-        ? {
-            label: "View",
-            onClick: () => {
-              window.location.href = notification.link!;
-            },
-          }
-        : undefined,
-      duration: 5000,
-    });
+    const isUrgent = notification.data?.priority === "urgent" || notification.data?.priority === "high";
+
+    if (isUrgent) {
+      // Show a large, persistent custom toast (Modal-like)
+      toast.custom((t) => (
+        <div className="bg-white dark:bg-gray-900 p-6 rounded-3xl shadow-2xl border-2 border-red-500 w-[400px] relative overflow-hidden">
+          <div className="absolute top-0 left-0 w-full h-2 bg-red-500 animate-pulse" />
+          <div className="flex items-start gap-4 mb-4">
+            <div className="p-3 bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 rounded-2xl">
+              <AlertCircle className="w-8 h-8" />
+            </div>
+            <div>
+              <p className="text-xs font-black text-red-500 uppercase tracking-widest mb-1">Important Broadcast</p>
+              <h3 className="text-xl font-black text-gray-900 dark:text-white leading-tight">{notification.title}</h3>
+            </div>
+          </div>
+          <div className="bg-gray-50 dark:bg-gray-800 rounded-2xl p-4 mb-6">
+            <p className="text-sm font-medium text-gray-700 dark:text-gray-300 leading-relaxed">
+              {notification.message}
+            </p>
+          </div>
+          <div className="flex gap-3">
+            <button 
+              onClick={() => toast.dismiss(t)}
+              className="flex-1 py-3 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-900 dark:text-white text-sm font-bold rounded-xl transition-colors"
+            >
+              Dismiss
+            </button>
+            <a 
+              href="/notifications"
+              onClick={() => toast.dismiss(t)}
+              className="flex-1 py-3 text-center bg-red-500 hover:bg-red-600 text-white text-sm font-bold rounded-xl transition-colors"
+            >
+              View in Log
+            </a>
+          </div>
+        </div>
+      ), { duration: Number.POSITIVE_INFINITY, position: 'top-center' }); // Show forever until dismissed
+    } else {
+      // Standard toast for normal notifications
+      const icon = notificationIcons[notification.type] || <Bell className="w-4 h-4" />;
+      const colorClass = notificationColors[notification.type] || "bg-gray-500";
+      
+      toast(notification.title, {
+        description: notification.message,
+        icon: <span className={`${colorClass} text-white p-1 rounded-full`}>{icon}</span>,
+        action: notification.link
+          ? {
+              label: "View",
+              onClick: () => {
+                window.location.href = notification.link!;
+              },
+            }
+          : undefined,
+        duration: 5000,
+      });
+    }
   }, [queryClient]);
 
   useEffect(() => {
@@ -81,7 +130,7 @@ export function useRealtimeNotifications() {
             event: "INSERT",
             schema: "public",
             table: "notifications",
-            filter: `user_id=eq.${user.id}`,
+            filter: `freelancer_id=eq.${user.id}`,
           },
           (payload) => {
             const notification = payload.new as Notification;
@@ -121,9 +170,9 @@ export function useMarkNotificationsAsRead() {
 
     const { error } = await supabase
       .from("notifications")
-      .update({ read: true })
+      .update({ is_read: true })
       .in("id", notificationIds)
-      .eq("user_id", user.id);
+      .eq("freelancer_id", user.id);
 
     if (error) {
       console.error("Error marking notifications as read:", error);

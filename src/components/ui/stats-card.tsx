@@ -20,10 +20,10 @@ interface StatsCardProps {
 
 const colorVariants = {
   primary: "bg-primary/10 text-primary border-primary/20",
-  success: "bg-green-100 text-green-700 border-green-200",
-  warning: "bg-yellow-100 text-yellow-700 border-yellow-200",
-  danger: "bg-red-100 text-red-700 border-red-200",
-  info: "bg-blue-100 text-blue-700 border-blue-200",
+  success: "bg-emerald-50 text-emerald-700 border-emerald-200",
+  warning: "bg-amber-50 text-amber-700 border-amber-200",
+  danger: "bg-red-50 text-red-700 border-red-200",
+  info: "bg-indigo-50 text-indigo-700 border-indigo-200",
 };
 
 export function StatsCard({
@@ -39,8 +39,8 @@ export function StatsCard({
   return (
     <div
       className={cn(
-        "bg-white border border-gray-200 rounded-xl p-6 transition-all duration-200",
-        onClick && "cursor-pointer hover:shadow-md hover:border-gray-300",
+        "bg-white border border-gray-200 rounded-xl p-6 transition-all duration-300 shadow-premium",
+        onClick && "cursor-pointer hover:shadow-premium-hover hover:border-gray-300",
         className
       )}
       onClick={onClick}
@@ -50,7 +50,7 @@ export function StatsCard({
           <p className="text-sm font-bold text-gray-500 uppercase tracking-wider mb-1">
             {title}
           </p>
-          <h3 className="text-2xl font-black text-gray-900">{value}</h3>
+          <h3 className="text-2xl font-black text-gray-900 tracking-tight">{value}</h3>
           {description && (
             <p className="text-sm text-gray-500 mt-1">{description}</p>
           )}
@@ -76,11 +76,11 @@ export function StatsCard({
         </div>
         <div
           className={cn(
-            "w-12 h-12 rounded-xl flex items-center justify-center border",
+            "w-12 h-12 rounded-xl flex items-center justify-center border transition-colors",
             colorVariants[color]
           )}
         >
-          <Icon className="w-6 h-6" />
+          <Icon className="w-5 h-5" />
         </div>
       </div>
     </div>
@@ -102,7 +102,7 @@ export function MiniStatsCard({
   color = "primary",
 }: MiniStatsCardProps) {
   return (
-    <div className="flex items-center gap-3 p-4 bg-white border border-gray-200 rounded-xl">
+    <div className="flex items-center gap-3 p-4 bg-white border border-gray-200 rounded-xl shadow-premium">
       <div
         className={cn(
           "w-10 h-10 rounded-lg flex items-center justify-center border",

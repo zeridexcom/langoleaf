@@ -94,10 +94,10 @@ export async function POST(request: Request) {
 
       // Create notification
       await supabase.from("notifications").insert({
-        user_id: submission.freelancer_id,
+        freelancer_id: submission.freelancer_id,
         type: "task_approved",
         title: "Task Approved! 🎉",
-        message: `Your ${task?.title || "task"} submission has been approved. ₹${task?.reward_amount || 0} credited to your account!`,
+        message: `Your submission for "${task.title}" has been approved. ₹${task.reward_amount} credited!`,
         is_read: false,
       });
 
@@ -127,10 +127,10 @@ export async function POST(request: Request) {
 
       // Create notification
       await supabase.from("notifications").insert({
-        user_id: submission.freelancer_id,
+        freelancer_id: submission.freelancer_id,
         type: "task_rejected",
-        title: "Task Submission Rejected",
-        message: `Your ${task?.title || "task"} submission was rejected. ${reason ? `Reason: ${reason}` : "You can resubmit."}`,
+        title: "Task Rejected ❌",
+        message: `Your submission for "${task.title}" was rejected. Reason: ${reason}`,
         is_read: false,
       });
 

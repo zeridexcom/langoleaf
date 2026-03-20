@@ -6,7 +6,9 @@ import { SystemAnalytics } from "./system-analytics";
 import { FreelancerList } from "./freelancer-list";
 import { StudentAssignment } from "./student-assignment";
 import { TaskVerification } from "./task-verification";
-import { Shield, Users, BarChart3, UserCog, ClipboardList } from "lucide-react";
+import { ApplicationManagement } from "./application-management";
+import { AdminNotificationSender } from "./admin-notification-sender";
+import { Shield, Users, BarChart3, UserCog, FileText, Bell, ClipboardList } from "lucide-react";
 import { useAdminAccess } from "@/hooks/usePermissions";
 
 export function AdminDashboard() {
@@ -47,43 +49,69 @@ export function AdminDashboard() {
 
       {/* Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-        <TabsList className="bg-white border border-gray-200 p-1 rounded-xl">
-          <TabsTrigger 
-            value="overview" 
-            className="data-[state=active]:bg-primary data-[state=active]:text-white rounded-lg px-4 py-2 text-sm font-bold"
-          >
-            <BarChart3 className="w-4 h-4 mr-2" />
-            Overview
-          </TabsTrigger>
-          <TabsTrigger 
-            value="freelancers"
-            className="data-[state=active]:bg-primary data-[state=active]:text-white rounded-lg px-4 py-2 text-sm font-bold"
-          >
-            <Users className="w-4 h-4 mr-2" />
-            Freelancers
-          </TabsTrigger>
-          <TabsTrigger 
-            value="students"
-            className="data-[state=active]:bg-primary data-[state=active]:text-white rounded-lg px-4 py-2 text-sm font-bold"
-          >
-            <UserCog className="w-4 h-4 mr-2" />
-            Student Assignment
-          </TabsTrigger>
-          <TabsTrigger 
-            value="tasks"
-            className="data-[state=active]:bg-primary data-[state=active]:text-white rounded-lg px-4 py-2 text-sm font-bold"
-          >
-            <ClipboardList className="w-4 h-4 mr-2" />
-            Task Verification
-          </TabsTrigger>
-        </TabsList>
+        <div className="overflow-x-auto pb-2">
+          <TabsList className="bg-white border border-gray-200 p-1 rounded-xl w-max sm:w-auto">
+            <TabsTrigger 
+              value="overview" 
+              className="data-[state=active]:bg-primary data-[state=active]:text-white rounded-lg px-4 py-2 text-sm font-bold"
+            >
+              <BarChart3 className="w-4 h-4 mr-2" />
+              Overview
+            </TabsTrigger>
+            <TabsTrigger 
+              value="applications" 
+              className="data-[state=active]:bg-primary data-[state=active]:text-white rounded-lg px-4 py-2 text-sm font-bold"
+            >
+              <FileText className="w-4 h-4 mr-2" />
+              Applications
+            </TabsTrigger>
+            <TabsTrigger 
+              value="freelancers"
+              className="data-[state=active]:bg-primary data-[state=active]:text-white rounded-lg px-4 py-2 text-sm font-bold"
+            >
+              <Users className="w-4 h-4 mr-2" />
+              Freelancers
+            </TabsTrigger>
+            <TabsTrigger 
+              value="notifications"
+              className="data-[state=active]:bg-primary data-[state=active]:text-white rounded-lg px-4 py-2 text-sm font-bold"
+            >
+              <Bell className="w-4 h-4 mr-2" />
+              Broadcasts
+            </TabsTrigger>
+            <TabsTrigger 
+              value="students"
+              className="data-[state=active]:bg-primary data-[state=active]:text-white rounded-lg px-4 py-2 text-sm font-bold"
+            >
+              <UserCog className="w-4 h-4 mr-2" />
+              Student Assignment
+            </TabsTrigger>
+            <TabsTrigger 
+              value="tasks"
+              className="data-[state=active]:bg-primary data-[state=active]:text-white rounded-lg px-4 py-2 text-sm font-bold"
+            >
+              <ClipboardList className="w-4 h-4 mr-2" />
+              Task Verification
+            </TabsTrigger>
+          </TabsList>
+        </div>
 
         <TabsContent value="overview" className="mt-6">
           <SystemAnalytics />
         </TabsContent>
 
+        <TabsContent value="applications" className="mt-6">
+          <ApplicationManagement />
+        </TabsContent>
+
         <TabsContent value="freelancers" className="mt-6">
           <FreelancerList />
+        </TabsContent>
+
+        <TabsContent value="notifications" className="mt-6">
+          <div className="max-w-2xl">
+            <AdminNotificationSender />
+          </div>
         </TabsContent>
 
         <TabsContent value="students" className="mt-6">

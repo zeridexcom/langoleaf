@@ -19,10 +19,10 @@ const studentStatuses: StudentStatus[] = [
 
 // Personal info schema (Step 1 of wizard)
 export const personalInfoSchema = z.object({
-  fullName: z
+  name: z
     .string()
-    .min(2, "Full name must be at least 2 characters")
-    .max(100, "Full name must be less than 100 characters"),
+    .min(2, "Name must be at least 2 characters")
+    .max(100, "Name must be less than 100 characters"),
   
   email: z
     .string()
@@ -154,10 +154,10 @@ export type AcademicInfoInput = z.infer<typeof academicInfoSchema>
 
 // Create student schema (complete)
 export const createStudentSchema = z.object({
-  fullName: z
+  name: z
     .string()
-    .min(2, "Full name must be at least 2 characters")
-    .max(100, "Full name must be less than 100 characters"),
+    .min(2, "Name must be at least 2 characters")
+    .max(100, "Name must be less than 100 characters"),
   
   email: z
     .string()
@@ -298,7 +298,7 @@ export const studentFiltersSchema = z.object({
   freelancerId: z.string().uuid().optional(),
   page: z.number().int().min(1).default(1),
   limit: z.number().int().min(1).max(100).default(20),
-  sortBy: z.enum(["created_at", "updated_at", "full_name", "status"]).default("created_at"),
+  sortBy: z.enum(["created_at", "updated_at", "name", "status"]).default("created_at"),
   sortOrder: z.enum(["asc", "desc"]).default("desc"),
 })
 

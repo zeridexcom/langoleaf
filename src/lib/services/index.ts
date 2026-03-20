@@ -11,6 +11,7 @@ export * from './notification-service'
 
 // Phase 8: Reporting & Analytics
 export * from './reporting-service'
+export * from './finance-service'
 
 // Phase 9: Gamification & Engagement
 export * from './gamification-service'

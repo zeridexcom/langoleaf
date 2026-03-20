@@ -32,8 +32,7 @@ export function useDuplicateCheck() {
   const checkDuplicates = useCallback(async (
     email: string,
     phone: string,
-    firstName: string,
-    lastName: string,
+    name: string,
     excludeId?: string
   ): Promise<DuplicateCheckResult> => {
     // Cancel any ongoing check
@@ -75,7 +74,7 @@ export function useDuplicateCheck() {
       }) || null;
 
       // Fuzzy name matching using Fuse.js
-      const fullName = `${firstName} ${lastName}`.trim().toLowerCase();
+      const fullName = name.trim().toLowerCase();
       const fuseOptions = {
         keys: ["name"],
         threshold: 0.4, // 0 = exact match, 1 = match anything
@@ -180,24 +179,22 @@ export function useRealtimeDuplicateCheck() {
         
         if (!user) return;
 
-        let query = supabase
+        const { data: duplicate, error } = await supabase
           .from("students")
           .select("id, name, email, phone, program, university, status, created_at")
           .eq("email", email.toLowerCase())
-          .eq("freelancer_id", user.id);
+          .eq("freelancer_id", user.id)
+          .maybeSingle();
 
-        if (excludeId) {
-          query = query.neq("id", excludeId);
-        }
-
-        const { data, error } = await query.single();
-
-        if (error || !data) {
+        if (error || !duplicate) {
+          setEmailStatus("available");
+          setDuplicateStudent(null);
+        } else if (excludeId && duplicate.id === excludeId) {
           setEmailStatus("available");
           setDuplicateStudent(null);
         } else {
           setEmailStatus("duplicate");
-          setDuplicateStudent(data);
+          setDuplicateStudent(duplicate as any);
         }
       } catch (error) {
         setEmailStatus("idle");

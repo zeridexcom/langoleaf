@@ -27,6 +27,11 @@ import { DocumentUpload } from "@/components/documents/document-upload";
 import { DocumentList } from "@/components/documents/document-list";
 import { createClient } from "@/lib/supabase/client";
 import { useDuplicateCheck, useRealtimeDuplicateCheck } from "@/hooks/useDuplicateCheck";
+import {
+  useBulkDeleteStudents,
+  useBulkUpdateStatus,
+  useCreateStudent,
+} from "@/hooks/useStudents";
 import { DuplicateWarningModal } from "@/components/students/duplicate-warning-modal";
 import { useFormDraft } from "@/hooks/useFormDraft";
 import { TagInput, STUDENT_TAG_SUGGESTIONS } from "@/components/ui/tag-input";
@@ -38,11 +43,16 @@ import { toast } from "react-hot-toast";
 
 const programs = [
   "MBA", "B.Tech", "M.Tech", "BCA", "MCA", "BBA", "B.Com", "B.Sc", "M.Sc", "BA", "MA", "LLB", "MBBS", "BDS", "Pharmacy",
+  "B.A.Sc", "B.Sc Nursing", "BA(LLB)", "B.Pharmacy", "BPT", "Diploma", "12th", "SSLC"
 ];
 
 const universities = [
   "IIM Bangalore", "IIT Delhi", "IIT Bombay", "IIT Madras", "NIT Trichy", "Christ University",
   "XLRI Jamshedpur", "BITS Pilani", "VIT Vellore", "SRM University", "Amity University", "Manipal University",
+  "Rosy Royal Institutions", "Yenepoya University", "Chinmaya Vishwa Vidyapeeth", "Vidya College of Nursing", 
+  "ELIMS College", "MET's Group of Institutions", "MES Group of Institutions", "Udupi Group of Institutions",
+  "Arni University", "OPJS", "YBN", "MEWAR UNIVERSITY", "NEFTU UNIVERSITY", "Glocal University", "Himalayan University", "Sangai International University",
+  "University of Toronto", "University of Melbourne", "University of Manchester"
 ];
 
 const genders = [
@@ -65,8 +75,7 @@ const indianStates = [
 
 interface FormData {
   // Personal
-  firstName: string;
-  lastName: string;
+  name: string;
   email: string;
   phone: string;
   dateOfBirth: Date | null;
@@ -96,8 +105,7 @@ interface FormData {
 }
 
 const initialFormData: FormData = {
-  firstName: "",
-  lastName: "",
+  name: "",
   email: "",
   phone: "",
   dateOfBirth: null,
@@ -133,6 +141,9 @@ export default function AddStudentPage() {
   const { result, showModal, checkDuplicates, closeModal, clearDuplicates } = useDuplicateCheck();
   const { emailStatus, phoneStatus, duplicateStudent, checkEmail, checkPhone, resetStatus } = useRealtimeDuplicateCheck();
   
+  // Create student mutation
+  const createStudent = useCreateStudent();
+  
   // Draft management
   const { hasDraft, lastSaved, saveDraft, restoreDraft, clearDraft, startAutoSave, getLastSavedText } = useFormDraft({
     formId: "add-student",
@@ -154,6 +165,23 @@ export default function AddStudentPage() {
     return () => stopAutoSave();
   }, [startAutoSave]);
 
+  // Pre-fill from URL params (e.g., from Course Hub)
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const urlParams = new URLSearchParams(window.location.search);
+      const programParam = urlParams.get("program");
+      const universityParam = urlParams.get("university");
+      
+      if (programParam || universityParam) {
+        setFormData(prev => ({
+          ...prev,
+          program: programParam || prev.program,
+          university: universityParam || prev.university
+        }));
+      }
+    }
+  }, []);
+
   // Check for duplicates on blur
   const handleEmailBlur = useCallback(() => {
     if (formData.email) {
@@ -172,8 +200,8 @@ export default function AddStudentPage() {
     const result = await checkDuplicates(
       formData.email,
       formData.phone,
-      formData.firstName,
-      formData.lastName
+      formData.name,
+      "" // Empty last name since we use a single field
     );
     return result;
   }, [checkDuplicates, formData]);
@@ -183,8 +211,7 @@ export default function AddStudentPage() {
     
     // Validate required fields
     const newErrors: Record<string, string> = {};
-    if (!formData.firstName.trim()) newErrors.firstName = "First name is required";
-    if (!formData.lastName.trim()) newErrors.lastName = "Last name is required";
+    if (!formData.name.trim()) newErrors.name = "Name is required";
     if (!formData.email.trim()) newErrors.email = "Email is required";
     if (!formData.phone.trim()) newErrors.phone = "Phone is required";
     if (!formData.program) newErrors.program = "Program is required";
@@ -202,69 +229,49 @@ export default function AddStudentPage() {
       return; // Modal will be shown
     }
 
-    setIsSubmitting(true);
+    // Submit using mutation hook
+    createStudent.mutate({
+      name: formData.name,
+      email: formData.email,
+      phone: formData.phone,
+      program: formData.program,
+      university: formData.university,
+      status: "application_submitted",
+      freelancer_id: "", // Auto-set by hook from auth
+      date_of_birth: formData.dateOfBirth?.toISOString().split("T")[0] || undefined,
+      gender: formData.gender || undefined,
+      nationality: formData.nationality || undefined,
+      address: formData.address || undefined,
+      city: formData.city || undefined,
+      state: formData.state || undefined,
+      pincode: formData.pincode || undefined,
+      emergency_contact_name: formData.emergencyContactName || undefined,
+      emergency_contact_phone: formData.emergencyContactPhone || undefined,
+      emergency_contact_relation: formData.emergencyContactRelation || undefined,
+      previous_education: formData.previousEducation || undefined,
+      source: formData.source || undefined,
+      tags: formData.tags,
+      notes: "", // Satisfy schema
+    }, {
+      onSuccess: async (student) => {
+        // Sync to Google Sheets
+        await fetch("/api/sync-sheets", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ studentId: student.id, action: "create" }),
+        });
 
-    try {
-      const supabase = createClient();
-      const { data: { user } } = await supabase.auth.getUser();
-
-      if (!user) {
-        toast.error("Please login first");
-        return;
+        clearDraft();
+        setStudentId(student.id);
+        setSuccess(true);
+        setShowDocumentUpload(true);
+        toast.success("Student added successfully!");
+      },
+      onError: (error) => {
+        console.error("Error creating student:", error);
+        toast.error("Failed to create student. Please try again.");
       }
-
-      // Create student in database
-      const { data: student, error } = await supabase
-        .from("students")
-        .insert({
-          name: `${formData.firstName} ${formData.lastName}`,
-          email: formData.email,
-          phone: formData.phone,
-          program: formData.program,
-          university: formData.university,
-          status: "application_submitted",
-          freelancer_id: user.id,
-          // New fields
-          date_of_birth: formData.dateOfBirth?.toISOString().split("T")[0] || null,
-          gender: formData.gender || null,
-          nationality: formData.nationality || null,
-          avatar_url: formData.avatarUrl || null,
-          address: formData.address || null,
-          city: formData.city || null,
-          state: formData.state || null,
-          pincode: formData.pincode || null,
-          emergency_contact_name: formData.emergencyContactName || null,
-          emergency_contact_phone: formData.emergencyContactPhone || null,
-          emergency_contact_relation: formData.emergencyContactRelation || null,
-          previous_education: formData.previousEducation || null,
-          source: formData.source || null,
-          tags: formData.tags,
-        })
-        .select()
-        .single();
-
-      if (error) throw error;
-
-      // Sync to Google Sheets
-      await fetch("/api/sync-sheets", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ studentId: student.id, action: "create" }),
-      });
-
-      // Clear draft on successful submission
-      clearDraft();
-
-      setStudentId(student.id);
-      setSuccess(true);
-      setShowDocumentUpload(true);
-      toast.success("Student added successfully!");
-    } catch (error) {
-      console.error("Error creating student:", error);
-      toast.error("Failed to create student. Please try again.");
-    } finally {
-      setIsSubmitting(false);
-    }
+    });
   };
 
   const handleDocumentUpload = () => {
@@ -305,7 +312,7 @@ export default function AddStudentPage() {
           </div>
           <div>
             <h1 className="text-2xl font-bold text-gray-900">Student Added Successfully!</h1>
-            <p className="text-gray-500">Now upload documents for {formData.firstName} {formData.lastName}</p>
+            <p className="text-gray-500">Now upload documents for {formData.name}</p>
           </div>
         </div>
 
@@ -330,9 +337,12 @@ export default function AddStudentPage() {
             <a href="/students/add" className="px-6 py-2 border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 transition-colors">
               Add Another Student
             </a>
-            <a href="/students" className="px-6 py-2 bg-primary text-white rounded-xl hover:bg-primary/90 transition-colors font-medium">
-              Finish
-            </a>
+            <Button
+              onClick={() => router.push(`/applications/create?studentId=${studentId}&program=${formData.program}&university=${formData.university}`)}
+              className="px-6 py-2 bg-primary text-white rounded-xl hover:bg-primary/90 transition-colors font-bold shadow-lg shadow-primary/20"
+            >
+              Proceed to Application
+            </Button>
           </div>
         </div>
       </div>
@@ -401,44 +411,24 @@ export default function AddStudentPage() {
                   />
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      First Name *
+                      Full Name *
                     </label>
                     <input
                       type="text"
-                      value={formData.firstName}
-                      onChange={(e) => updateField("firstName", e.target.value)}
+                      value={formData.name}
+                      onChange={(e) => updateField("name", e.target.value)}
                       className={cn(
                         "w-full px-4 py-2 bg-white border rounded-xl text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/50",
-                        errors.firstName ? "border-red-300" : "border-gray-300"
+                        errors.name ? "border-red-300" : "border-gray-300"
                       )}
-                      placeholder="Enter first name"
+                      placeholder="Enter full name"
                     />
-                    {errors.firstName && (
-                      <p className="text-sm text-red-500 mt-1">{errors.firstName}</p>
+                    {errors.name && (
+                      <p className="text-sm text-red-500 mt-1">{errors.name}</p>
                     )}
                   </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Last Name *
-                    </label>
-                    <input
-                      type="text"
-                      value={formData.lastName}
-                      onChange={(e) => updateField("lastName", e.target.value)}
-                      className={cn(
-                        "w-full px-4 py-2 bg-white border rounded-xl text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/50",
-                        errors.lastName ? "border-red-300" : "border-gray-300"
-                      )}
-                      placeholder="Enter last name"
-                    />
-                    {errors.lastName && (
-                      <p className="text-sm text-red-500 mt-1">{errors.lastName}</p>
-                    )}
-                  </div>
-                </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
@@ -787,12 +777,12 @@ export default function AddStudentPage() {
               </a>
               <Button
                 type="submit"
-                disabled={isSubmitting}
+                disabled={createStudent.isPending}
                 className="px-6 py-2 bg-primary text-white rounded-xl hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
               >
-                {isSubmitting ? (
+                {createStudent.isPending ? (
                   <>
-                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" />
+                    <Loader2 className="animate-spin h-4 w-4" />
                     Adding...
                   </>
                 ) : (
@@ -809,8 +799,7 @@ export default function AddStudentPage() {
             <FormProgress
               formData={{
                 ...formData,
-                firstName: formData.firstName,
-                lastName: formData.lastName,
+                name: formData.name,
                 email: formData.email,
                 phone: formData.phone,
                 dateOfBirth: formData.dateOfBirth,

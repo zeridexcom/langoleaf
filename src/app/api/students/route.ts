@@ -109,12 +109,12 @@ export async function GET(request: Request) {
 
     const { page, limit, sortBy, sortOrder, search, status, program, university, source, tags, dateFrom, dateTo, freelancerId } = queryResult.data;
 
-    // Check if user is admin
-    const isAdmin = profile.role === "admin" || profile.role === "super_admin";
-
+    // Check if user is admin or manager
+    const isElevated = ["admin", "super_admin", "manager"].includes(profile.role);
+    
     // Use StudentService for fetching students
     const result = await StudentService.listStudents(
-      isAdmin ? (freelancerId || undefined) : profile.id,
+      isElevated ? (freelancerId || undefined) : profile.id,
       {
         search,
         status,
@@ -156,7 +156,8 @@ export async function GET(request: Request) {
         success: false, 
         error: { 
           code: "INTERNAL_ERROR", 
-          message: "Failed to fetch students" 
+          message: error instanceof Error ? error.message : "Failed to fetch students",
+          details: error instanceof Error ? error.stack : undefined
         } 
       },
       { status: 500 }
@@ -215,7 +216,7 @@ export async function POST(request: Request) {
       profile.id,
       {
         student: {
-          full_name: validationResult.data.name,
+          name: validationResult.data.name,
           email: validationResult.data.email,
           phone: validationResult.data.phone || "",
           date_of_birth: validationResult.data.date_of_birth || null,
