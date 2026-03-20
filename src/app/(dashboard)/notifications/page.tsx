@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { 
   Bell, Check, Trash2, UserPlus, FileCheck, Coins, Award, 
   AlertCircle, CheckCircle, Loader2, MessageSquare, ExternalLink, 
@@ -28,11 +28,7 @@ export default function NotificationsPage() {
   const [selectedNotification, setSelectedNotification] = useState<any>(null);
   const supabase = createClient();
 
-  useEffect(() => {
-    fetchNotifications();
-  }, [filter]);
-
-  const fetchNotifications = async () => {
+  const fetchNotifications = useCallback(async () => {
     setLoading(true);
     try {
       const { data: { user } } = await supabase.auth.getUser();
@@ -58,7 +54,11 @@ export default function NotificationsPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [filter, supabase]);
+
+  useEffect(() => {
+    fetchNotifications();
+  }, [fetchNotifications]);
 
   const markAsRead = async (id: string) => {
     try {

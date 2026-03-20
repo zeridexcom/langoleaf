@@ -241,7 +241,7 @@ export default function PushReviewPage() {
                 <div>
                   <p className="font-medium text-amber-600">Pending Review</p>
                   <p className="text-sm text-gray-500">
-                    Your submission is being reviewed by admin. You'll be notified
+                    Your submission is being reviewed by admin. You&apos;ll be notified
                     once approved.
                   </p>
                 </div>

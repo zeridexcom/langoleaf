@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { Bell, X, CheckCircle, UserPlus, FileCheck, Coins, Award, AlertCircle } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 
@@ -48,8 +48,7 @@ export function NotificationDropdown() {
   const dropdownRef = useRef<HTMLDivElement>(null);
   const supabase = createClient();
 
-  // Fetch notifications
-  const fetchNotifications = async () => {
+  const fetchNotifications = useCallback(async () => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
@@ -71,7 +70,7 @@ export function NotificationDropdown() {
     } catch (err) {
       console.error("Error:", err);
     }
-  };
+  }, [supabase]);
 
   // Load on mount and when dropdown opens
   useEffect(() => {
@@ -80,7 +79,7 @@ export function NotificationDropdown() {
     // Poll for new notifications every 30 seconds
     const interval = setInterval(fetchNotifications, 30000);
     return () => clearInterval(interval);
-  }, []);
+  }, [fetchNotifications]);
 
   // Close dropdown when clicking outside
   useEffect(() => {

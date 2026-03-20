@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { X, Download, FileText, Image, File, Loader2, ExternalLink } from "lucide-react";
+import { useState, useEffect, useCallback } from "react";
+import { X, Download, FileText, Image as ImageIcon, File, Loader2, ExternalLink } from "lucide-react";
 import { cn } from "@/lib/utils/cn";
 
 interface DocumentViewerProps {
@@ -16,11 +16,7 @@ export function DocumentViewer({ documentId, fileName, fileType, onClose }: Docu
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    fetchSignedUrl();
-  }, [documentId]);
-
-  const fetchSignedUrl = async () => {
+  const fetchSignedUrl = useCallback(async () => {
     try {
       setLoading(true);
       const response = await fetch(`/api/documents/${documentId}`);
@@ -36,7 +32,11 @@ export function DocumentViewer({ documentId, fileName, fileType, onClose }: Docu
     } finally {
       setLoading(false);
     }
-  };
+  }, [documentId]);
+
+  useEffect(() => {
+    fetchSignedUrl();
+  }, [fetchSignedUrl]);
 
   const handleDownload = () => {
     if (signedUrl) {
@@ -54,7 +54,7 @@ export function DocumentViewer({ documentId, fileName, fileType, onClose }: Docu
         <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-gray-700">
           <div className="flex items-center gap-3">
             {isImage ? (
-              <Image className="w-5 h-5 text-blue-500" />
+              <ImageIcon className="w-5 h-5 text-blue-500" />
             ) : isPDF ? (
               <FileText className="w-5 h-5 text-red-500" />
             ) : (

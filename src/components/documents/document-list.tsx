@@ -1,9 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { 
   FileText, 
-  Image, 
+  Image as ImageIcon, 
   Download, 
   Trash2, 
   ExternalLink, 
@@ -58,16 +58,7 @@ export function DocumentList({
   const [error, setError] = useState<string | null>(null);
   const [viewingDocument, setViewingDocument] = useState<Document | null>(null);
 
-  useEffect(() => {
-    if (propDocuments) {
-      setDocuments(propDocuments);
-      setLoading(false);
-    } else if (studentId) {
-      loadDocuments();
-    }
-  }, [studentId, propDocuments, refreshKey]);
-
-  const loadDocuments = async () => {
+  const loadDocuments = useCallback(async () => {
     if (!studentId) return;
     
     try {
@@ -85,7 +76,16 @@ export function DocumentList({
     } finally {
       setLoading(false);
     }
-  };
+  }, [studentId]);
+
+  useEffect(() => {
+    if (propDocuments) {
+      setDocuments(propDocuments);
+      setLoading(false);
+    } else if (studentId) {
+      loadDocuments();
+    }
+  }, [studentId, propDocuments, refreshKey, loadDocuments]);
 
   const handleDelete = async (documentId: string) => {
     if (!confirm("Are you sure you want to delete this document?")) {
@@ -151,7 +151,7 @@ const formatFileSize = (bytes: number) => {
 
 const getFileIcon = (format: string) => {
     if (["jpg", "jpeg", "png"].includes(format.toLowerCase())) {
-      return <Image className="w-5 h-5 text-blue-500" />;
+      return <ImageIcon className="w-5 h-5 text-blue-500" />;
     }
     return <FileText className="w-5 h-5 text-red-500" />;
   };

@@ -104,7 +104,7 @@ export function AdminNotificationSender() {
           <div>
             <p className="text-xs font-black text-emerald-900 uppercase tracking-wide">Successfully Sent</p>
             <p className="text-[10px] text-emerald-700 font-medium mt-0.5">
-              "{lastSent.title}" was sent to {lastSent.count} freelancers.
+              &quot;{lastSent.title}&quot; was sent to {lastSent.count} freelancers.
             </p>
           </div>
         </div>

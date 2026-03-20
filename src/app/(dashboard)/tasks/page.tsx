@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { PageHeader } from "@/components/ui/page-header";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -37,11 +37,7 @@ export default function TasksPage() {
   const [isExtensionModalOpen, setIsExtensionModalOpen] = useState(false);
   const [isChatOpen, setIsChatOpen] = useState(false);
 
-  useEffect(() => {
-    loadTasks();
-  }, []);
-
-  const loadTasks = async () => {
+  const loadTasks = useCallback(async () => {
     try {
       const {
         data: { user },
@@ -98,7 +94,11 @@ export default function TasksPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [supabase]);
+
+  useEffect(() => {
+    loadTasks();
+  }, [loadTasks]);
 
   const priorityColors = {
     urgent: "bg-red-100 dark:bg-red-500/10 text-red-700 dark:text-red-400 border-red-200 dark:border-red-500/20",

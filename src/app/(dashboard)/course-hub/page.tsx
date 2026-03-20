@@ -731,7 +731,7 @@ export default function CourseHubPage() {
                     {priceFormSubmitted ? (
                       <div className="flex items-center gap-3 text-emerald-600 font-black text-xs py-4 bg-emerald-50 rounded-xl px-5 border border-emerald-100">
                         <CheckCircle2 className="w-5 h-5" />
-                        We'll reach out in 5 minutes!
+                        We&apos;ll reach out in 5 minutes!
                       </div>
                     ) : (
                       <form onSubmit={handlePriceSubmit} className="space-y-4">
