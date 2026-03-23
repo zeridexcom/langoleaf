@@ -97,7 +97,7 @@ export async function POST(request: Request) {
         freelancer_id: submission.freelancer_id,
         type: "task_approved",
         title: "Task Approved! 🎉",
-        message: `Your submission for "${task.title}" has been approved. ₹${task.reward_amount} credited!`,
+        message: `Your submission for "${task?.title || "Task"}" has been approved. ₹${task?.reward_amount || 0} credited!`,
         is_read: false,
       });
 
@@ -130,7 +130,7 @@ export async function POST(request: Request) {
         freelancer_id: submission.freelancer_id,
         type: "task_rejected",
         title: "Task Rejected ❌",
-        message: `Your submission for "${task.title}" was rejected. Reason: ${reason}`,
+        message: `Your submission for "${task?.title || "Task"}" was rejected. Reason: ${reason}`,
         is_read: false,
       });
 

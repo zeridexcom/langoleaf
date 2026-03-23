@@ -104,6 +104,10 @@ export async function POST(request: Request) {
       .eq("id", taskId)
       .single();
 
+    if (!task) {
+      console.warn(`Task not found for notification: ${taskId}`);
+    }
+
     const { data: freelancer } = await supabase
       .from("profiles")
       .select("full_name")
@@ -121,7 +125,7 @@ export async function POST(request: Request) {
         freelancer_id: admin.id,
         type: "task_accepted",
         title: "Task Accepted 📝",
-        message: `Task "${task.title}" has been accepted by a freelancer.`,
+        message: `Task "${task?.title || "Unknown Task"}" has been accepted by ${freelancer?.full_name || "a freelancer"}.`,
         is_read: false,
         link: "/admin/tasks",
       }));
